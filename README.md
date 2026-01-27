@@ -68,4 +68,4 @@ We believe **standards should be learned through usage, not memorization**.
 
 - **Swen** – AI Tutor & Backend  
 - **David** – Frontend & Education Experience   
-- **Edda** –  Smart Contracts & Web3  
+- **Dudu** –  Smart Contracts & Web3  
