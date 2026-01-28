@@ -41,7 +41,39 @@ Optional environment variables:
 - `TUTOR_PORT=8009`
 - `TUTOR_RELOAD=1`
 
-## 4) Swagger UI testing
+## 4) Frontend local integration
+
+Set CORS for your frontend origin (example for Vite/Next on 3000):
+
+```bash
+export TUTOR_CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+```
+
+Frontend API base URL:
+
+```
+http://127.0.0.1:8009
+```
+
+Quiz flow (frontend):
+
+1) `POST /tutor/{eip}/quiz/start`
+2) `POST /tutor/{eip}/quiz/answer` (repeat 3 times with `sessionId`)
+3) On the 3rd response, read `passed` (bool) and show reward UI
+
+If the frontend runs on another device, set:
+
+```
+TUTOR_HOST=0.0.0.0
+```
+
+Then call:
+
+```
+http://<your-ip>:8009
+```
+
+## 5) Swagger UI testing
 
 Open:
 
@@ -54,6 +86,10 @@ Then test:
 - `GET /health`
 - `POST /tutor/1559/explain`
 - `POST /tutor/7702/explain`
+- `POST /tutor/1559/quiz/start`
+- `POST /tutor/1559/quiz/answer`
+- `POST /tutor/7702/quiz/start`
+- `POST /tutor/7702/quiz/answer`
 
 Example `POST /tutor/1559/explain` body:
 
@@ -63,7 +99,6 @@ Example `POST /tutor/1559/explain` body:
   "maxFeePerGasGwei": 60,
   "maxPriorityFeePerGasGwei": 2,
   "gasLimit": 21000,
-  "userInput": "我想快一点但别太贵",
   "txContext": {
     "to": "0xabc0000000000000000000000000000000000000",
     "valueEth": 0.01
@@ -85,13 +120,29 @@ Example `POST /tutor/7702/explain` body:
   "safetyContext": {
     "isSimulationOk": true,
     "warnings": []
-  },
-  "userInput": "我希望一次授权完成交换，安全吗？"
+  }
 }
 ```
 
-## 5) Notes
+Example quiz flow (EIP-1559):
 
-- The Tutor service is stateless. If you need full dialogue context, send it in
-  `userInput` on every request.
+```bash
+# Start
+curl -s http://127.0.0.1:8009/tutor/1559/quiz/start
+
+# Answer (replace sessionId)
+curl -s http://127.0.0.1:8009/tutor/1559/quiz/answer \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "sessionId": "REPLACE_ME",
+    "answer": "用户回答..."
+  }'
+```
+
+## 6) Notes
+
+- The Tutor explain endpoints are stateless. If you need full dialogue context,
+  send it in on every request (if you choose to add such a field).
+- The `/tutor/*/quiz/` endpoints are stateful and keep session context across
+  three questions.
 - If you only want deterministic responses, skip API keys.

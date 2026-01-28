@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
+from uuid import uuid4
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -93,7 +94,163 @@ class TutorExplainResponse(BaseModel):
     model_config = {"populate_by_name": True}
 
 
+class QuizAnswerRequest(BaseModel):
+    """Inputs for quiz answer submission."""
+
+    session_id: str = Field(alias="sessionId")
+    answer: str
+
+    model_config = {"populate_by_name": True}
+
+
+class QuizResponse(BaseModel):
+    """Stable response shape for quiz flow."""
+
+    session_id: str = Field(alias="sessionId")
+    done: bool
+    question_index: int = Field(alias="questionIndex")
+    assistant_message: str = Field(alias="assistantMessage")
+    passed: Optional[bool] = None
+
+    model_config = {"populate_by_name": True}
+
+
 # ----------------------------
+# Quiz configs and helpers
+# ----------------------------
+
+
+@dataclass(frozen=True)
+class QuizKeyPoint:
+    tokens: List[str]
+    hint: str
+
+
+@dataclass(frozen=True)
+class QuizQuestion:
+    prompt: str
+    key_points: List[QuizKeyPoint]
+
+
+@dataclass
+class QuizSession:
+    session_id: str
+    eip: str
+    questions: List[QuizQuestion]
+    current_index: int = 0
+    scores: List[int] = field(default_factory=list)
+    history: List[Dict[str, Any]] = field(default_factory=list)
+    completed: bool = False
+    created_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
+
+
+_QUIZ_QUESTION_BANK: Dict[str, List[QuizQuestion]] = {
+    "1559": [
+        QuizQuestion(
+            prompt="解释 EIP-1559 中有效 gas 价格的计算方式，说明 baseFee、maxFee、maxPriority 的关系。",
+            key_points=[
+                QuizKeyPoint(tokens=["有效gas", "effectivegas", "有效gas价"], hint="有效 gas 价格概念"),
+                QuizKeyPoint(tokens=["min(", "min(", "最小值", "min"], hint="取 min(maxFee, baseFee + priority)"),
+                QuizKeyPoint(tokens=["basefee", "base fee", "baseFee"], hint="baseFee 参与计算"),
+                QuizKeyPoint(tokens=["priority", "maxpriority", "小费"], hint="priority fee 参与计算"),
+            ],
+        ),
+        QuizQuestion(
+            prompt="若 baseFee=30、maxFee=40、maxPriority=5（单位 gwei），这笔交易能否进块？实际小费是多少？",
+            key_points=[
+                QuizKeyPoint(tokens=["能进", "可以进", "maxfee>=basefee", "40>=30"], hint="能进块（maxFee>=baseFee）"),
+                QuizKeyPoint(tokens=["小费", "priority", "5"], hint="小费为 5 gwei"),
+                QuizKeyPoint(tokens=["35", "basefee+priority", "30+5"], hint="有效 gas 价为 35 gwei"),
+            ],
+        ),
+        QuizQuestion(
+            prompt="为什么 maxFeePerGas 通常需要比 baseFeePerGas 高一些？",
+            key_points=[
+                QuizKeyPoint(tokens=["上涨", "波动", "增加"], hint="应对 baseFee 上涨/波动"),
+                QuizKeyPoint(tokens=["卡住", "失败", "进块"], hint="避免交易卡住/提升进块概率"),
+                QuizKeyPoint(tokens=["缓冲", "余量", "冗余"], hint="给手续费留出缓冲空间"),
+            ],
+        ),
+    ],
+    "7702": [
+        QuizQuestion(
+            prompt="EIP-7702 主要带来什么能力或体验？一句话说明其核心价值。",
+            key_points=[
+                QuizKeyPoint(tokens=["授权", "委托", "delegate"], hint="授权/委托执行"),
+                QuizKeyPoint(tokens=["一次", "临时", "单次"], hint="临时/一次性能力"),
+                QuizKeyPoint(tokens=["一键", "体验", "简化"], hint="提升用户体验/一键流程"),
+            ],
+        ),
+        QuizQuestion(
+            prompt="在 7702 授权中，哪些字段最需要限制或提示风险？",
+            key_points=[
+                QuizKeyPoint(tokens=["scope", "权限", "范围"], hint="权限范围（scope）"),
+                QuizKeyPoint(tokens=["expiry", "过期", "时长", "时间"], hint="授权时长/expiry"),
+                QuizKeyPoint(tokens=["functions", "方法", "函数"], hint="可调用函数范围"),
+                QuizKeyPoint(tokens=["limits", "额度", "限额"], hint="额度/上限限制"),
+            ],
+        ),
+        QuizQuestion(
+            prompt="如果授权已过期或 scope 太大，应当如何处理？",
+            key_points=[
+                QuizKeyPoint(tokens=["拒绝", "不要", "不能执行"], hint="过期应拒绝执行"),
+                QuizKeyPoint(tokens=["收敛", "缩小", "限制"], hint="收敛 scope"),
+                QuizKeyPoint(tokens=["缩短", "重新授权", "新的授权"], hint="缩短时长/重新授权"),
+            ],
+        ),
+    ],
+}
+
+
+_QUIZ_SESSIONS: Dict[str, QuizSession] = {}
+
+
+def _normalize_answer(text: str) -> str:
+    return "".join((text or "").lower().split())
+
+
+def _score_answer(answer: str, key_points: List[QuizKeyPoint]) -> tuple[int, List[str]]:
+    normalized = _normalize_answer(answer)
+    missing: List[str] = []
+    matched = 0
+
+    for kp in key_points:
+        if any(token.lower() in normalized for token in kp.tokens):
+            matched += 1
+        else:
+            missing.append(kp.hint)
+
+    if not key_points:
+        return 0, missing
+
+    score = int(round((matched / len(key_points)) * 10))
+    return max(0, min(score, 10)), missing
+
+
+def _rule_feedback(score: int, missing: List[str]) -> str:
+    if not missing:
+        return "回答比较完整，核心要点覆盖到了。"
+    missing_text = "，".join(missing[:3])
+    return f"要点基本覆盖，但还可以补充：{missing_text}。"
+
+
+def _rule_final_feedback(history: List[Dict[str, Any]]) -> str:
+    missing_all: List[str] = []
+    for item in history:
+        missing_all.extend(item.get("missing", []))
+
+    unique_missing: List[str] = []
+    for hint in missing_all:
+        if hint not in unique_missing:
+            unique_missing.append(hint)
+
+    if not unique_missing:
+        return "整体回答较完整，建议继续巩固并结合示例多做演练。"
+
+    missing_text = "、".join(unique_missing[:5])
+    return f"你的薄弱点主要在：{missing_text}。建议针对这些点做系统复习，并结合例子重新推导。"
+
+
 # EIP-1559 derived calculations
 # ----------------------------
 
@@ -421,6 +578,75 @@ class TutorAgentRuntime:
 runtime = TutorAgentRuntime()
 
 
+def _get_quiz_questions(eip: str) -> List[QuizQuestion]:
+    questions = _QUIZ_QUESTION_BANK.get(eip)
+    if not questions:
+        raise HTTPException(status_code=404, detail=f"Unsupported EIP quiz: {eip}")
+    return questions
+
+
+async def _maybe_llm_quiz_feedback(
+    eip: str,
+    question: QuizQuestion,
+    answer: str,
+    score: int,
+    missing: List[str],
+    history: List[Dict[str, Any]],
+) -> Optional[str]:
+    agent = await runtime.get_agent()
+    if not agent:
+        return None
+
+    # Keep quiz feedback deterministic across sessions by using explicit context.
+    agent.memory.clear()
+    prompt = (
+        "You are a quiz tutor for EIP teaching. Provide concise feedback in Chinese.\n"
+        f"EIP: {eip}\n"
+        f"Question: {question.prompt}\n"
+        f"User answer: {answer}\n"
+        f"Score (0-10): {score}\n"
+        f"Missing points: {missing}\n"
+        f"History JSON: {json.dumps(history, ensure_ascii=False)}\n\n"
+        "Rules:\n"
+        "- Output 1-2 short sentences.\n"
+        "- Do NOT ask a new question.\n"
+        "- Focus on what is missing and how to improve.\n"
+    )
+    try:
+        res = await agent.run(prompt)
+    except Exception:
+        return None
+
+    return res.strip() if isinstance(res, str) else None
+
+
+async def _maybe_llm_quiz_final_feedback(
+    eip: str,
+    history: List[Dict[str, Any]],
+    passed: bool,
+) -> Optional[str]:
+    agent = await runtime.get_agent()
+    if not agent:
+        return None
+
+    agent.memory.clear()
+    prompt = (
+        "You are a quiz tutor for EIP teaching. Summarize weaknesses and improvements in Chinese.\n"
+        f"EIP: {eip}\n"
+        f"Passed: {passed}\n"
+        f"History JSON: {json.dumps(history, ensure_ascii=False)}\n\n"
+        "Rules:\n"
+        "- Output 2-3 sentences.\n"
+        "- Mention main weak points and how to improve.\n"
+    )
+    try:
+        res = await agent.run(prompt)
+    except Exception:
+        return None
+
+    return res.strip() if isinstance(res, str) else None
+
+
 # ----------------------------
 # FastAPI app and endpoints
 # ----------------------------
@@ -495,3 +721,113 @@ async def tutor_7702_explain(req: Tutor7702ExplainRequest) -> TutorExplainRespon
             response.meta["agentError"] = runtime.agent_error
 
     return response
+
+
+def _create_quiz_session(eip: str) -> QuizSession:
+    session_id = uuid4().hex
+    questions = _get_quiz_questions(eip)
+    session = QuizSession(session_id=session_id, eip=eip, questions=questions)
+    _QUIZ_SESSIONS[session_id] = session
+    return session
+
+
+async def _quiz_start(eip: str) -> QuizResponse:
+    session = _create_quiz_session(eip)
+    first_question = session.questions[0].prompt
+    return QuizResponse(
+        sessionId=session.session_id,
+        done=False,
+        questionIndex=1,
+        assistantMessage=f"题目1：{first_question}",
+    )
+
+
+async def _quiz_answer(eip: str, req: QuizAnswerRequest) -> QuizResponse:
+    session = _QUIZ_SESSIONS.get(req.session_id)
+    if not session or session.eip != eip:
+        raise HTTPException(status_code=404, detail="Quiz session not found.")
+
+    if session.completed:
+        raise HTTPException(status_code=400, detail="Quiz already completed.")
+
+    if session.current_index >= len(session.questions):
+        raise HTTPException(status_code=400, detail="Quiz state invalid.")
+
+    question = session.questions[session.current_index]
+    score, missing = _score_answer(req.answer, question.key_points)
+
+    history_entry = {
+        "questionIndex": session.current_index + 1,
+        "question": question.prompt,
+        "answer": req.answer,
+        "score": score,
+        "missing": missing,
+    }
+
+    feedback = await _maybe_llm_quiz_feedback(
+        eip=eip,
+        question=question,
+        answer=req.answer,
+        score=score,
+        missing=missing,
+        history=session.history + [history_entry],
+    )
+    if not feedback:
+        feedback = _rule_feedback(score, missing)
+
+    history_entry["feedback"] = feedback
+    session.history.append(history_entry)
+    session.scores.append(score)
+    session.current_index += 1
+
+    if session.current_index < len(session.questions):
+        next_question = session.questions[session.current_index].prompt
+        return QuizResponse(
+            sessionId=session.session_id,
+            done=False,
+            questionIndex=session.current_index + 1,
+            assistantMessage=f"反馈：{feedback}\n\n题目{session.current_index + 1}：{next_question}",
+        )
+
+    total_score = sum(session.scores)
+    passed = total_score >= 24
+    session.completed = True
+
+    final_feedback = await _maybe_llm_quiz_final_feedback(
+        eip=eip,
+        history=session.history,
+        passed=passed,
+    )
+    if not final_feedback:
+        final_feedback = _rule_final_feedback(session.history)
+
+    status_line = "恭喜通过挑战，可以领取奖励。" if passed else "本次未通过挑战，建议复习后再试。"
+    assistant_message = f"最终反馈：{final_feedback}\n\n{status_line}"
+
+    return QuizResponse(
+        sessionId=session.session_id,
+        done=True,
+        questionIndex=len(session.questions),
+        assistantMessage=assistant_message,
+        passed=passed,
+    )
+
+
+@app.post("/tutor/1559/quiz/start", response_model=QuizResponse)
+async def tutor_1559_quiz_start() -> QuizResponse:
+    return await _quiz_start("1559")
+
+
+@app.post("/tutor/1559/quiz/answer", response_model=QuizResponse)
+async def tutor_1559_quiz_answer(req: QuizAnswerRequest) -> QuizResponse:
+    return await _quiz_answer("1559", req)
+
+
+@app.post("/tutor/7702/quiz/start", response_model=QuizResponse)
+async def tutor_7702_quiz_start() -> QuizResponse:
+    return await _quiz_start("7702")
+
+
+@app.post("/tutor/7702/quiz/answer", response_model=QuizResponse)
+async def tutor_7702_quiz_answer(req: QuizAnswerRequest) -> QuizResponse:
+    return await _quiz_answer("7702", req)

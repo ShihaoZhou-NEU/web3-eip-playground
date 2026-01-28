@@ -36,12 +36,14 @@ These are optional but useful:
 - `TUTOR_PORT=8009`
 - `TUTOR_RELOAD=1`
 
-## 2.1 Stateless Chat (Frontend Responsibility)
+## 2.1 Stateless vs Stateful
 
-The service is **stateless** and does not store conversation history. If you
-want continuous dialogue, the frontend should send the full conversation (or a
-compressed summary) in `userInput` on every request. The backend will only use
-`userInput` for the optional tutor agent note.
+The **/tutor/*/explain** endpoints are stateless and do not store conversation
+history. If you want continuous dialogue for those endpoints, the frontend
+should send the full conversation (or a compressed summary) each time.
+
+The **/tutor/*/quiz/** endpoints are **stateful** by design: the server keeps
+session context across three questions in order to generate a final assessment.
 
 ## 3) Frontend Contract (Stable JSON Shapes)
 
@@ -60,7 +62,6 @@ Example request:
   "maxFeePerGasGwei": 60,
   "maxPriorityFeePerGasGwei": 2,
   "gasLimit": 21000,
-  "userInput": "我想快一点但别太贵",
   "valueEth": 0.01,
   "userIntent": "fast but not too expensive",
   "txContext": {
@@ -110,7 +111,6 @@ Example request:
 ```json
 {
   "chainId": 1,
-  "userInput": "帮我解释下这个授权能不能用",
   "userIntent": "one-click flow",
   "delegationContext": {
     "delegate": "0xDelegate",
@@ -124,6 +124,75 @@ Example request:
   }
 }
 ```
+
+### 3.3 Quiz (Stateful)
+
+Each EIP has its own 3-question quiz flow.
+
+#### 3.3.1 EIP-1559 Quiz
+
+Start:
+
+- `POST /tutor/1559/quiz/start`
+
+Start response:
+
+```json
+{
+  "sessionId": "abc123",
+  "done": false,
+  "questionIndex": 1,
+  "assistantMessage": "题目1：..."
+}
+```
+
+Answer:
+
+- `POST /tutor/1559/quiz/answer`
+
+Request body:
+
+```json
+{
+  "sessionId": "abc123",
+  "answer": "用户回答..."
+}
+```
+
+Answer response (Q1/Q2):
+
+```json
+{
+  "sessionId": "abc123",
+  "done": false,
+  "questionIndex": 2,
+  "assistantMessage": "反馈：...\\n\\n题目2：..."
+}
+```
+
+Final response (Q3):
+
+```json
+{
+  "sessionId": "abc123",
+  "done": true,
+  "questionIndex": 3,
+  "assistantMessage": "最终反馈：问题在哪 + 如何提高",
+  "passed": true
+}
+```
+
+#### 3.3.2 EIP-7702 Quiz
+
+Start:
+
+- `POST /tutor/7702/quiz/start`
+
+Answer:
+
+- `POST /tutor/7702/quiz/answer`
+
+Request/response shapes are the same as the 1559 quiz.
 
 ## 4) Networking Notes (Most Common Demo Pitfall)
 
