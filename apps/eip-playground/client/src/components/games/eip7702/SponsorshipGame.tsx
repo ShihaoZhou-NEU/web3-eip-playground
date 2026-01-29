@@ -42,10 +42,10 @@ export const SponsorshipGame: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2 className="text-xl text-yellow-400 mb-2 text-shadow-pixel">LEVEL 2: GAS CRISIS</h2>
-          <p className="text-xs text-gray-400 font-sans" style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>MISSION: CLAIM THE GOLDEN APPLE</p>
+          <p className="text-xs text-gray-400 font-pixel" style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>MISSION: CLAIM THE GOLDEN APPLE</p>
         </div>
         <div className="text-right">
-          <div className={`text-sm ${gasBalance === 0 ? 'text-red-500' : 'text-green-400'} font-sans font-bold`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
+          <div className={`text-sm ${gasBalance === 0 ? 'text-red-500' : 'text-green-400'} font-pixel font-bold`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
             GAS: {gasBalance.toFixed(4)} ETH
           </div>
         </div>
@@ -98,11 +98,11 @@ export const SponsorshipGame: React.FC = () => {
               <span className="text-2xl">🎩</span>
               <h3 className="text-green-400 text-xs text-shadow-pixel">PAYMASTER</h3>
             </div>
-            <p className="text-[10px] text-gray-300 mb-4 leading-relaxed font-sans">
+            <p className="text-[10px] text-gray-300 mb-4 leading-relaxed font-pixel">
               "I'll cover the gas fees for you. Just sign here."
             </p>
             {processing ? (
-              <div className="text-xs text-green-400 animate-pulse font-sans">PROCESSING...</div>
+              <div className="text-xs text-green-400 animate-pulse font-pixel">PROCESSING...</div>
             ) : (
               <button 
                 onClick={handleSponsorSign}
@@ -122,7 +122,7 @@ export const SponsorshipGame: React.FC = () => {
             className="text-center"
           >
             <h3 className="text-xl text-green-400 mb-2 text-shadow-pixel">ITEM CLAIMED!</h3>
-            <p className="text-xs text-gray-400 mb-6 font-sans">Gas Paid: 0.00 ETH (User) / 0.005 ETH (Sponsor)</p>
+            <p className="text-xs text-gray-400 mb-6 font-pixel">Gas Paid: 0.00 ETH (User) / 0.005 ETH (Sponsor)</p>
             <button 
               onClick={resetGame}
               className="px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors text-xs font-bold"
@@ -134,7 +134,7 @@ export const SponsorshipGame: React.FC = () => {
 
         {/* Message Toast */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full text-center">
-          <span className={`text-xs ${message.includes('ERROR') ? 'text-red-400' : 'text-yellow-300'} font-sans font-bold bg-black/50 px-2 py-1 rounded`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
+          <span className={`text-xs ${message.includes('ERROR') ? 'text-red-400' : 'text-yellow-300'} font-pixel font-bold bg-black/50 px-2 py-1 rounded`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
             {message}
           </span>
         </div>

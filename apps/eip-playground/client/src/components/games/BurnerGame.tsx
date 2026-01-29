@@ -128,7 +128,7 @@ const BurnerGame: React.FC = () => {
                       </span>
                       <span>CONGESTED (100%)</span>
                   </div>
-                  <p className="text-[10px] text-muted-foreground mt-4 leading-relaxed border-t border-border/30 pt-2">
+                  <p className="text-[10px] font-pixel text-muted-foreground mt-4 leading-relaxed border-t border-border/30 pt-2">
                       {'>'} 50% Fill: Base Fee INCREASES<br/>
                       {'<'} 50% Fill: Base Fee DECREASES
                   </p>
@@ -237,7 +237,7 @@ const BurnerGame: React.FC = () => {
                               </div>
                           </div>
                           
-                          <p className="text-[10px] text-muted-foreground mt-2 text-center border-t border-border/30 pt-2">
+                          <p className="text-[10px] font-pixel text-muted-foreground mt-2 text-center border-t border-border/30 pt-2">
                               EIP-1559 Magic: You only pay Base Fee + Tip. Any extra Max Fee is automatically refunded!
                           </p>
                       </div>

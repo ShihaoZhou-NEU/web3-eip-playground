@@ -38,9 +38,9 @@ function App() {
             theme={darkTheme({
               accentColor: '#ffd700', // Gold
               accentColorForeground: 'black',
-              borderRadius: 'none', // Pixel style
+              borderRadius: 'medium', // Pixel style
               fontStack: 'system',
-              overlayBlur: 'small',
+              overlayBlur: 'small'
             })}
           >
             <ThemeProvider defaultTheme="dark">
