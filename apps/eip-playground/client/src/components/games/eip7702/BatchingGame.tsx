@@ -34,7 +34,7 @@ export const BatchingGame: React.FC = () => {
     } else if (timeLeft === 0 && isPlaying) {
       setIsPlaying(false);
       setMessage('TIME UP! EOA IS TOO SLOW!');
-      setTimeout(() => resetGame(), 2000);
+      setTimeout(() => resetGame(), 4000);
     }
     return () => clearInterval(timer);
   }, [isPlaying, timeLeft]);
@@ -64,6 +64,7 @@ export const BatchingGame: React.FC = () => {
   };
 
   const handleCardClick = (index: number) => {
+    if (!isPlaying || timeLeft === 0) return; // Prevent clicking when time is up
     if (mode === 'eoa' && !processing && !showConfirm) {
       setShowConfirm(true);
     }
@@ -109,7 +110,7 @@ export const BatchingGame: React.FC = () => {
       </div>
 
       {/* Game Area */}
-      <div className="relative min-h-[400px] flex flex-col items-center justify-center bg-black/30 border-2 border-white/10 p-4">
+      <div className="relative min-h-[500px] flex flex-col items-center justify-center bg-black/30 border-2 border-white/10 p-4">
         
         {mode === 'intro' && (
           <div className="text-center space-y-6">
@@ -195,10 +196,10 @@ export const BatchingGame: React.FC = () => {
             >
               <div className="bg-gray-800 p-6 border-4 border-white max-w-sm w-full text-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 <h3 className="text-yellow-400 mb-4 text-shadow-pixel">CONFIRM TRANSACTION</h3>
-                <p className="text-xs text-gray-400 mb-6 font-sans">Gas Fee: 0.001 ETH</p>
+                <p className="text-xs text-gray-400 mb-6 font-pixel">Gas Fee: 0.001 ETH</p>
                 {processing ? (
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent animate-spin" />
+                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                     <span className="text-xs animate-pulse">MINING...</span>
                   </div>
                 ) : (
@@ -217,7 +218,7 @@ export const BatchingGame: React.FC = () => {
         {/* 7702 Controls */}
         {mode === '7702' && (
           <div className="text-center">
-            <p className="text-xs text-blue-300 mb-4 font-sans">EIP-7702 ALLOWS BATCHING OPERATIONS!</p>
+            <p className="text-xs text-blue-300 mb-4 font-pixel">EIP-7702 ALLOWS BATCHING OPERATIONS!</p>
             {processing ? (
                <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent animate-spin" />
@@ -242,7 +243,7 @@ export const BatchingGame: React.FC = () => {
             className="text-center"
           >
             <h3 className="text-2xl text-green-400 mb-2 text-shadow-pixel">MISSION COMPLETE!</h3>
-            <p className="text-xs text-gray-400 mb-6 font-sans">1 Signature • 0 Wait Time • 100% Efficiency</p>
+            <p className="text-xs text-gray-400 mb-6 font-pixel">1 Signature • 0 Wait Time • 100% Efficiency</p>
             <button 
               onClick={resetGame}
               className="px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors text-xs font-bold"
@@ -253,11 +254,13 @@ export const BatchingGame: React.FC = () => {
         )}
 
         {/* Message Toast */}
-        {message && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 px-4 py-2 border-2 border-white text-xs text-yellow-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            {message}
-          </div>
-        )}
+        <div className="flex flex-col items-center">
+          {message && (
+            <div className="mt-4 bg-gray-800 px-4 py-2 border-2 border-white text-xs text-yellow-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              {message}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

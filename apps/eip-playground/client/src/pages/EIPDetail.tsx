@@ -68,9 +68,9 @@ export default function EIPDetail() {
       {/* Fixed Back Button */}
       <button
         onClick={handleBack}
-        className="fixed top-24 left-8 z-50 p-3 bg-black/80 hover:bg-black text-white border-4 border-white/40 hover:border-white transition-all shadow-lg hidden xl:flex items-center justify-center group"
+        className="fixed top-25 left-10 z-50 p-3 bg-black/80 hover:bg-black text-white border-4 border-white/40 hover:border-white transition-all shadow-lg hidden xl:flex items-center justify-center group"
         aria-label="Go back"
-        style={{ imageRendering: "pixelated", marginLeft: "150px" }}
+        style={{ imageRendering: "pixelated" }}
       >
         <ChevronLeft size={32} className="group-hover:-translate-x-1 transition-transform" />
       </button>
@@ -107,7 +107,7 @@ export default function EIPDetail() {
                 {/* <span className="text-4xl">{eip.icon}</span> */}
               </div>
               <p className="text-2xl md:text-3xl font-mono font-bold text-white/90 mb-4">{eip.subtitle}</p>
-              <p className="text-lg text-white/80 max-w-2xl">{eip.description}</p>
+              <p className="text-md text-white/80 max-w-7xl font-pixel">{eip.description}</p>
             </div>
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function EIPDetail() {
                   <h3 className="text-xl font-mono font-bold text-center mb-4 text-gray-400">
                     PART 1: THE OLD WAY (First-Price Auction)
                   </h3>
-                  <p className="text-center text-gray-500 mb-6 max-w-2xl mx-auto">
+                  <p className="text-center font-pixel text-gray-500 mb-6 max-w-6xl mx-auto">
                     Before EIP-1559, you had to guess the gas price. Bid too low? You wait forever. Bid too high? You overpay. Try to beat the NPCs!
                   </p>
                   <GasWarGame />
@@ -146,7 +146,7 @@ export default function EIPDetail() {
                   <h3 className="text-xl font-mono font-bold text-center mb-4 text-gray-400">
                     PART 2: THE NEW WAY (EIP-1559 Mechanism)
                   </h3>
-                  <p className="text-center text-gray-500 mb-6 max-w-2xl mx-auto">
+                  <p className="text-center text-gray-500 mb-6 max-w-6xl font-pixel mx-auto">
                     EIP-1559 introduced a predictable base fee that burns, plus a tip to miners. No more guessing games!
                   </p>
                   <BurnerGame />
@@ -175,7 +175,7 @@ export default function EIPDetail() {
 
         {/* Content Section */}
         {eip.content && (
-          <div className="bg-card border-4 border-border rounded-xl p-8 shadow-lg prose prose-invert max-w-none">
+          <div className="bg-card font-pixel border-4 border-border rounded-xl p-8 shadow-lg prose prose-invert max-w-none">
             <Streamdown>{eip.content}</Streamdown>
           </div>
         )}

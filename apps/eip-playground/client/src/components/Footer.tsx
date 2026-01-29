@@ -13,6 +13,11 @@ export default function Footer() {
             <a href="https://lxdao.io" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
               <img src="/images/lxdao-logo.svg" alt="LXDAO" className="h-8 md:h-10 w-auto" />
             </a>
+            <span className="text-white/30 text-2xl">×</span>
+            <a href="https://spoonai.io/" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+              {/* <img src="/images/spoonos_logo.jpg" alt="SpoonOS" className="h-8 md:h-10 w-auto" /> */}
+              <p className="font-pixel">SpoonOS</p>
+            </a>
           </div>
         </div>
 

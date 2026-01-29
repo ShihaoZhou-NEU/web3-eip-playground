@@ -34,7 +34,8 @@ export default function Header() {
 
         {/* Status Bar / Wallet Connect */}
         <div className="flex items-center gap-4">
-          <ConnectButton />
+          <img src="/images/wallet_icon.png" alt="Wallet" className="w-5 h-5 pixelated" />
+          <ConnectButton/>
         </div>
       </div>
     </header>

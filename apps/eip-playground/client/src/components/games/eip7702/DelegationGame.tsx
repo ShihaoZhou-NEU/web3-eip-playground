@@ -38,10 +38,10 @@ export const DelegationGame: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2 className="text-xl text-yellow-400 mb-2 text-shadow-pixel">LEVEL 3: IDENTITY HIJACK</h2>
-          <p className="text-xs text-gray-400 font-sans" style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>MISSION: ENTER THE HIGH-SECURITY PORTAL</p>
+          <p className="text-xs text-gray-400 font-pixel" style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>MISSION: ENTER THE HIGH-SECURITY PORTAL</p>
         </div>
         <div className="text-right">
-          <div className={`text-sm ${status === 'normal' ? 'text-gray-400' : 'text-blue-400'} font-sans font-bold`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
+          <div className={`text-sm ${status === 'normal' ? 'text-gray-400' : 'text-blue-400'} font-pixel font-bold`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
             STATUS: {status === 'normal' ? 'EOA (CIVILIAN)' : 'CONTRACT (MECH)'}
           </div>
         </div>
@@ -110,7 +110,7 @@ export const DelegationGame: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 text-xs text-gray-400 font-sans"
+                className="mb-4 text-xs text-gray-400 font-pixel"
               >
                 *Transaction Complete. Reverting to EOA...*
               </motion.div>
@@ -126,7 +126,7 @@ export const DelegationGame: React.FC = () => {
 
         {/* Message Toast */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full text-center">
-          <span className={`text-xs ${message.includes('DENIED') ? 'text-red-400' : 'text-green-400'} font-sans font-bold bg-black/50 px-2 py-1 rounded`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
+          <span className={`text-xs ${message.includes('DENIED') ? 'text-red-400' : 'text-green-400'} font-pixel font-bold bg-black/50 px-2 py-1 rounded`} style={{fontFamily: '"Press Start 2P", system-ui, sans-serif'}}>
             {message}
           </span>
         </div>
