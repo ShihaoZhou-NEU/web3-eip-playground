@@ -14,22 +14,22 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
   const [isLoading, setIsLoading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Smart Preloading Logic
+  // Optimize preloading logic to preload all images at the start
   useEffect(() => {
-    const preloadImage = (pageNum: number) => {
-      if (pageNum > pageCount || loadedImages.has(pageNum)) return;
-      
-      const img = new Image();
-      img.src = `/comics/${eipId}/${pageNum}.jpg`;
-      img.onload = () => {
-        setLoadedImages(prev => new Set(prev).add(pageNum));
-      };
+    const preloadAllImages = () => {
+      for (let i = 1; i <= pageCount; i++) {
+        if (!loadedImages.has(i)) {
+          const img = new Image();
+          img.src = `/comics/${eipId}/${i}.jpg`;
+          img.onload = () => {
+            setLoadedImages(prev => new Set(prev).add(i));
+          };
+        }
+      }
     };
 
-    // Preload next 2 pages
-    preloadImage(currentPage + 1);
-    preloadImage(currentPage + 2);
-  }, [currentPage, eipId, pageCount, loadedImages]);
+    preloadAllImages();
+  }, [eipId, pageCount, loadedImages]);
 
   // Handle page change loading state
   useEffect(() => {
@@ -89,7 +89,9 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
           <img 
             src={`/comics/${eipId}/${currentPage}.jpg`} 
             alt={`Page ${currentPage}`} 
-            className={`object-contain border-4 border-white shadow-[0_0_20px_rgba(255,255,255,0.2)] animate-in fade-in duration-300 ${isFullscreenMode ? 'max-h-[90vh] max-w-[90vw]' : 'w-full h-full'}`}
+            className={`object-contain border-4 border-white shadow-[0_0_20px_rgba(255,255,255,0.2)] ${
+              loadedImages.has(currentPage) ? '' : 'animate-in fade-in duration-300'
+            } ${isFullscreenMode ? 'max-h-[90vh] max-w-[90vw]' : 'w-full h-full'}`}
           />
         )}
         
