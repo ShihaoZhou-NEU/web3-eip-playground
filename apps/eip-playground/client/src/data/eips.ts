@@ -41,7 +41,7 @@ Since its activation in the London Hard Fork (August 2021), EIP-1559 has burned 
     gradient: "bg-gradient-to-br from-red-900 to-yellow-700",
     icon: "🔥",
     comic: {
-      pageCount: 3,
+      pageCount: 12,
       title: "THE GAS WARS: A VISUAL GUIDE"
     }
   },

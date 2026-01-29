@@ -20,7 +20,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
       if (pageNum > pageCount || loadedImages.has(pageNum)) return;
       
       const img = new Image();
-      img.src = `/comics/${eipId}/${pageNum}.png`;
+      img.src = `/comics/${eipId}/${pageNum}.jpg`;
       img.onload = () => {
         setLoadedImages(prev => new Set(prev).add(pageNum));
       };
@@ -36,7 +36,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
     if (!loadedImages.has(currentPage)) {
       setIsLoading(true);
       const img = new Image();
-      img.src = `/comics/${eipId}/${currentPage}.png`;
+      img.src = `/comics/${eipId}/${currentPage}.jpg`;
       img.onload = () => {
         setLoadedImages(prev => new Set(prev).add(currentPage));
         setIsLoading(false);
@@ -87,7 +87,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
           </div>
         ) : (
           <img 
-            src={`/comics/${eipId}/${currentPage}.png`} 
+            src={`/comics/${eipId}/${currentPage}.jpg`} 
             alt={`Page ${currentPage}`} 
             className={`object-contain border-4 border-white shadow-[0_0_20px_rgba(255,255,255,0.2)] animate-in fade-in duration-300 ${isFullscreenMode ? 'max-h-[90vh] max-w-[90vw]' : 'w-full h-full'}`}
           />
@@ -97,7 +97,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
         <button 
           onClick={(e) => { e.stopPropagation(); prevPage(); }}
           disabled={currentPage === 1}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-primary text-white rounded-full disabled:opacity-0 transition-all hidden md:block z-20"
+          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 hover:bg-primary text-black rounded-full disabled:opacity-0 transition-all hidden md:block z-20"
         >
           <ChevronLeft size={32} />
         </button>
@@ -105,7 +105,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
         <button 
           onClick={(e) => { e.stopPropagation(); nextPage(); }}
           disabled={currentPage === pageCount}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-primary text-white rounded-full disabled:opacity-0 transition-all hidden md:block z-20"
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-2  bg-white/50 hover:bg-primary text-black rounded-full disabled:opacity-0 transition-all hidden md:block z-20"
         >
           <ChevronRight size={32} />
         </button>
@@ -146,9 +146,9 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
                 onClick={(e) => { e.stopPropagation(); setCurrentPage(i + 1); }}
                 className={`w-3 h-3 cursor-pointer transition-all ${
                   currentPage === i + 1 ? 'bg-primary scale-125' : 
-                  loadedImages.has(i + 1) ? 'bg-muted hover:bg-primary/50' : 'bg-muted/30'
+                  loadedImages.has(i + 1) ? 'bg-primary/20 hover:bg-primary' : 'bg-muted/30'
                 }`}
-                title={loadedImages.has(i + 1) ? `Page ${i + 1} (Loaded)` : `Page ${i + 1}`}
+                title={loadedImages.has(i + 1) ? `Page ${i + 1} ` : `Page ${i + 1}`}
               />
             ))}
           </div>
