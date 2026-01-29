@@ -1,12 +1,14 @@
-# Web3 EIP Playground
+# 🎮 EIP Playground
 
-An interactive Web3 education playground for learning ERC / EIP by doing, not reading.
+> **Learn Ethereum Standards by Playing, Not Just Reading.**
+
+**EIP Playground** is a gamified, pixel-art themed educational platform designed to make Ethereum Improvement Proposals (EIPs) and Request for Comments (ERCs) accessible to everyone. Through interactive mini-games, comics, and an AI tutor, we turn abstract technical specifications into intuitive, hands-on experiences.
 
 ---
 
 ## 🌍 What is this?
 
-**Web3 EIP Playground** is an educational Web3 application designed for beginners.
+**EIP Playground** is an educational Web3 application designed for beginners.
 
 Instead of reading long and abstract technical documents, learners can:
 - play simple mini-games  
@@ -33,14 +35,14 @@ We believe **standards should be learned through usage, not memorization**.
 
 ## 📘 What can you learn?
 
-- **ERC-20**  
-  Understand fungible tokens and how transfers work
+- **EIP-1559**  
+  A transaction pricing mechanism that includes fixed-per-block network fee that is burned and dynamically expands/contracts block sizes.
 
-- **ERC-721**  
-  Learn NFT ownership and uniqueness
+- **EIP-7702**  
+  Adds a new transaction type that sets the code for an EOA for one transaction, enabling batching and sponsorship.
 
-- **x402 / EIP-4337**  
-  Explore why new standards are proposed and what problems they solve
+- **ERC-8004**  
+  a decentralized protocol designed to enable open-ended agent economies by providing a standardized framework for discovering and establishing trust with agents across organizational boundaries through Identity, Reputation, and Validation registries,,.
 
 ---
 
@@ -57,9 +59,43 @@ We believe **standards should be learned through usage, not memorization**.
 
 ---
 
-## 🚀 Demo
+## 🚀 Getting Started
 
-- **Live URL**: TBD  
+Follow these steps to run the project locally:
+
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm or pnpm
+
+### Installation
+
+1. **Clone the repository** (or unzip the project package):
+   ```bash
+   cd eip-playground
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   # or
+   pnpm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   # or
+   pnpm dev
+   ```
+
+4. **Open your browser**:
+   Visit `http://localhost:3000` (or the port shown in your terminal) to start playing!
+
+---
+
+## 🐱 Demo
+
+- **Live URL**: https://eip-playground-spark.vercel.app/
 - **Demo Video**: TBD  
 
 ---
@@ -68,4 +104,13 @@ We believe **standards should be learned through usage, not memorization**.
 
 - **Swen** – AI Tutor & Backend  
 - **David** – Frontend & Education Experience   
-- **Dudu** –  Smart Contracts & Web3  
+- **Dudu** –  Smart Contracts & Web3
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+*Supported by ❤️ ETHPanda X LXDAO.*
+
