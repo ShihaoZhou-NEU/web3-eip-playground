@@ -6,7 +6,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 /// @title GameBadgeNFT
-/// @notice Project-minted, transferable ERC-721 with weak-randomized style index (0..14) fixed per token.
+/// @notice Project-minted, transferable ERC-721 with weak-randomized style index (1..9) fixed per token.
 contract GameBadgeNFT is ERC721, Ownable {
     using Strings for uint256;
 
@@ -14,7 +14,7 @@ contract GameBadgeNFT is ERC721, Ownable {
     // Constants / Config
     // -------------------------
 
-    uint8 public constant POOL_SIZE = 15;
+    uint8 public constant POOL_SIZE = 9;
 
     // -------------------------
     // State
@@ -32,7 +32,7 @@ contract GameBadgeNFT is ERC721, Ownable {
     /// @notice Emergency pause for minting.
     bool public paused;
 
-    /// @notice tokenId => style index (0..14).
+    /// @notice tokenId => style index (1..9).
     mapping(uint256 tokenId => uint8 index) public tokenToIndex;
 
     /// @notice Optional replay protection: claimId => used.
@@ -157,7 +157,7 @@ contract GameBadgeNFT is ERC721, Ownable {
         bytes32 seed = keccak256(
             abi.encodePacked(block.prevrandao, block.timestamp, to, tokenId, gameId, claimId)
         );
-        return uint8(uint256(seed) % POOL_SIZE);
+        return uint8(uint256(seed) % POOL_SIZE) + 1;
     }
 }
 

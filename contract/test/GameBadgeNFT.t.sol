@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Test} from "forge-std/Test.sol";
-/import {Vm} from "forge-std/Vm.sol";
+import {Test, Vm} from "forge-std/Test.sol";
 import {GameBadgeNFT} from "../src/GameBadgeNFT.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -102,7 +101,7 @@ contract GameBadgeNFTTest is Test {
         assertEq(nft.ownerOf(1), user);
 
         uint256 storedIndex = uint256(nft.tokenToIndex(1));
-        assertTrue(storedIndex < 15);
+        assertTrue(storedIndex >= 1 && storedIndex <= 9);
         assertEq(storedIndex, uint256(index));
 
         string memory expectedUri = string.concat(baseURI, storedIndex.toString(), ".json");
