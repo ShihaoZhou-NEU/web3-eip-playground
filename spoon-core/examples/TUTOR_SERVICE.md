@@ -194,6 +194,18 @@ Answer:
 
 Request/response shapes are the same as the 1559 quiz.
 
+#### 3.3.3 ERC-8004 Quiz
+
+Start:
+
+- `POST /tutor/erc8004/quiz/start`
+
+Answer:
+
+- `POST /tutor/erc8004/quiz/answer`
+
+Request/response shapes are the same as the 1559 quiz.
+
 ## 4) Networking Notes (Most Common Demo Pitfall)
 
 If the frontend runs on a different machine:
