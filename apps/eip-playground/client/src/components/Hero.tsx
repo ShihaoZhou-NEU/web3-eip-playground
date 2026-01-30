@@ -27,7 +27,7 @@ export default function Hero() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4" style={{width: '700px'}}>
+          {/* <div className="flex flex-wrap gap-4" style={{width: '700px'}}>
             <button className="btn-pixel btn-pixel-danger text-lg group">
               <span className="mr-2 mb-2">🎮</span> Play Games
             </button>
@@ -37,7 +37,66 @@ export default function Hero() {
             <button className="btn-pixel btn-pixel-accent text-lg group" style={{borderColor: '#ffffff'}}>
               <span className="mr-2 mb-2">🤖</span> Ask AI Tutor
             </button>
+          </div> */}
+
+<div className="flex flex-wrap gap-6 mt-4" style={{width: '700px'}}>
+            {/* Play Games Button */}
+            <button className="btn-pixel btn-pixel-danger text-lg group relative pl-16 pr-8 h-16 overflow-visible">
+              <div className="absolute -left-6 -top-6 w-20 h-20 transition-transform duration-300 group-hover:scale-200 group-hover:-rotate-12 z-20">
+                <img 
+                  src="/images/icons/pixel-gamepad.png" 
+                  alt="Gamepad" 
+                  className="w-full h-full object-contain drop-shadow-lg transform -rotate-1"
+                />
+              </div>
+              <span className="relative z-10">Play Games</span>
+            </button>
+
+            {/* Read Comics Button */}
+            <button className="btn-pixel btn-pixel-primary text-lg group relative pl-16 pr-8 h-16 overflow-visible" style={{borderColor: '#ffffff'}}>
+              <div className="absolute -left-6 -top-6 w-20 h-20 transition-transform duration-300 group-hover:scale-200 group-hover:rotate-12 z-20">
+                <img 
+                  src="/images/icons/pixel-comic-book.png" 
+                  alt="Comic Book" 
+                  className="w-full h-full object-contain drop-shadow-lg transform rotate-6"
+                />
+              </div>
+              <span className="relative z-10">Read Comics</span>
+            </button>
+
+            {/* Ask AI Tutor Button */}
+            <button className="btn-pixel btn-pixel-accent text-lg group relative pl-16 pr-8 h-16 overflow-visible" style={{borderColor: '#ffffff'}}>
+              <div className="absolute -left-6 -top-6 w-20 h-20 transition-transform duration-300 group-hover:scale-160 group-hover:rotate-10 z-20">
+                <img 
+                  src="/images/icons/pixel-panda-phd-red.png" 
+                  alt="Panda PhD" 
+                  className="w-full h-full object-contain drop-shadow-lg transform -rotate-16"
+                />
+              </div>
+              <span className="relative z-10">Ask AI Tutor</span>
+            </button>
           </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           
           <div className="flex gap-8 text-xs font-mono text-gray-400" style={{width: '1700px'}}>
             <div className="flex items-center gap-2" style={{fontSize: '20px', width: '450px'}}>
