@@ -10,6 +10,7 @@ import { BatchingGame } from "@/components/games/eip7702/BatchingGame";
 import { SponsorshipGame } from "@/components/games/eip7702/SponsorshipGame";
 import { DelegationGame } from "@/components/games/eip7702/DelegationGame";
 import AgentAcademyGame from "@/components/games/erc8004/AgentAcademyGame";
+import AgentAcademyGameWithTutor from "@/components/games/erc8004/AgentAcademyGameWithTutor";
 import ComicReader from "@/components/ComicReader";
 import { ChevronLeft, ChevronUp } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -189,7 +190,8 @@ export default function EIPDetail() {
                     Navigate through the three pillars of ERC-8004: Identity, Reputation, and Validation.
                   </p>
                 </div>
-                <AgentAcademyGame />
+                {/* <AgentAcademyGame /> */}
+                 <AgentAcademyGameWithTutor />
               </div>
             </div>
           </div>
