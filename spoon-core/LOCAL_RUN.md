@@ -63,8 +63,8 @@ Quiz flow (frontend):
 
 ERC-8004 quiz flow (frontend):
 
-1) `POST /erc8004/quiz/start`
-2) `POST /erc8004/quiz/answer` (repeat 3 times with `sessionId`)
+1) `POST /tutor/erc8004/quiz/start`
+2) `POST /tutor/erc8004/quiz/answer` (repeat 3 times with `sessionId`)
 
 If the frontend runs on another device, set:
 
@@ -95,8 +95,8 @@ Then test:
 - `POST /tutor/1559/quiz/answer`
 - `POST /tutor/7702/quiz/start`
 - `POST /tutor/7702/quiz/answer`
-- `POST /erc8004/quiz/start`
-- `POST /erc8004/quiz/answer`
+- `POST /tutor/erc8004/quiz/start`
+- `POST /tutor/erc8004/quiz/answer`
 
 Example `POST /tutor/1559/explain` body:
 
@@ -150,10 +150,10 @@ Example ERC-8004 quiz flow:
 
 ```bash
 # Start
-curl -s http://127.0.0.1:8009/erc8004/quiz/start
+curl -s http://127.0.0.1:8009/tutor/erc8004/quiz/start
 
 # Answer (replace sessionId)
-curl -s http://127.0.0.1:8009/erc8004/quiz/answer \
+curl -s http://127.0.0.1:8009/tutor/erc8004/quiz/answer \
   -H 'Content-Type: application/json' \
   -d '{
     "sessionId": "REPLACE_ME",

@@ -198,11 +198,11 @@ Request/response shapes are the same as the 1559 quiz.
 
 Start:
 
-- `POST /erc8004/quiz/start`
+- `POST /tutor/erc8004/quiz/start`
 
 Answer:
 
-- `POST /erc8004/quiz/answer`
+- `POST /tutor/erc8004/quiz/answer`
 
 Request/response shapes are the same as the 1559 quiz.
 

@@ -859,11 +859,11 @@ async def tutor_7702_quiz_answer(req: QuizAnswerRequest) -> QuizResponse:
     return await _quiz_answer("7702", req)
 
 
-@app.post("/erc8004/quiz/start", response_model=QuizResponse)
+@app.post("/tutor/erc8004/quiz/start", response_model=QuizResponse)
 async def erc8004_quiz_start() -> QuizResponse:
     return await _quiz_start("erc8004")
 
 
-@app.post("/erc8004/quiz/answer", response_model=QuizResponse)
+@app.post("/tutor/erc8004/quiz/answer", response_model=QuizResponse)
 async def erc8004_quiz_answer(req: QuizAnswerRequest) -> QuizResponse:
     return await _quiz_answer("erc8004", req)
