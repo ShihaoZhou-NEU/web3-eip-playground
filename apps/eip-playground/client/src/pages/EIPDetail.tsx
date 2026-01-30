@@ -4,11 +4,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Streamdown } from "streamdown";
 import NotFound from "./NotFound";
-import GasWarGame from "@/components/games/GasWarGame";
-import BurnerGame from "@/components/games/BurnerGame";
+import GasWarGame from "@/components/games/eip1559/GasWarGame";
+import BurnerGame from "@/components/games/eip1559/BurnerGame";
 import { BatchingGame } from "@/components/games/eip7702/BatchingGame";
 import { SponsorshipGame } from "@/components/games/eip7702/SponsorshipGame";
 import { DelegationGame } from "@/components/games/eip7702/DelegationGame";
+import AgentAcademyGame from "@/components/games/erc8004/AgentAcademyGame";
 import ComicReader from "@/components/ComicReader";
 import { ChevronLeft, ChevronUp } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -168,6 +169,27 @@ export default function EIPDetail() {
                 <BatchingGame />
                 <SponsorshipGame />
                 <DelegationGame />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Interactive Games for ERC-8004 */}
+        {eip.id === 'erc-8004' && (
+          <div className="mb-12 space-y-8">
+            <div className="bg-card border-4 border-border rounded-xl p-8 shadow-lg">
+              <h2 className="text-3xl font-pixel text-center mb-8 text-primary text-shadow-pixel">
+                Agent Academy: Trustless AI
+              </h2>
+              
+              <div className="space-y-12">
+                <div className="text-center mb-8">
+                  <p className="font-pixel text-gray-400 max-w-2xl mx-auto">
+                    Welcome to the Agent Academy! Your goal is to train an AI agent that can be trusted by the blockchain.
+                    Navigate through the three pillars of ERC-8004: Identity, Reputation, and Validation.
+                  </p>
+                </div>
+                <AgentAcademyGame />
               </div>
             </div>
           </div>
