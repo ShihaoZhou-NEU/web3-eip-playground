@@ -3,11 +3,19 @@ import { Flame, Activity, Play, Pause } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import AITutor, { TutorPose } from '@/components/AITutor';
 
 // Constants
 const TARGET_GAS = 15000000; // Target block size
 const MAX_GAS = 30000000;    // Max block size
 const BASE_FEE_MAX_CHANGE_DENOMINATOR = 8; // 12.5% max change per block
+
+interface ChatMessage {
+  id: string;
+  role: 'tutor' | 'user';
+  content: string;
+  timestamp: number;
+}
 
 const BurnerGame: React.FC = () => {
   const [baseFee, setBaseFee] = useState<number>(100);
@@ -17,10 +25,41 @@ const BurnerGame: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   
   // User simulation
-  const [priorityFee, setPriorityFee] = useState<number>(20);
+  const [priorityFee, setPriorityFee] = useState<number>(2);
   const [maxFee, setMaxFee] = useState<number>(150);
 
+  // AI Tutor states
+  const [tutorPose, setTutorPose] = useState<TutorPose>('standing');
+  const [tutorMessage, setTutorMessage] = useState<string>('');
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [hasGreeted, setHasGreeted] = useState(false);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const prevBaseFeeRef = useRef<number>(100);
+  const prevIncludedRef = useRef<boolean>(true);
+
+  // Tutor speak function
+  const tutorSpeak = (message: string, pose: TutorPose = 'teaching') => {
+    setTutorMessage(message);
+    setTutorPose(pose);
+    setChatHistory(prev => [...prev, {
+      id: `tutor-${Date.now()}-${Math.random()}`,
+      role: 'tutor',
+      content: message,
+      timestamp: Date.now()
+    }]);
+  };
+
+  // Initial greeting
+  useEffect(() => {
+    if (!hasGreeted) {
+      setHasGreeted(true);
+      tutorSpeak(
+        "Hello! I'm Dr. Panda, your EIP-1559 guide. I'll help you understand how the base fee mechanism works. Try adjusting the network congestion slider and watch what happens!",
+        'standing'
+      );
+    }
+  }, [hasGreeted]);
 
   const calculateNextBaseFee = (currentBaseFee: number, gasUsed: number) => {
     // EIP-1559 Formula
@@ -54,6 +93,25 @@ const BurnerGame: React.FC = () => {
             return newHist;
         });
 
+        // Tutor feedback on base fee changes
+        if (blockHistory.length > 0) {
+          const feeChange = next - prevBaseFee;
+          if (Math.abs(feeChange) > 10) {
+            if (feeChange > 0) {
+              tutorSpeak(
+                `Base fee increased from ${prevBaseFee} to ${next} Gwei! This happens when blocks are more than 50% full. The network is getting congested.`,
+                'teaching'
+              );
+            } else {
+              tutorSpeak(
+                `Base fee decreased from ${prevBaseFee} to ${next} Gwei! This happens when blocks are less than 50% full. The network has spare capacity.`,
+                'praising'
+              );
+            }
+          }
+        }
+
+        prevBaseFeeRef.current = next;
         return next;
     });
   };
@@ -66,6 +124,46 @@ const BurnerGame: React.FC = () => {
         if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [isPlaying, demandLevel, blockNumber]);
+
+  // Monitor transaction inclusion status
+  useEffect(() => {
+    const totalCost = baseFee + priorityFee;
+    const isIncluded = maxFee >= totalCost;
+
+    if (prevIncludedRef.current && !isIncluded) {
+      tutorSpeak(
+        `⚠️ Your transaction was rejected! Your max fee (${maxFee} Gwei) is lower than the required cost (${totalCost} Gwei). Try increasing your max fee cap.`,
+        'thinking'
+      );
+    } else if (!prevIncludedRef.current && isIncluded) {
+      tutorSpeak(
+        `✅ Great! Your transaction is now included. You set a max fee of ${maxFee} Gwei, but you'll only pay ${totalCost} Gwei. The difference is automatically refunded!`,
+        'praising'
+      );
+    }
+
+    prevIncludedRef.current = isIncluded;
+  }, [baseFee, priorityFee, maxFee]);
+
+  // Monitor demand level changes
+  const prevDemandRef = useRef(demandLevel);
+  useEffect(() => {
+    const demandChange = demandLevel - prevDemandRef.current;
+    if (Math.abs(demandChange) >= 20) {
+      if (demandLevel > 50) {
+        tutorSpeak(
+          `You've increased network congestion to ${demandLevel}%! Watch how the base fee starts climbing. This is EIP-1559's automatic price discovery in action.`,
+          'working'
+        );
+      } else {
+        tutorSpeak(
+          `You've reduced network congestion to ${demandLevel}%. The base fee will gradually decrease, making transactions cheaper for everyone.`,
+          'praising'
+        );
+      }
+      prevDemandRef.current = demandLevel;
+    }
+  }, [demandLevel]);
 
   // Derived user status
   const totalCost = baseFee + priorityFee;
@@ -128,7 +226,7 @@ const BurnerGame: React.FC = () => {
                       </span>
                       <span>CONGESTED (100%)</span>
                   </div>
-                  <p className="text-[10px] font-pixel text-muted-foreground mt-4 leading-relaxed border-t border-border/30 pt-2">
+                  <p className="text-[10px] text-muted-foreground mt-4 leading-relaxed border-t border-border/30 pt-2">
                       {'>'} 50% Fill: Base Fee INCREASES<br/>
                       {'<'} 50% Fill: Base Fee DECREASES
                   </p>
@@ -237,7 +335,7 @@ const BurnerGame: React.FC = () => {
                               </div>
                           </div>
                           
-                          <p className="text-[10px] font-pixel text-muted-foreground mt-2 text-center border-t border-border/30 pt-2">
+                          <p className="text-[10px] text-muted-foreground mt-2 text-center border-t border-border/30 pt-2">
                               EIP-1559 Magic: You only pay Base Fee + Tip. Any extra Max Fee is automatically refunded!
                           </p>
                       </div>
@@ -246,6 +344,13 @@ const BurnerGame: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Tutor */}
+      <AITutor
+        message={tutorMessage}
+        pose={tutorPose}
+        chatHistory={chatHistory}
+      />
     </div>
   );
 };
