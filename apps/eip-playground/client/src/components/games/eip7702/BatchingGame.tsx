@@ -221,7 +221,7 @@ export const BatchingGame: React.FC = () => {
             <p className="text-xs text-blue-300 mb-4 font-pixel">EIP-7702 ALLOWS BATCHING OPERATIONS!</p>
             {processing ? (
                <div className="flex flex-col items-center gap-2">
-                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent animate-spin" />
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                 <span className="text-xs animate-pulse">BATCH EXECUTING...</span>
               </div>
             ) : (

@@ -71,34 +71,38 @@ This EIP is currently a strong candidate for the next major Ethereum upgrade (Pe
     gradient: "bg-gradient-to-br from-orange-800 to-amber-600",
     icon: "🤖",
     comic: {
-      pageCount: 3,
+      pageCount: 13,
       title: "SET CODE: THE TEMPORARY SUPERPOWER"
     }
   },
   "erc-8004": {
     id: "erc-8004",
     title: "ERC-8004",
-    subtitle: "Smart Delivery",
-    description: "Standardizes cross-chain message delivery, ensuring reliable and efficient communication between different blockchain networks.",
+    subtitle: "Trustless Agents",
+    description: "A standard for discovering, choosing, and interacting with AI agents across organizational boundaries using on-chain registries.",
     content: `
-# ERC-8004: Cross-Chain Message Delivery
+# Abstract
+ERC-8004 proposes a standard for "Trustless Agents" by introducing three lightweight on-chain registries: Identity, Reputation, and Validation. This allows AI agents to be discoverable and verifiable on Ethereum.
 
-## Abstract
-A standard for efficient and reliable cross-chain message delivery protocols.
+# Motivation
+As AI agents become more autonomous, we need a way to trust them without relying on centralized platforms. How do you know an agent will do what it says? How do you know its history?
 
-## Motivation
-As the multi-chain ecosystem grows, bridging data and assets between chains becomes critical. Current solutions are fragmented and often insecure.
+# The Three Pillars
+1.  **Identity Registry**: Verifies "Who is this agent?" using NFTs.
+2.  **Reputation Registry**: Tracks "How reliable is this agent?" based on past performance.
+3.  **Validation Registry**: Confirms "Did the agent do the job correctly?" using cryptographic proofs.
 
-## Solution
-ERC-8004 proposes a unified interface for "Delivery Agents" that handle the complexity of cross-chain communication. It ensures that messages are not only sent but also verified and executed on the destination chain.
-
-## Use Cases
-- **Cross-Chain Voting**: DAO governance across multiple L2s.
-- **Asset Bridging**: Seamless token transfers.
-- **Unified Identity**: syncing user states across chains.
+# Use Cases
+- **DeFi Agents**: Autonomous traders that can be audited.
+- **Data Oracles**: AI that fetches real-world data with reputation stakes.
+- **Service Marketplaces**: A decentralized Upwork for AI bots.
     `,
-    image: "/images/erc-8004-delivery.png",
-    gradient: "bg-gradient-to-br from-blue-900 to-purple-800",
-    icon: "📦"
+    image: "/images/erc-8004-agent.png",
+    gradient: "bg-gradient-to-br from-green-600 to-emerald-900",
+    icon: "🕵️",
+    comic: {
+      pageCount: 14,
+      title: "THE TRUSTLESS AGENT"
+    }
   }
 };
