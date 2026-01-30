@@ -199,6 +199,32 @@ _QUIZ_QUESTION_BANK: Dict[str, List[QuizQuestion]] = {
             ],
         ),
     ],
+    "erc8004": [
+        QuizQuestion(
+            prompt="ERC-8004 主要解决什么问题？请说明它与“可信 AI Agent”相关的核心价值。",
+            key_points=[
+                QuizKeyPoint(tokens=["身份", "did", "agentcard"], hint="身份/DID/Agent Card"),
+                QuizKeyPoint(tokens=["信誉", "reputation", "评价"], hint="信誉/评价机制"),
+                QuizKeyPoint(tokens=["可信", "信任", "trustless"], hint="建立可信/可验证的 AI Agent"),
+            ],
+        ),
+        QuizQuestion(
+            prompt="ERC-8004 的身份信息里通常包含哪些关键信息？",
+            key_points=[
+                QuizKeyPoint(tokens=["did", "身份"], hint="DID/身份标识"),
+                QuizKeyPoint(tokens=["service", "endpoint", "服务"], hint="服务/Endpoint"),
+                QuizKeyPoint(tokens=["metadata", "能力", "capability"], hint="能力/元信息"),
+            ],
+        ),
+        QuizQuestion(
+            prompt="为什么需要 reputation 或 validation 机制？",
+            key_points=[
+                QuizKeyPoint(tokens=["信任", "可信", "trust"], hint="建立信任"),
+                QuizKeyPoint(tokens=["评价", "反馈", "评分"], hint="评价/反馈"),
+                QuizKeyPoint(tokens=["防止", "滥用", "风险"], hint="防止滥用/降低风险"),
+            ],
+        ),
+    ],
 }
 
 
@@ -831,3 +857,13 @@ async def tutor_7702_quiz_start() -> QuizResponse:
 @app.post("/tutor/7702/quiz/answer", response_model=QuizResponse)
 async def tutor_7702_quiz_answer(req: QuizAnswerRequest) -> QuizResponse:
     return await _quiz_answer("7702", req)
+
+
+@app.post("/erc8004/quiz/start", response_model=QuizResponse)
+async def erc8004_quiz_start() -> QuizResponse:
+    return await _quiz_start("erc8004")
+
+
+@app.post("/erc8004/quiz/answer", response_model=QuizResponse)
+async def erc8004_quiz_answer(req: QuizAnswerRequest) -> QuizResponse:
+    return await _quiz_answer("erc8004", req)
