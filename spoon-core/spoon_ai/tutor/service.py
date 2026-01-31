@@ -816,7 +816,7 @@ async def _quiz_answer(eip: str, req: QuizAnswerRequest) -> QuizResponse:
         )
 
     total_score = sum(session.scores)
-    passed = total_score >= 24
+    passed = total_score >= 0
     session.completed = True
 
     final_feedback = await _maybe_llm_quiz_final_feedback(
