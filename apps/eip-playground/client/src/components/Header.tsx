@@ -8,7 +8,8 @@ export default function Header() {
         {/* Logo Area */}
         <Link href="/" className="flex items-center gap-3 group">
           <img 
-            src="/images/panda_logo.png" 
+            // src="/images/panda_logo.png" 
+            src="/images/eiplay-logo.png" 
             alt="Panda Logo" 
             className="h-12 w-12 object-contain group-hover:animate-pixel-bounce" 
           />
