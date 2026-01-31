@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="EIP Playground Logo" width="200" />
+  <img src="https://raw.githubusercontent.com/ShihaoZhou-NEU/web3-eip-playground/main/docs/assets/logo.png" alt="EIP Playground Logo" width="200" />
 </p>
 
 <h1 align="center">EIP Playground</h1>
