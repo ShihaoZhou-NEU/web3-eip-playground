@@ -16,6 +16,12 @@ import {
   Loader2,
 } from "lucide-react";
 import AITutor, { TutorPose, TutorMessage } from "@/components/AITutor";
+import ConsoleDialog from "@/components/ConsoleDialog";
+import { Trophy } from "lucide-react";
+import { startQuiz, submitAnswer } from "@/lib/quizApi";
+import { claimERC8004Badge } from "@/lib/nftMint";
+import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 type Stage = "IDENTITY" | "REPUTATION" | "VALIDATION";
 type TaskType = "BOX" | "DELIVERY" | "CODING";
@@ -46,6 +52,31 @@ export default function AgentAcademyGame() {
   const [tutorMessage, setTutorMessage] = useState<string>("");
   const [chatHistory, setChatHistory] = useState<TutorMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
+
+  // Quiz states
+  const [showChallenge, setShowChallenge] = useState(false);
+  const [quizDialogOpen, setQuizDialogOpen] = useState(false);
+  const [quizSessionId, setQuizSessionId] = useState<string | null>(null);
+  const [quizMessages, setQuizMessages] = useState<
+    Array<{ role: "tutor" | "user"; text: string }>
+  >([]);
+  const [quizDone, setQuizDone] = useState(false);
+  const [quizPassed, setQuizPassed] = useState<boolean | null>(null);
+
+  // Quiz loading states
+  const [isStartingQuiz, setIsStartingQuiz] = useState(false);
+  const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
+
+  // Wallet and NFT states
+  const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const [isClaimingNFT, setIsClaimingNFT] = useState(false);
+  const [nftMinted, setNftMinted] = useState(false);
+  const [nftData, setNftData] = useState<{
+    tokenId: number;
+    contractAddress: string;
+    txHash: string;
+  } | null>(null);
 
   // Helper to show in-game messages
   const showMessage = (msg: string, duration = 3000) => {
@@ -213,6 +244,15 @@ export default function AgentAcademyGame() {
           setStage("REPUTATION"); // Go back to tasks
           setValidationStep("IDLE");
           showMessage("Agent Verified! Hard tasks unlocked.");
+          
+          // Show challenge button after verification
+          setTimeout(() => {
+            setShowChallenge(true);
+            tutorSpeak(
+              "Excellent work! Now that you're verified, you can take the final challenge to test your knowledge of ERC-8004. Pass it to earn an NFT reward!",
+              "teaching"
+            );
+          }, 500);
         }, 2000);
       }, 3000);
     }, 2000);
@@ -228,10 +268,142 @@ export default function AgentAcademyGame() {
     setGameMessage(null);
     setChatHistory([]);
     setHasGreeted(false);
+    setShowChallenge(false);
+    setQuizDone(false);
+    setQuizPassed(null);
+    setQuizMessages([]);
     tutorSpeak("Let's start fresh! Ready to create a new agent?", "standing");
   };
 
+  // Quiz handlers
+  const handleStartChallenge = async () => {
+    setIsStartingQuiz(true);
+    try {
+      const result = await startQuiz();
+      setQuizSessionId(result.sessionId);
+      setQuizMessages([{ role: "tutor", text: result.assistantMessage }]);
+      setQuizDialogOpen(true);
+      setQuizDone(false);
+      setQuizPassed(null);
+    } catch (error) {
+      console.error("Failed to start quiz:", error);
+      showMessage("Failed to start challenge. Please try again.");
+    } finally {
+      setIsStartingQuiz(false);
+    }
+  };
+
+  const handleQuizSubmit = async (answer: string) => {
+    if (!quizSessionId) return;
+
+    // Add user message to chat
+    setQuizMessages(prev => [...prev, { role: "user", text: answer }]);
+
+    setIsSubmittingAnswer(true);
+    try {
+      const result = await submitAnswer({
+        sessionId: quizSessionId,
+        answer,
+      });
+
+      // Add tutor response
+      setQuizMessages(prev => [
+        ...prev,
+        { role: "tutor", text: result.assistantMessage },
+      ]);
+
+      // Check if quiz is done
+      if (result.done) {
+        setQuizDone(true);
+        setQuizPassed(result.passed);
+      }
+    } catch (error) {
+      console.error("Failed to submit answer:", error);
+      setQuizMessages(prev => [
+        ...prev,
+        {
+          role: "tutor",
+          text: "Error processing your answer. Please try again.",
+        },
+      ]);
+    } finally {
+      setIsSubmittingAnswer(false);
+    }
+  };
+
+  const handleRetryQuiz = () => {
+    setQuizDialogOpen(false);
+    setQuizMessages([]);
+    setQuizDone(false);
+    setQuizPassed(null);
+    setTimeout(() => handleStartChallenge(), 500);
+  };
+
+  const handleClaimNFT = async () => {
+    // Check wallet connection
+    if (!isConnected || !address) {
+      showMessage("Please connect your wallet first!");
+      tutorSpeak(
+        "You need to connect your wallet to claim your NFT reward. Click the Connect Wallet button in the header!",
+        "teaching"
+      );
+      if (openConnectModal) {
+        openConnectModal();
+      }
+      return;
+    }
+
+    // Start claiming process
+    setIsClaimingNFT(true);
+    showMessage("Minting your NFT badge...");
+    tutorSpeak(
+      "Excellent! Let me mint your ERC-8004 achievement badge on the blockchain...",
+      "praising"
+    );
+
+    try {
+      const result = await claimERC8004Badge(address);
+      
+      // Success! Save NFT data and show success state
+      setNftMinted(true);
+      setNftData({
+        tokenId: result.tokenId,
+        contractAddress: result.contractAddress,
+        txHash: result.txHash,
+      });
+      
+      showMessage(
+        `NFT minted successfully! Token ID: ${result.tokenId}`,
+        5000
+      );
+      tutorSpeak(
+        `Congratulations! Your ERC-8004 badge has been minted! Token ID: ${result.tokenId}.`,
+        "praising"
+      );
+
+      // Log success details
+      console.log("NFT Claim Success:", {
+        tokenId: result.tokenId,
+        contractAddress: result.contractAddress,
+        txHash: result.txHash,
+      });
+    } catch (error) {
+      // Handle errors
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      showMessage(`Failed to claim NFT: ${errorMessage}`, 5000);
+      tutorSpeak(
+        `Oops! Something went wrong while minting your badge: ${errorMessage}. Please try again later.`,
+        "thinking"
+      );
+      console.error("NFT Claim Error:", error);
+    } finally {
+      setIsClaimingNFT(false);
+    }
+  };
+
   return (
+    <div>
     <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* AI Tutor */}
       <AITutor
@@ -323,12 +495,13 @@ export default function AgentAcademyGame() {
                           ? "Agent verified. High-value tasks unlocked."
                           : "Complete tasks to collect your reputation. Goal: 50 Rep."}
                       </p>
-                      {/* <p className="text-xs text-gray-400 font-pixel">
+                       {/* <p className="text-xs text-gray-400 font-pixel">
                         Note: Each task may yield positive or negative reputation based on performance.
                       </p> */}
-                      <p className="text-xs text-red-400 font-mono">
-                        Note: 80% chance to gain points, 20% chance to lose points.
-                      </p>
+                        <p className="text-xs text-red-400 font-mono">
+                          Note: 80% chance to gain points, 20% chance to lose
+                          points.
+                        </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
@@ -536,7 +709,7 @@ export default function AgentAcademyGame() {
           </div>
 
           {/* In-Game Message Log (Bottom) */}
-          <div className="w-full mt-8 h-12 bg-black/80 border-t-2 border-white/10 flex items-center px-4 font-mono text-sm">
+          <div className="w-full h-12 bg-black/80 border-t-2 border-white/10 flex items-center px-4 font-mono text-sm">
             <Terminal className="w-4 h-4 text-green-500 mr-2" />
             <span className="text-green-500 mr-2">{">"}</span>
             {gameMessage ? (
@@ -644,9 +817,12 @@ export default function AgentAcademyGame() {
                         {log.type}
                       </span>
                     </div>
-                    <span className={`font-mono ${log.reward > 0 ? "text-green-400" : "text-red-400"}`}>
-                      {log.reward > 0 ? "+" : ""}{log.reward}
-                    </span>
+                     <span
+                        className={`font-mono ${log.reward > 0 ? "text-green-400" : "text-red-400"}`}
+                      >
+                        {log.reward > 0 ? "+" : ""}
+                        {log.reward}
+                      </span>
                   </div>
                 ))
               )}
@@ -664,6 +840,116 @@ export default function AgentAcademyGame() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Console Quiz Dialog */}
+      <ConsoleDialog
+        open={quizDialogOpen}
+        onOpenChange={open => {
+          setQuizDialogOpen(open);
+          // If closing and quiz is done but not passed, allow retry
+          if (!open && quizDone && !quizPassed) {
+            // Dialog closed, user can click retry button
+          }
+        }}
+        messages={quizMessages}
+        onSubmit={handleQuizSubmit}
+        isLoading={isSubmittingAnswer}
+      />
+       </div>
+      {/* Bottom Button Container */}
+      <div className="w-full mt-auto pt-6 pb-4 flex justify-center gap-4">
+        {/* Challenge Button - Shows after verification */}
+        {showChallenge && !quizPassed && (
+          <Button
+            onClick={handleStartChallenge}
+            disabled={isStartingQuiz}
+            className="animate-pulse bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-pixel px-8 py-6 text-lg border-b-4 border-purple-800 active:border-b-0 active:translate-y-1"
+          >
+            {isStartingQuiz ? (
+              <>
+                <Loader2 className="mr-2 animate-spin" />
+                LOADING...
+              </>
+            ) : (
+              <>
+                <Terminal className="mr-2" />
+                {quizDone && !quizPassed
+                  ? "RETRY CHALLENGE"
+                  : "START CHALLENGE"}
+              </>
+            )}
+          </Button>
+        )}
+
+        {/* Claim NFT Button or Success Box */}
+        {quizPassed && !nftMinted && (
+          <Button
+            onClick={handleClaimNFT}
+            disabled={isClaimingNFT}
+            className="animate-bounce bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-pixel px-8 py-6 text-lg border-b-4 border-yellow-700 active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:animate-none"
+          >
+            {isClaimingNFT ? (
+              <>
+                <Loader2 className="mr-2 animate-spin" />
+                MINTING...
+              </>
+            ) : (
+              <>
+                <Trophy className="mr-2" /> CLAIM NFT REWARD
+              </>
+            )}
+          </Button>
+        )}
+
+        {/* NFT Minting Success Box */}
+        {nftMinted && nftData && (
+          <div className="w-full max-w-2xl bg-gradient-to-br from-green-500/20 to-emerald-600/20 border-4 border-green-500 rounded-lg p-6 animate-in zoom-in duration-500">
+            <div className="flex items-center gap-3 mb-4">
+              <CheckCircle className="w-8 h-8 text-green-500 animate-pulse" />
+              <h3 className="text-2xl font-pixel text-green-400">
+                🎉 CLAIMED SUCCESSFULLY!
+              </h3>
+            </div>
+            
+            <div className="space-y-3 font-mono text-sm">
+              <div className="bg-black/40 p-4 rounded border border-green-500/30">
+                <p className="text-gray-400 mb-1">Transaction Hash:</p>
+                <a
+                  href={`https://sepolia.etherscan.io/tx/0x${nftData.txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-400 hover:text-green-300 underline break-all transition-colors"
+                >
+                  0x{nftData.txHash}
+                </a>
+                <p className="text-gray-500 text-xs mt-2">
+                  Click to view your transaction on Sepolia Etherscan
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-4 rounded border border-green-500/30">
+                <p className="text-gray-400 mb-1">NFT Token ID:</p>
+                <p className="text-green-400 text-xl font-bold">
+                  #{nftData.tokenId}
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-4 rounded border border-green-500/30">
+                <p className="text-gray-400 mb-1">Contract Address:</p>
+                <p className="text-green-400 break-all">
+                  {nftData.contractAddress}
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <p className="text-green-300 font-pixel">
+                ✨ Your ERC-8004 Achievement Badge is now in your wallet! ✨
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
