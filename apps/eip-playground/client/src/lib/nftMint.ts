@@ -1,6 +1,7 @@
 // FastAPI NFT Minting Client
 
-const NFT_API_BASE = "http://127.0.0.1:8009";
+// const NFT_API_BASE = "http://127.0.0.1:8009";
+const NFT_API_BASE = import.meta.env.VITE_API_URL;
 
 export interface ClaimBadgeRequest {
   userAddress: string;

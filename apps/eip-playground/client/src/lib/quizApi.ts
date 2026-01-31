@@ -1,6 +1,8 @@
 // FastAPI Quiz System Client
 
-const QUIZ_API_BASE = "http://127.0.0.1:8009";
+// const QUIZ_API_BASE = "http://127.0.0.1:8009";
+const QUIZ_API_BASE = import.meta.env.VITE_API_URL;
+
 
 export interface QuizStartResponse {
   sessionId: string;

@@ -71,6 +71,12 @@ export default function AgentAcademyGame() {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const [isClaimingNFT, setIsClaimingNFT] = useState(false);
+  const [nftMinted, setNftMinted] = useState(false);
+  const [nftData, setNftData] = useState<{
+    tokenId: number;
+    contractAddress: string;
+    txHash: string;
+  } | null>(null);
 
   // Helper to show in-game messages
   const showMessage = (msg: string, duration = 3000) => {
@@ -358,13 +364,20 @@ export default function AgentAcademyGame() {
     try {
       const result = await claimERC8004Badge(address);
       
-      // Success!
+      // Success! Save NFT data and show success state
+      setNftMinted(true);
+      setNftData({
+        tokenId: result.tokenId,
+        contractAddress: result.contractAddress,
+        txHash: result.txHash,
+      });
+      
       showMessage(
         `NFT minted successfully! Token ID: ${result.tokenId}`,
         5000
       );
       tutorSpeak(
-        `Congratulations! Your ERC-8004 badge has been minted! Token ID: ${result.tokenId}. Transaction: ${result.txHash}`,
+        `Congratulations! Your ERC-8004 badge has been minted! Token ID: ${result.tokenId}.`,
         "praising"
       );
 
@@ -869,14 +882,73 @@ export default function AgentAcademyGame() {
           </Button>
         )}
 
-        {/* Claim NFT Button - Shows after passing quiz */}
-        {quizPassed && (
+        {/* Claim NFT Button or Success Box */}
+        {quizPassed && !nftMinted && (
           <Button
             onClick={handleClaimNFT}
-            className="animate-bounce bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-pixel px-8 py-6 text-lg border-b-4 border-yellow-700 active:border-b-0 active:translate-y-1"
+            disabled={isClaimingNFT}
+            className="animate-bounce bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-pixel px-8 py-6 text-lg border-b-4 border-yellow-700 active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:animate-none"
           >
-            <Trophy className="mr-2" /> CLAIM NFT REWARD
+            {isClaimingNFT ? (
+              <>
+                <Loader2 className="mr-2 animate-spin" />
+                MINTING...
+              </>
+            ) : (
+              <>
+                <Trophy className="mr-2" /> CLAIM NFT REWARD
+              </>
+            )}
           </Button>
+        )}
+
+        {/* NFT Minting Success Box */}
+        {nftMinted && nftData && (
+          <div className="w-full max-w-2xl bg-gradient-to-br from-green-500/20 to-emerald-600/20 border-4 border-green-500 rounded-lg p-6 animate-in zoom-in duration-500">
+            <div className="flex items-center gap-3 mb-4">
+              <CheckCircle className="w-8 h-8 text-green-500 animate-pulse" />
+              <h3 className="text-2xl font-pixel text-green-400">
+                🎉 CLAIMED SUCCESSFULLY!
+              </h3>
+            </div>
+            
+            <div className="space-y-3 font-mono text-sm">
+              <div className="bg-black/40 p-4 rounded border border-green-500/30">
+                <p className="text-gray-400 mb-1">Transaction Hash:</p>
+                <a
+                  href={`https://sepolia.etherscan.io/tx/0x${nftData.txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-400 hover:text-green-300 underline break-all transition-colors"
+                >
+                  0x{nftData.txHash}
+                </a>
+                <p className="text-gray-500 text-xs mt-2">
+                  Click to view your transaction on Sepolia Etherscan
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-4 rounded border border-green-500/30">
+                <p className="text-gray-400 mb-1">NFT Token ID:</p>
+                <p className="text-green-400 text-xl font-bold">
+                  #{nftData.tokenId}
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-4 rounded border border-green-500/30">
+                <p className="text-gray-400 mb-1">Contract Address:</p>
+                <p className="text-green-400 break-all">
+                  {nftData.contractAddress}
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <p className="text-green-300 font-pixel">
+                ✨ Your ERC-8004 Achievement Badge is now in your wallet! ✨
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
