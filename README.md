@@ -302,6 +302,7 @@ CONTRACT_ADDRESS=0x...
 ## 在线演示
 
 **线上地址**：https://eip-playground-spark.vercel.app/
+**视频地址**：[EIP Playground] https://www.bilibili.com/video/BV1Cp6pBTEJh/?share_source=copy_web&vd_source=c2399b62dab4ff0a9720947d3e3f66e1
 
 ---
 
