@@ -74,7 +74,7 @@
 **EIP-7702：账户抽象**
 - **批量交易游戏**：把多笔交易打包成一笔
 - **Gas 赞助游戏**：让别人帮你付 Gas 费
-- **委托授权游戏**：无需私钥即可授权操作
+- **临时升级游戏**：EOA 变身智能合约，飞越障碍
 
 </td>
 </tr>
@@ -82,7 +82,7 @@
 <td width="50%">
 
 **ERC-8004：Agent 协议**
-- **Agent 学院**：构建和训练你的链上 Agent
+- **Agent 学院**：铸造身份 → 执行任务 → 积累声誉 → 通过验证 → 领取 NFT
 
 </td>
 <td width="50%">
@@ -105,13 +105,13 @@
 ### NFT 成就系统
 
 - 完成学习模块后**铸造徽章**
-- **15 种独特像素风设计**随机分配
+- **9 种独特像素风设计**随机分配
 - **链上证明**你的 Web3 知识
 - **IPFS 托管元数据**确保去中心化
 
 ### 像素风漫画
 
-每个 EIP 都配有 3 页漫画：
+每个 EIP 都配有漫画：
 - 介绍该 EIP 要解决的问题
 - 用图解方式解释机制原理
 - 展示真实的应用场景
@@ -176,7 +176,7 @@
 |------|------|------|
 | Python | 3.12+ | 运行时 |
 | FastAPI | 0.115 | API 框架 |
-| spoon-ai-sdk | 0.3.6 | Agent 框架（自研） |
+| spoon-ai-sdk | 0.3.6 | Agent 框架 |
 | web3.py | 7.11 | 区块链交互 |
 | Anthropic SDK | 0.42 | Claude AI 集成 |
 | OpenAI SDK | 1.70 | GPT 集成 |
@@ -208,8 +208,8 @@
 #### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/your-org/eip-playground.git
-cd eip-playground
+git clone https://github.com/ShihaoZhou-NEU/web3-eip-playground.git
+cd web3-eip-playground
 ```
 
 #### 2. 启动前端
@@ -222,7 +222,7 @@ cd apps/eip-playground
 pnpm install
 
 # 启动开发服务器
-pnpm dev
+pnpm run dev
 ```
 
 浏览器打开 http://localhost:3000 即可体验。
@@ -423,8 +423,4 @@ AI 导师 & 后端<br/>
   <strong>ETHPanda x LXDAO 黑客松作品</strong>
 </p>
 
-<p align="center">
-  <a href="https://eip-playground-spark.vercel.app/">在线体验</a> •
-  <a href="https://github.com/your-org/eip-playground/issues">报告 Bug</a> •
-  <a href="https://github.com/your-org/eip-playground/issues">功能建议</a>
-</p>
+
