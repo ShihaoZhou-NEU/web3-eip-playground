@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://eip-playground-spark.vercel.app/">在线体验</a> •
+  <a href="https://www.bilibili.com/video/BV1Cp6pBTEJh/?share_source=copy_web&vd_source=c2399b62dab4ff0a9720947d3e3f66e1">视频介绍</a> •
   <a href="#核心功能">核心功能</a> •
   <a href="#技术架构">技术架构</a> •
   <a href="#快速开始">快速开始</a> •
