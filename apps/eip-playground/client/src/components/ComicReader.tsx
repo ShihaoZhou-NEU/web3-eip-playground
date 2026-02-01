@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, BookOpen, Loader2, Maximize2, X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  BookOpen,
+  Loader2,
+  Maximize2,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ComicReaderProps {
@@ -8,7 +15,11 @@ interface ComicReaderProps {
   title?: string;
 }
 
-const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LEARN WITH COMICS" }) => {
+const ComicReader: React.FC<ComicReaderProps> = ({
+  eipId,
+  pageCount,
+  title = "LEARN WITH COMICS",
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([1]));
   const [isLoading, setIsLoading] = useState(false);
@@ -49,10 +60,10 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
   // Handle ESC key to exit fullscreen
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsFullscreen(false);
+      if (e.key === "Escape") setIsFullscreen(false);
     };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
   const nextPage = () => {
@@ -64,8 +75,8 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowRight') nextPage();
-    if (e.key === 'ArrowLeft') prevPage();
+    if (e.key === "ArrowRight") nextPage();
+    if (e.key === "ArrowLeft") prevPage();
   };
 
   const toggleFullscreen = () => {
@@ -73,39 +84,49 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
   };
 
   const ReaderContent = ({ isFullscreenMode = false }) => (
-    <div 
-      className={`relative flex flex-col items-center justify-center bg-black/90 w-full ${isFullscreenMode ? 'h-screen' : ''}`}
+    <div
+      className={`relative flex flex-col items-center justify-center bg-black/90 w-full ${isFullscreenMode ? "h-screen" : ""}`}
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
       {/* Comic Image Container */}
-      <div className={`relative w-full flex items-center justify-center p-4 md:p-8 overflow-hidden ${isFullscreenMode ? 'h-full' : 'aspect-video'}`}>
+      <div
+        className={`relative w-full flex items-center justify-center p-4 md:p-8 overflow-hidden ${isFullscreenMode ? "h-full" : "aspect-video"}`}
+      >
         {isLoading ? (
           <div className="flex flex-col items-center gap-4 text-primary animate-pulse">
             <Loader2 className="w-12 h-12 animate-spin" />
             <span className="font-pixel text-sm">LOADING...</span>
           </div>
         ) : (
-          <img 
-            src={`/comics/${eipId}/${currentPage}.jpg`} 
-            alt={`Page ${currentPage}`} 
+          <img
+            src={`/comics/${eipId}/${currentPage}.jpg`}
+            alt={`Page ${currentPage}`}
             className={`object-contain border-4 border-white shadow-[0_0_20px_rgba(255,255,255,0.2)] ${
-              loadedImages.has(currentPage) ? '' : 'animate-in fade-in duration-300'
-            } ${isFullscreenMode ? 'max-h-[90vh] max-w-[90vw]' : 'w-full h-full'}`}
+              loadedImages.has(currentPage)
+                ? ""
+                : "animate-in fade-in duration-300"
+            } ${isFullscreenMode ? "max-h-[90vh] max-w-[90vw]" : "w-full h-full"}`}
           />
         )}
-        
+
         {/* Navigation Overlays */}
-        <button 
-          onClick={(e) => { e.stopPropagation(); prevPage(); }}
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            prevPage();
+          }}
           disabled={currentPage === 1}
           className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 hover:bg-primary text-black rounded-full disabled:opacity-0 transition-all hidden md:block z-20"
         >
           <ChevronLeft size={32} />
         </button>
-        
-        <button 
-          onClick={(e) => { e.stopPropagation(); nextPage(); }}
+
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            nextPage();
+          }}
           disabled={currentPage === pageCount}
           className="absolute right-4 top-1/2 -translate-y-1/2 p-2  bg-white/50 hover:bg-primary text-black rounded-full disabled:opacity-0 transition-all hidden md:block z-20"
         >
@@ -124,17 +145,35 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
       </div>
 
       {/* Controls Bar (Only show in non-fullscreen or at bottom of fullscreen) */}
-      <div className={`w-full bg-card border-t-4 border-border p-4 flex items-center justify-between ${isFullscreenMode ? 'absolute bottom-0 left-0 z-20 opacity-0 hover:opacity-100 transition-opacity' : ''}`}>
+      <div
+        className={`w-full bg-card border-t-4 border-border p-4 flex items-center justify-between ${isFullscreenMode ? "absolute bottom-0 left-0 z-20 opacity-0 hover:opacity-100 transition-opacity" : ""}`}
+      >
         <div className="flex items-center gap-4">
           <span className="font-pixel text-xs md:text-sm text-primary">
             PAGE {currentPage} / {pageCount}
           </span>
           {/* Mobile Nav Buttons */}
           <div className="flex gap-2 md:hidden">
-            <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); prevPage(); }} disabled={currentPage === 1}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={e => {
+                e.stopPropagation();
+                prevPage();
+              }}
+              disabled={currentPage === 1}
+            >
               <ChevronLeft size={16} />
             </Button>
-            <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); nextPage(); }} disabled={currentPage === pageCount}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={e => {
+                e.stopPropagation();
+                nextPage();
+              }}
+              disabled={currentPage === pageCount}
+            >
               <ChevronRight size={16} />
             </Button>
           </div>
@@ -143,14 +182,22 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
         <div className="flex items-center gap-2">
           <div className="hidden md:flex gap-1">
             {Array.from({ length: pageCount }).map((_, i) => (
-              <div 
+              <div
                 key={i}
-                onClick={(e) => { e.stopPropagation(); setCurrentPage(i + 1); }}
+                onClick={e => {
+                  e.stopPropagation();
+                  setCurrentPage(i + 1);
+                }}
                 className={`w-3 h-3 cursor-pointer transition-all ${
-                  currentPage === i + 1 ? 'bg-primary scale-125' : 
-                  loadedImages.has(i + 1) ? 'bg-primary/20 hover:bg-primary' : 'bg-muted/30'
+                  currentPage === i + 1
+                    ? "bg-primary scale-125"
+                    : loadedImages.has(i + 1)
+                      ? "bg-primary/20 hover:bg-primary"
+                      : "bg-muted/30"
                 }`}
-                title={loadedImages.has(i + 1) ? `Page ${i + 1} ` : `Page ${i + 1}`}
+                title={
+                  loadedImages.has(i + 1) ? `Page ${i + 1} ` : `Page ${i + 1}`
+                }
               />
             ))}
           </div>
@@ -169,9 +216,9 @@ const ComicReader: React.FC<ComicReaderProps> = ({ eipId, pageCount, title = "LE
               <BookOpen className="w-6 h-6" />
               {title}
             </h3>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={toggleFullscreen}
               className="font-pixel text-xs hover:bg-primary hover:text-primary-foreground"
             >

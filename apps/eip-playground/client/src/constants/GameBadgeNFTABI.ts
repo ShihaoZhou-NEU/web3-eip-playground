@@ -35,7 +35,7 @@ export const ERC8004_ABI = [
     inputs: [
       { name: "to", type: "address", internalType: "address" },
       { name: "gameId", type: "uint256", internalType: "uint256" },
-      { name: "claimId", type: "bytes32", internalType: "bytes32" }
+      { name: "claimId", type: "bytes32", internalType: "bytes32" },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -54,5 +54,5 @@ export const ERC8004_ABI = [
     inputs: [],
     outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
-  }
+  },
 ] as const; // 关键：必须使用 as const 以开启 TypeScript 类型推导
