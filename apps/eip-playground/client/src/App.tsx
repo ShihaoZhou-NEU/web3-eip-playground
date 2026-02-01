@@ -9,11 +9,14 @@ import Home from "./pages/Home";
 import EIPDetail from "./pages/EIPDetail";
 
 // Wagmi & RainbowKit Imports
-import '@rainbow-me/rainbowkit/styles.css';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import "@rainbow-me/rainbowkit/styles.css";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { config } from "./lib/wagmi";
+
+// Vercel Analytics
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -34,13 +37,13 @@ function App() {
     <ErrorBoundary>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider 
+          <RainbowKitProvider
             theme={darkTheme({
-              accentColor: '#ffd700', // Gold
-              accentColorForeground: 'black',
-              borderRadius: 'medium', // Pixel style
-              fontStack: 'system',
-              overlayBlur: 'small'
+              accentColor: "#ffd700", // Gold
+              accentColorForeground: "black",
+              borderRadius: "medium", // Pixel style
+              fontStack: "system",
+              overlayBlur: "small",
             })}
           >
             <ThemeProvider defaultTheme="dark">
@@ -48,6 +51,7 @@ function App() {
                 <TooltipProvider>
                   <Toaster />
                   <Router />
+                  <Analytics />
                 </TooltipProvider>
               </ScrollProvider>
             </ThemeProvider>

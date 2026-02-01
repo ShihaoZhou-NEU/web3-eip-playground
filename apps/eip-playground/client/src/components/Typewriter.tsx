@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface TypewriterProps {
   texts: string[];
@@ -7,13 +7,13 @@ interface TypewriterProps {
   pauseTime?: number;
 }
 
-export default function Typewriter({ 
-  texts, 
-  typingSpeed = 100, 
-  deletingSpeed = 50, 
-  pauseTime = 2000 
+export default function Typewriter({
+  texts,
+  typingSpeed = 100,
+  deletingSpeed = 50,
+  pauseTime = 2000,
 }: TypewriterProps) {
-  const [displayText, setDisplayText] = useState('');
+  const [displayText, setDisplayText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -23,9 +23,9 @@ export default function Typewriter({
     const handleTyping = () => {
       if (isDeleting) {
         setDisplayText(prev => prev.slice(0, -1));
-        if (displayText === '') {
+        if (displayText === "") {
           setIsDeleting(false);
-          setCurrentIndex((prev) => (prev + 1) % texts.length);
+          setCurrentIndex(prev => (prev + 1) % texts.length);
         }
       } else {
         setDisplayText(currentFullText.slice(0, displayText.length + 1));
@@ -37,12 +37,20 @@ export default function Typewriter({
     };
 
     const timer = setTimeout(
-      handleTyping, 
+      handleTyping,
       isDeleting ? deletingSpeed : typingSpeed
     );
 
     return () => clearTimeout(timer);
-  }, [displayText, isDeleting, currentIndex, texts, typingSpeed, deletingSpeed, pauseTime]);
+  }, [
+    displayText,
+    isDeleting,
+    currentIndex,
+    texts,
+    typingSpeed,
+    deletingSpeed,
+    pauseTime,
+  ]);
 
   return (
     <span className="inline-block min-h-[1.5em]">

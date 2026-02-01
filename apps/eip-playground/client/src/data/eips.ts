@@ -18,7 +18,8 @@ export const eips: Record<string, EIPData> = {
     id: "eip-1559",
     title: "EIP-1559",
     subtitle: "Gas Fee Market",
-    description: "A transaction pricing mechanism that includes fixed-per-block network fee that is burned and dynamically expands/contracts block sizes.",
+    description:
+      "A transaction pricing mechanism that includes fixed-per-block network fee that is burned and dynamically expands/contracts block sizes.",
     content: `
 # EIP-1559: Fee Market Change for ETH 1.0 Chain
 
@@ -42,14 +43,15 @@ Since its activation in the London Hard Fork (August 2021), EIP-1559 has burned 
     icon: "🔥",
     comic: {
       pageCount: 12,
-      title: "THE GAS WARS: A VISUAL GUIDE"
-    }
+      title: "THE GAS WARS: A VISUAL GUIDE",
+    },
   },
   "eip-7702": {
     id: "eip-7702",
     title: "EIP-7702",
     subtitle: "Account Abstraction",
-    description: "Adds a new transaction type that sets the code for an EOA for one transaction, enabling batching and sponsorship.",
+    description:
+      "Adds a new transaction type that sets the code for an EOA for one transaction, enabling batching and sponsorship.",
     content: `
 # EIP-7702: Set EOA Account Code for One Transaction
 
@@ -72,14 +74,15 @@ This EIP is currently a strong candidate for the next major Ethereum upgrade (Pe
     icon: "🤖",
     comic: {
       pageCount: 13,
-      title: "SET CODE: THE TEMPORARY SUPERPOWER"
-    }
+      title: "SET CODE: THE TEMPORARY SUPERPOWER",
+    },
   },
   "erc-8004": {
     id: "erc-8004",
     title: "ERC-8004",
     subtitle: "Trustless Agents",
-    description: "A standard for discovering, choosing, and interacting with AI agents across organizational boundaries using on-chain registries.",
+    description:
+      "A standard for discovering, choosing, and interacting with AI agents across organizational boundaries using on-chain registries.",
     content: `
 # Abstract
 ERC-8004 proposes a standard for "Trustless Agents" by introducing three lightweight on-chain registries: Identity, Reputation, and Validation. This allows AI agents to be discoverable and verifiable on Ethereum.
@@ -102,7 +105,7 @@ As AI agents become more autonomous, we need a way to trust them without relying
     icon: "🕵️",
     comic: {
       pageCount: 14,
-      title: "THE TRUSTLESS AGENT"
-    }
-  }
+      title: "THE TRUSTLESS AGENT",
+    },
+  },
 };

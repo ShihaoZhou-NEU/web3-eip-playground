@@ -32,7 +32,8 @@ export default function ConsoleDialog({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // 苹果系统字体栈
-  const appleFontStack = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif';
+  const appleFontStack =
+    '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif';
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -119,13 +120,13 @@ export default function ConsoleDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} modal>
-      <DialogContent 
+      <DialogContent
         /* 1. 宽度放大(max-w-[1100px])，高度缩小(h-[75vh])，比例更优美 */
         /* 4. 整体字体改为苹果系统字体 */
         className="!max-w-none w-[80vw] max-w-[1100px] h-[75vh] bg-black/95 border-2 border-green-500/50 p-0 overflow-hidden flex flex-col [&>button]:hidden"
         style={{ fontFamily: appleFontStack }}
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
+        onPointerDownOutside={e => e.preventDefault()}
+        onInteractOutside={e => e.preventDefault()}
       >
         {/* Header */}
         <div className="bg-green-900/30 border-b border-green-500/50 px-5 py-3 flex items-center justify-between">
@@ -176,7 +177,9 @@ export default function ConsoleDialog({
           {isLoading && (
             <div className="flex items-center gap-2 text-green-400/80 animate-pulse pt-2">
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-sm font-medium font-pixel">Analyzing response...</span>
+              <span className="text-sm font-medium font-pixel">
+                Analyzing response...
+              </span>
             </div>
           )}
           <div ref={messagesEndRef} />
@@ -185,7 +188,9 @@ export default function ConsoleDialog({
         {/* Input Area */}
         <div className="border-t border-green-500/30 p-6 bg-black/40">
           <div className="flex items-center gap-2 mb-3 opacity-50">
-            <span className="text-green-500 text-xs font-bold font-pixel">INPUT_COMMAND</span>
+            <span className="text-green-500 text-xs font-bold font-pixel">
+              INPUT_COMMAND
+            </span>
             <div className="h-[1px] flex-1 bg-green-500/20"></div>
           </div>
 
@@ -199,12 +204,12 @@ export default function ConsoleDialog({
               disabled={isLoading}
               placeholder="Enter your answer here..."
               className="w-full bg-black/60 border-green-500/20 text-green-100 resize-none focus:border-green-500/50 placeholder:text-green-900/50 min-h-[80px] max-h-[200px] overflow-y-auto text-[15px] p-4 transition-all custom-scrollbar"
-            //   className="w-full bg-black/60 border-green-500/20 text-green-100 resize-none focus:border-green-500/50 placeholder:text-green-900/50 min-h-[80px] text-[15px] p-4 transition-all"
+              //   className="w-full bg-black/60 border-green-500/20 text-green-100 resize-none focus:border-green-500/50 placeholder:text-green-900/50 min-h-[80px] text-[15px] p-4 transition-all"
               style={{ fontFamily: appleFontStack }}
             />
-            
+
             <div className="absolute bottom-3 right-3 flex items-center gap-4">
-               {/* <span className="text-[10px] text-green-900 font-medium hidden sm:inline font-pixel">
+              {/* <span className="text-[10px] text-green-900 font-medium hidden sm:inline font-pixel">
                 PRESS ENTER TO EXECUTE
               </span> */}
               <Button
@@ -221,7 +226,9 @@ export default function ConsoleDialog({
             </div>
           </div>
         </div>
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
           }
@@ -235,7 +242,9 @@ export default function ConsoleDialog({
           .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(34, 197, 94, 0.8);
           }
-        `}} />
+        `,
+          }}
+        />
       </DialogContent>
     </Dialog>
   );
