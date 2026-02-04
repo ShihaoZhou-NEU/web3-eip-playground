@@ -407,6 +407,15 @@ AI 导师 & 后端<br/>
 
 ---
 
+<p align="center">
+  <strong>
+  💥🐼喜讯~ 在竞争激烈的2026届冬季“休闲”黑客松荣获亚军！🐼💥
+  </strong>
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ShihaoZhou-NEU/web3-eip-playground/main/docs/assets/runner-up.png" alt="Dr. Panda won the runner-up" width="300" />
+</p>
+
 ## 致谢
 
 - **ETHPanda** — 社区支持与灵感
