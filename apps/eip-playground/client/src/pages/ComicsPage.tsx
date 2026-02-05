@@ -5,12 +5,14 @@ import ComicReader from "@/components/ComicReader";
 import { eips } from "@/data/eips";
 
 const ComicsPage = () => {
+  // Only show entries that have an associated comic folder with at least one page.
   const comicEips = useMemo(() => {
     return Object.values(eips).filter(
       eip => eip.comic && eip.comic.pageCount > 0
     );
   }, []);
 
+  // Track the currently selected comic; default to the first available entry for immediate rendering.
   const [selectedEipId, setSelectedEipId] = useState<string | null>(
     comicEips[0]?.id ?? null
   );
@@ -43,6 +45,7 @@ const ComicsPage = () => {
                 Ethereum lore
               </h1>
             </div>
+            {/* Hero CTA area with randomized and gallery shortcuts */}
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={pickRandomComic}
@@ -65,6 +68,7 @@ const ComicsPage = () => {
           </section>
 
           <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+            {/* Reader panel */}
             <div className="bg-black/70 border-4 border-white/20 rounded-2xl shadow-pixel p-6">
               {selectedEip ? (
                 <ComicReader
@@ -80,14 +84,18 @@ const ComicsPage = () => {
               )}
             </div>
 
+            {/* Gallery column */}
             <div className="bg-black/60 border-4 border-white/10 rounded-2xl shadow-pixel p-6 flex flex-col gap-5">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-primary font-mono">
                   Choose a story
-                </p><h2 className="text-2xl font-pixel mt-2 min-w-[340px]">Comic Gallery</h2>
-                
+                </p>
+                <h2 className="text-2xl font-pixel mt-2 min-w-[340px]">
+                  Comic Gallery
+                </h2>
               </div>
 
+              {/* List of selectable comic cards */}
               <div className="flex flex-col gap-3 overflow-hidden max-h-[560px]">
                 {comicEips.map(comic => {
                   const isActive = comic.id === selectedEipId;

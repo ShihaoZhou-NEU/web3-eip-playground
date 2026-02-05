@@ -160,6 +160,18 @@
   .text-shadow-pixel {
     text-shadow: 2px 2px 0px #000000;
   }
+
+  .markdown-content ol {
+    @apply list-decimal pl-6;
+  }
+
+  .markdown-content ul {
+    @apply list-disc pl-6;
+  }
+
+  .markdown-content li {
+    @apply mb-2;
+  }
 }
 
 @layer utilities {

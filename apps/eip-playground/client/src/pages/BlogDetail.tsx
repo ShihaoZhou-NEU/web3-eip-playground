@@ -183,18 +183,9 @@ export default function BlogDetail() {
 
         {/* Article Content */}
         <Card className="p-8 md:p-12 border-2 border-primary/30 bg-card/50 backdrop-blur">
-          {/* <article className="prose prose-lg max-w-none dark:prose-invert
-            prose-headings:font-pixel prose-headings:text-primary
-            prose-p:text-foreground prose-p:leading-relaxed
-            prose-a:text-accent prose-a:no-underline hover:prose-a:underline
-            prose-code:text-accent prose-code:bg-accent/10 prose-code:px-2 prose-code:py-1 prose-code:rounded
-            prose-pre:bg-muted prose-pre:border-2 prose-pre:border-primary/30
-            prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:text-muted-foreground
-            prose-strong:text-primary prose-strong:font-bold
-            prose-ul:list-disc prose-ol:list-decimal
-            prose-img:rounded-lg prose-img:border-2 prose-img:border-primary/30"> */}
-          <Streamdown>{content}</Streamdown>
-          {/* </article> */}
+          <article className="markdown-content text-foreground">
+            <Streamdown>{content}</Streamdown>
+          </article>
         </Card>
 
         {/* Back Button (Bottom) */}

@@ -6,22 +6,22 @@ import { useScrollPosition } from "@/contexts/ScrollContext";
 import { useEffect } from "react";
 
 export default function Home() {
-  const { homeScrollPosition, setHomeScrollPosition } = useScrollPosition();
+  // const { homeScrollPosition, setHomeScrollPosition } = useScrollPosition();
 
-  // Restore scroll position when component mounts
-  useEffect(() => {
-    window.scrollTo(0, homeScrollPosition);
-  }, [homeScrollPosition]);
+  // // Restore scroll position when component mounts
+  // useEffect(() => {
+  //   window.scrollTo(0, homeScrollPosition);
+  // }, [homeScrollPosition]);
 
-  // Save scroll position when user scrolls
-  useEffect(() => {
-    const handleScroll = () => {
-      setHomeScrollPosition(window.scrollY);
-    };
+  // // Save scroll position when user scrolls
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setHomeScrollPosition(window.scrollY);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [setHomeScrollPosition]);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [setHomeScrollPosition]);
 
   return (
     <div className="min-h-screen flex flex-col relative">

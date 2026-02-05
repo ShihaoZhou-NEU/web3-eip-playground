@@ -19,12 +19,6 @@ export default function EIPDetail() {
   const [, navigate] = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  if (!match || !params?.id) return <NotFound />;
-
-  const eip = eips[params.id];
-
-  if (!eip) return <NotFound />;
-
   const handleBack = () => {
     navigate("/");
   };
@@ -33,10 +27,12 @@ export default function EIPDetail() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Scroll to top on mount
+  // Scroll to top when the EIP changes (kept unconditional to avoid hook-order issues).
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [params?.id]);
+    if (match && params?.id) {
+      window.scrollTo(0, 0);
+    }
+  }, [match, params?.id]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +42,10 @@ export default function EIPDetail() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const eip = params?.id ? eips[params.id] : undefined;
+
+  if (!match || !params?.id || !eip) return <NotFound />;
 
   return (
     <div

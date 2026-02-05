@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import ComicsPage from "@/pages/ComicsPage";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ScrollProvider } from "./contexts/ScrollContext";
@@ -42,6 +43,17 @@ function Router() {
   );
 }
 
+function ScrollToTop() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    if (location === "/") return;
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -61,6 +73,7 @@ function App() {
                 <TooltipProvider>
                   <Toaster />
                   <Router />
+                  <ScrollToTop />
                   <Analytics />
                 </TooltipProvider>
               </ScrollProvider>

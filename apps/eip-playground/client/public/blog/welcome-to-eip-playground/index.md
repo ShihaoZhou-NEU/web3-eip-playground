@@ -36,4 +36,6 @@ Step into the **Agent Academy** mini-game, where you will learn:
 
 1. **Visit the home base** and pick an EIP quest that piques your interest.
 2. **Read the comics** to unlock the essential lore and background knowledge.
-3. **Jump into the game** to
+3. **Jump into the game** to apply what you learned and see the protocol in action through interactive play.
+4. **Ask Dr. Panda** when you need hints, explanations, or a sanity check on the mechanics.
+5. **Mint your achievement NFT** when you complete the challenge and prove you mastered the topic.
