@@ -7,6 +7,10 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import Home from "./pages/Home";
 import EIPDetail from "./pages/EIPDetail";
+import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
+import FAQ from "./pages/FAQ";
+import Team from "./pages/Team";
 
 // Wagmi & RainbowKit Imports
 import "@rainbow-me/rainbowkit/styles.css";
@@ -26,6 +30,10 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/eip/:id"} component={EIPDetail} />
       <Route path={"/404"} component={NotFound} />
+      <Route path={"/blog"} component={Blog} />
+      <Route path={"/blog/:slug"} component={BlogDetail} />
+      <Route path={"/faq"} component={FAQ} />
+      <Route path={"/team"} component={Team} />
       {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
