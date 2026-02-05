@@ -20,19 +20,16 @@ export default function EIPDetail() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
     navigate("/");
   };
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  // Scroll to top when the EIP changes (kept unconditional to avoid hook-order issues).
-  useEffect(() => {
-    if (match && params?.id) {
-      window.scrollTo(0, 0);
-    }
-  }, [match, params?.id]);
 
   useEffect(() => {
     const handleScroll = () => {
