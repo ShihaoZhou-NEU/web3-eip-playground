@@ -1,95 +1,95 @@
-# EIP Playground 常见问题
+# EIP Playground FAQ 🎮
 
-## 什么是 EIP Playground？
+## What is EIP Playground? 🕹️
 
-EIP Playground 是一个互动式学习平台，旨在帮助开发者和区块链爱好者深入理解以太坊改进提案（EIPs）。通过游戏化的学习方式，你可以在实践中掌握 ERC-8004、EIP-1559、EIP-7702 等重要协议的核心概念。
-
----
-
-## 如何开始学习？
-
-1. 浏览首页的 EIP 列表，选择你感兴趣的协议
-2. 点击进入详情页，阅读协议介绍和技术规范
-3. 参与互动游戏，通过实践加深理解
-4. 完成导师测试，验证你的学习成果
-5. 获得 NFT 徽章，证明你的技术能力
+EIP Playground is an interactive learning platform designed to help developers and blockchain enthusiasts gain a deep understanding of Ethereum Improvement Proposals (EIPs). Through a gamified experience, you can master the core concepts of critical protocols like ERC-8004, EIP-1559, and EIP-7702 through hands-on practice. 🚀
 
 ---
 
-## NFT 徽章有什么用？
+## How do I start learning? 🗺️
 
-NFT 徽章是你学习成就的链上证明，具有以下价值：
-
-- **技能认证**：向雇主和社区展示你的区块链技术能力
-- **收藏价值**：每个徽章都是独特的数字资产，可以在钱包中永久保存
-- **社区身份**：持有徽章的用户可以加入专属技术社区，参与高级讨论
-- **未来福利**：徽章持有者将优先获得新课程、活动和空投机会
-
----
-
-## 支持哪些钱包？
-
-EIP Playground 通过 RainbowKit 集成，支持所有主流以太坊钱包：
-
-- MetaMask
-- WalletConnect
-- Coinbase Wallet
-- Rainbow Wallet
-- Ledger
-- 以及其他兼容 WalletConnect 的钱包
+1. **Browse the EIP List**: Check out the available protocols on the homepage and pick one that piques your interest. 🔍
+2. **Dive into the Details**: Visit the detail page to read the protocol introduction and technical specifications. 📚
+3. **Play the Game**: Participate in interactive mini-games to sharpen your understanding through practice. 🕹️
+4. **Pass the Test**: Complete the Mentor's quiz to verify your learning outcomes. 👨‍🏫
+5. **Claim Your Badge**: Earn an NFT badge as proof of your technical proficiency! 🎖️
 
 ---
 
-## 如何获得 NFT 徽章？
+## What are NFT Badges for? 💎
 
-1. 完成对应 EIP 的互动游戏（如 ERC-8004 Agent Academy）
-2. 通过导师的3轮知识测试（需答对至少2题）
-3. 连接你的以太坊钱包
-4. 点击"领取 NFT 奖励"按钮
-5. 确认交易，NFT 将自动铸造到你的钱包地址
+NFT Badges are on-chain proof of your achievements and offer several legendary perks:
 
----
-
-## 测试失败了怎么办？
-
-别担心！学习是一个循序渐进的过程：
-
-- 你可以**无限次重新挑战**导师测试
-- 每次测试都会有不同的问题，帮助你全面理解协议
-- 建议先仔细阅读协议文档，再参与测试
-- 加入我们的社区，与其他学习者交流经验
+- **Skill Certification**: Show off your blockchain expertise to employers and the community. 👨‍💻
+- **Collectible Value**: Each badge is a unique digital asset, permanently stored in your wallet. 📦
+- **Community Status**: Badge holders unlock access to exclusive technical channels for high-level discussions. 🤝
+- **Future Rewards**: Get priority access to new courses, special events, and potential airdrop opportunities! 🎁
 
 ---
 
-## 这个项目是开源的吗？
+## Which Wallets are supported? 👛
 
-是的！EIP Playground 是一个开源项目，我们欢迎社区贡献：
+EIP Playground is integrated via **RainbowKit** and supports all major Ethereum-compatible wallets:
 
-- **代码贡献**：在 GitHub 上提交 PR，改进功能或修复 bug
-- **内容贡献**：编写新的 EIP 教程和游戏关卡
-- **翻译贡献**：帮助我们将内容翻译成更多语言
-- **反馈建议**：通过 Issues 或社交媒体分享你的想法
-
----
-
-## 如何联系团队？
-
-我们随时欢迎你的反馈和建议：
-
-- **GitHub**: 访问我们的代码仓库提交 Issue
-- **Twitter**: 关注我们获取最新动态
-- **Discord**: 加入社区与团队和其他学习者交流
-- **Email**: 发送邮件至 team@eipplayground.com
+- **MetaMask** 🦊
+- **WalletConnect** 🌐
+- **Coinbase Wallet** 💙
+- **Rainbow Wallet** 🌈
+- **Ledger** 🔒
+- ...and any other WalletConnect-compatible wallets!
 
 ---
 
-## 未来会添加更多 EIP 吗？
+## How do I earn my NFT Badge? 🛠️
 
-当然！我们正在积极开发更多 EIP 的互动课程，包括：
+1. **Clear the Stage**: Complete the interactive game for the corresponding EIP (e.g., ERC-8004 Agent Academy).
+2. **Ace the Quiz**: Pass the Mentor's 3-round knowledge test (at least 2 correct answers required). ✅
+3. **Connect Wallet**: Link your Ethereum wallet to the platform.
+4. **Claim Reward**: Click the "Claim NFT Reward" button.
+5. **Minting**: Confirm the transaction, and the NFT will be automatically minted to your address! ⚒️
 
-- **EIP-4337**: 账户抽象（Account Abstraction）
-- **EIP-2981**: NFT 版税标准
-- **EIP-5192**: 灵魂绑定代币（Soulbound Tokens）
-- **EIP-6551**: 代币绑定账户（Token Bound Accounts）
+---
 
-关注我们的 Blog 和社交媒体，第一时间了解新内容上线！
+## What if I fail the test? 😅
+
+Don't worry! Learning is a progressive journey:
+
+- You can **retry the Mentor's test as many times as you like**. 🔄
+- Each attempt features different questions to help you gain a comprehensive understanding.
+- We recommend reviewing the protocol documentation before challenging the test again. 📖
+- Join our community to exchange tips and experiences with other learners! 💬
+
+---
+
+## Is this project open source? 📂
+
+Yes! EIP Playground is an open-source project, and we love community contributions:
+
+- **Code**: Submit a PR on GitHub to improve features or fix bugs. 💻
+- **Content**: Help us write new EIP tutorials or design game levels. ✍️
+- **Translation**: Help us bring this content to more languages. 🌍
+- **Feedback**: Share your thoughts through Issues or social media. 💡
+
+---
+
+## How do I contact the team? ✉️
+
+We are always happy to hear from you:
+
+- **GitHub**: Visit our repository and open an Issue.
+- **Twitter**: Follow us for the latest updates and news. 🐦
+- **Discord**: Join the squad and chat with the team and other learners. 🤝
+- **Email**: Send us a message at **team@eipplayground.com**.
+
+---
+
+## Will more EIPs be added? 🚀
+
+Definitely! We are actively developing more interactive courses, including:
+
+- **EIP-4337**: Account Abstraction 🛡️
+- **EIP-2981**: NFT Royalty Standard 🎨
+- **EIP-5192**: Soulbound Tokens 👻
+- **EIP-6551**: Token Bound Accounts 🔗
+
+Keep an eye on our **Blog** and social media to be the first to know when new content drops! 🔔

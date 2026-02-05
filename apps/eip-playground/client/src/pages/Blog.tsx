@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Calendar, User, BookOpen, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import { Link } from "wouter";
+import PageBanner from "@/components/PageBanner";
 
 interface BlogPost {
   slug: string;
@@ -11,6 +12,7 @@ interface BlogPost {
   author: string;
   summary: string;
   cover?: string;
+  order?: number;
 }
 
 export default function Blog() {
@@ -20,27 +22,35 @@ export default function Blog() {
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        // Fetch blog manifest (list of slugs)
+        // Fetch blog manifest (list of posts with order)
         const manifestResponse = await fetch("/blog/blog-manifest.json");
-        const slugs: string[] = await manifestResponse.json();
+        const manifest: Array<{ slug: string; order: number }> =
+          await manifestResponse.json();
 
         // Fetch metadata for each post
         const postsData = await Promise.all(
-          slugs.map(async (slug) => {
+          manifest.map(async item => {
+            const slug = item.slug;
+            const order = item.order;
             try {
               const response = await fetch(`/blog/${slug}/index.md`);
               const content = await response.text();
 
               // Parse YAML front matter
-              const frontMatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+              const frontMatterMatch = content.match(
+                /^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?([\s\S]*)$/
+              );
               if (frontMatterMatch) {
                 const frontMatter = frontMatterMatch[1];
                 const metadata: any = {};
-                
-                frontMatter.split("\n").forEach((line) => {
+
+                frontMatter.split("\n").forEach(line => {
                   const [key, ...valueParts] = line.split(":");
                   if (key && valueParts.length) {
-                    const value = valueParts.join(":").trim().replace(/^["']|["']$/g, "");
+                    const value = valueParts
+                      .join(":")
+                      .trim()
+                      .replace(/^["']|["']$/g, "");
                     metadata[key.trim()] = value;
                   }
                 });
@@ -52,6 +62,7 @@ export default function Blog() {
                   author: metadata.author || "Anonymous",
                   summary: metadata.summary || "",
                   cover: metadata.cover,
+                  order,
                 } as BlogPost;
               }
 
@@ -61,6 +72,7 @@ export default function Blog() {
                 date: "",
                 author: "Anonymous",
                 summary: "",
+                order,
               } as BlogPost;
             } catch (error) {
               console.error(`Failed to load post ${slug}:`, error);
@@ -69,10 +81,12 @@ export default function Blog() {
           })
         );
 
-         // Filter out failed posts and sort by date
-        const validPosts = postsData.filter((post): post is BlogPost => post !== null);
-        validPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        
+        // Filter out failed posts and sort by order (ascending)
+        const validPosts = postsData.filter(
+          (post): post is BlogPost => post !== null
+        );
+        validPosts.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+
         setPosts(validPosts);
       } catch (error) {
         console.error("Failed to load blog posts:", error);
@@ -100,28 +114,22 @@ export default function Blog() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      {/* Banner Placeholder */}
-      <div className="w-full h-64 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 border-y-4 border-primary relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <BookOpen className="w-32 h-32 text-primary/20" />
-        </div>
-        {/* Pixel grid overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDAgTCAyMCAwIEwgMjAgMjAgTCAwIDIwIFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50"></div>
-      </div>
+
+      {/* Banner */}
+      <PageBanner title="BLOG" subtitle="Explore EIP Insights & Updates" />
 
       <div className="container max-w-6xl mx-auto py-16 px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
+          {/* <div className="flex items-center justify-center gap-4 mb-4">
             <BookOpen className="w-12 h-12 text-primary" />
             <h1 className="text-5xl md:text-6xl font-pixel text-primary pixel-text-shadow">
               BLOG
             </h1>
-          </div>
-          <p className="text-lg text-muted-foreground font-mono">
-            技术文章 · Technical Articles
-          </p>
+          </div> */}
+          {/* <p className="text-2xl text-muted-foreground font-mono">
+            Technical Articles
+          </p> */}
         </div>
 
         {/* Blog Posts Grid */}
@@ -130,13 +138,11 @@ export default function Blog() {
             <p className="text-xl text-muted-foreground font-pixel">
               NO POSTS YET
             </p>
-            <p className="text-sm text-muted-foreground mt-4">
-              敬请期待更多精彩内容！
-            </p>
+            <p className="text-sm text-muted-foreground mt-4">Coming soon...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {posts.map((post) => (
+            {posts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>
                 <Card className="group h-full overflow-hidden border-4 border-primary/30 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-card/50 backdrop-blur cursor-pointer">
                   {/* Cover Image */}

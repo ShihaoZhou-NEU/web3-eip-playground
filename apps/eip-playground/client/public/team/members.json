@@ -1,29 +1,29 @@
 [
   {
     "id": 1,
-    "name": "示例成员 1",
-    "role": "项目负责人",
-    "avatar": "/team/avatar-1.png",
-    "bio": "负责项目整体规划和技术架构设计",
-    "github": "https://github.com/example1",
-    "twitter": "https://twitter.com/example1"
+    "name": "Swen",
+    "role": "Project Lead & Architect",
+    "avatar": "/team/avatar-swen.png",
+    "bio": "Masterminding the project roadmap and architecting the digital realm of EIPs.",
+    "github": "https://github.com/swen-chan",
+    "twitter": "https://x.com/SwenChan"
   },
   {
     "id": 2,
-    "name": "示例成员 2",
-    "role": "前端开发",
-    "avatar": "/team/avatar-2.png",
-    "bio": "专注于用户界面和交互体验设计",
-    "github": "https://github.com/example2",
-    "twitter": "https://twitter.com/example2"
+    "name": "David",
+    "role": "Frontend Alchemist",
+    "avatar": "/team/avatar-david.png",
+    "bio": "Crafting pixel-perfect interfaces and enchanting user experiences for every player.",
+    "github": "https://github.com/ShihaoZhou-NEU",
+    "twitter": "https://x.com/0x2218_Nekoneko"
   },
   {
     "id": 3,
-    "name": "示例成员 3",
-    "role": "智能合约开发",
-    "avatar": "/team/avatar-3.png",
-    "bio": "负责区块链智能合约的开发和审计",
-    "github": "https://github.com/example3",
-    "twitter": "https://twitter.com/example3"
+    "name": "Dudu",
+    "role": "Smart Contract Sorcerer",
+    "avatar": "/team/avatar-dudu.png",
+    "bio": "Forging secure on-chain spells and auditing the sacred scrolls of Ethereum.",
+    "github": "https://github.com/big-dudu-mosty",
+    "twitter": "https://x.com/EddaMikola12279"
   }
 ]

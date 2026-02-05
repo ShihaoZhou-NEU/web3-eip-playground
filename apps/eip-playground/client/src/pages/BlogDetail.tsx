@@ -114,7 +114,7 @@ export default function BlogDetail() {
             <h1 className="text-4xl font-pixel text-destructive mb-4">
               POST NOT FOUND
             </h1>
-            <p className="text-muted-foreground mb-8">抱歉，找不到这篇文章。</p>
+            <p className="text-muted-foreground mb-8">Sorry, this article cannot be found.</p>
             <Link href="/blog">
               <Button
                 variant="outline"
@@ -134,7 +134,7 @@ export default function BlogDetail() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container max-w-4xl mx-auto py-16 px-4 ">
+      <div className="container max-w-7xl mx-auto py-16 px-4 ">
         {/* Back Button */}
         <Link href="/blog">
           <Button
