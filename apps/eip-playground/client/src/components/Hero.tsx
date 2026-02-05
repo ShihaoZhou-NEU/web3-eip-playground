@@ -29,7 +29,7 @@ export default function Hero() {
               className="font-mono text-xl md:text-2xl text-gray-300 max-w-[780px] bg-black/50 p-4 border-l-4 border-primary"
               style={{ fontSize: "22px", width: "780px" }}
             >
-              Your Web3 odyssey starts here!~ level up your skills through play
+              Your Web3 odyssey starts here!~ Level up your skills through play
               and visual storytelling.
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function Hero() {
 
           <div
             className="flex gap-8 text-xs font-mono text-gray-400"
-            style={{ width: "1700px" }}
+            // style={{ width: "1700px" }}
           >
             <div
               className="flex items-center gap-2"
