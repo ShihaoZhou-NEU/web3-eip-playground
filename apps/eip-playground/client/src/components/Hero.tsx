@@ -1,7 +1,16 @@
-import { Button } from "@/components/ui/button";
 import Typewriter from "./Typewriter";
+import { useLocation } from "wouter";
+import { eips } from "@/data/eips";
 
 export default function Hero() {
+  const [, navigate] = useLocation();
+
+  const handleRandomEIP = () => {
+    const eipIds = Object.keys(eips);
+    if (!eipIds.length) return;
+    const randomId = eipIds[Math.floor(Math.random() * eipIds.length)];
+    navigate(`/eip/${randomId}`);
+  };
   const typewriterTexts = [
     "What do you wanna learn today?",
     "What can I help you with?",
@@ -48,7 +57,10 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-6 mt-4" style={{ width: "700px" }}>
             {/* Play Games Button */}
-            <button className="btn-pixel btn-pixel-danger text-lg group relative pl-16 pr-8 h-16 overflow-visible">
+            <button
+              onClick={handleRandomEIP}
+              className="btn-pixel btn-pixel-danger text-lg group relative pl-16 pr-8 h-16 overflow-visible"
+            >
               <div className="absolute -left-6 -top-6 w-20 h-20 transition-transform duration-300 group-hover:scale-200 group-hover:-rotate-12 z-20">
                 <img
                   src="/images/icons/pixel-gamepad.png"
@@ -61,6 +73,7 @@ export default function Hero() {
 
             {/* Read Comics Button */}
             <button
+              onClick={() => navigate("/comics")}
               className="btn-pixel btn-pixel-primary text-lg group relative pl-16 pr-8 h-16 overflow-visible"
               style={{ borderColor: "#ffffff" }}
             >

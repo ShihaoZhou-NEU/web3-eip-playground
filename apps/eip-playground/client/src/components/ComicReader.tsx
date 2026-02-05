@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createPortal } from "react-dom";
 
 interface ComicReaderProps {
   eipId: string;
@@ -24,6 +25,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([1]));
   const [isLoading, setIsLoading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Optimize preloading logic to preload all images at the start
   useEffect(() => {
@@ -64,6 +66,10 @@ const ComicReader: React.FC<ComicReaderProps> = ({
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
   }, []);
 
   const nextPage = () => {
@@ -233,11 +239,14 @@ const ComicReader: React.FC<ComicReaderProps> = ({
       </div>
 
       {/* Fullscreen Overlay */}
-      {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-          <ReaderContent isFullscreenMode={true} />
-        </div>
-      )}
+      {isFullscreen &&
+        isMounted &&
+        createPortal(
+          <div className="fixed inset-0 z-[999] bg-black flex items-center justify-center">
+            <ReaderContent isFullscreenMode={true} />
+          </div>,
+          document.body
+        )}
     </>
   );
 };
