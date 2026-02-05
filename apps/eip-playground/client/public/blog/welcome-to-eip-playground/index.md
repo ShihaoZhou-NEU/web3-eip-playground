@@ -1,6 +1,6 @@
 ---
 title: "Welcome to EIP Playground"
-date: "2024-01-15"
+date: "2026-02-05"
 author: "Dr. Panda"
 summary: "Unlock the secrets of Ethereum Improvement Proposals through games and interaction. Your Web3 quest starts here!"
 cover: "/blog/welcome-to-eip-playground/cover.png"

@@ -1,6 +1,6 @@
 ---
 title: "The Ultimate Guide to ERC-8004: Crafting Trusted AI Agents"
-date: "2024-01-20"
+date: "2026-02-05"
 author: "Dr. Panda"
 summary: "Level up your knowledge on ERC-8004! Learn how to summon verifiable, rock-solid AI Agents on the blockchain. 🤖🚀"
 cover: "/blog/erc-8004-guide/cover.png"
