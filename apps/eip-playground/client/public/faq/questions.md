@@ -78,8 +78,7 @@ We are always happy to hear from you:
 
 - **GitHub**: Visit our repository and open an Issue.
 - **Twitter**: Follow us for the latest updates and news. 🐦
-- **Discord**: Join the squad and chat with the team and other learners. 🤝
-- **Email**: Send us a message at **team@eipplayground.com**.
+- **Email**: Send us a message at **zhou.shih@northeastern.edu**.
 
 ---
 

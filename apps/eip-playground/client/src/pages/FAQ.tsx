@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import Header from "@/components/Header";
 import { Streamdown } from "streamdown";
 import PageBanner from "@/components/PageBanner";
+import { Link } from "wouter";
 
 interface FAQItem {
   id: number;
@@ -156,12 +157,12 @@ export default function FAQ() {
               Didn't find what you need? Head over to the Team page and say
               hello!
             </p>
-            <a
+            <Link
               href="/team"
               className="inline-block px-6 py-3 bg-accent hover:bg-accent/80 text-accent-foreground font-pixel rounded transition-colors"
             >
               CONTACT TEAM
-            </a>
+            </Link>
           </Card>
         </div>
       </div>
