@@ -109,7 +109,7 @@ export default function BlogDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container max-w-4xl mx-auto py-16 px-4">
+      <div className="container max-w-4xl mx-auto py-10 sm:py-14 md:py-16 px-4">
           <Card className="p-12 text-center border-4 border-destructive">
             <h1 className="text-4xl font-pixel text-destructive mb-4">
               POST NOT FOUND
@@ -158,12 +158,12 @@ export default function BlogDetail() {
         )}
 
         {/* Article Header */}
-        <Card className="p-8 mb-8 border-4 border-primary bg-gradient-to-br from-primary/10 to-accent/10">
-          <h1 className="text-4xl md:text-5xl font-pixel text-primary mb-6 pixel-text-shadow">
+        <Card className="p-5 sm:p-8 mb-6 md:mb-8 border-4 border-primary bg-gradient-to-br from-primary/10 to-accent/10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-pixel text-primary mb-4 sm:mb-6 pixel-text-shadow">
             {metadata.title}
           </h1>
 
-          <div className="flex flex-wrap gap-6 text-muted-foreground">
+          <div className="flex flex-wrap gap-4 sm:gap-6 text-muted-foreground text-sm sm:text-base">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
               <span className="font-mono">{metadata.date}</span>
@@ -175,30 +175,21 @@ export default function BlogDetail() {
           </div>
 
           {metadata.summary && (
-            <p className="mt-6 text-lg text-muted-foreground italic border-l-4 border-accent pl-4">
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-muted-foreground italic border-l-4 border-accent pl-4">
               {metadata.summary}
             </p>
           )}
         </Card>
 
         {/* Article Content */}
-        <Card className="p-8 md:p-12 border-2 border-primary/30 bg-card/50 backdrop-blur">
-          {/* <article className="prose prose-lg max-w-none dark:prose-invert
-            prose-headings:font-pixel prose-headings:text-primary
-            prose-p:text-foreground prose-p:leading-relaxed
-            prose-a:text-accent prose-a:no-underline hover:prose-a:underline
-            prose-code:text-accent prose-code:bg-accent/10 prose-code:px-2 prose-code:py-1 prose-code:rounded
-            prose-pre:bg-muted prose-pre:border-2 prose-pre:border-primary/30
-            prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:text-muted-foreground
-            prose-strong:text-primary prose-strong:font-bold
-            prose-ul:list-disc prose-ol:list-decimal
-            prose-img:rounded-lg prose-img:border-2 prose-img:border-primary/30"> */}
-          <Streamdown>{content}</Streamdown>
-          {/* </article> */}
+        <Card className="p-5 sm:p-8 md:p-12 border-2 border-primary/30 bg-card/50 backdrop-blur">
+          <article className="markdown-content text-foreground">
+            <Streamdown>{content}</Streamdown>
+          </article>
         </Card>
 
         {/* Back Button (Bottom) */}
-        <div className="mt-12 text-center ">
+        <div className="mt-10 sm:mt-12 text-center">
           <Link href="/blog">
             <Button
               variant="outline"

@@ -118,7 +118,7 @@ export default function Blog() {
       {/* Banner */}
       <PageBanner title="BLOG" subtitle="Explore EIP Insights & Updates" />
 
-      <div className="container max-w-6xl mx-auto py-16 px-4">
+      <div className="container max-w-6xl mx-auto py-10 sm:py-14 md:py-16 px-4">
         {/* Header */}
         <div className="text-center mb-12">
           {/* <div className="flex items-center justify-center gap-4 mb-4">
@@ -141,10 +141,10 @@ export default function Blog() {
             <p className="text-sm text-muted-foreground mt-4">Coming soon...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
             {posts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>
-                <Card className="group h-full overflow-hidden border-4 border-primary/30 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-card/50 backdrop-blur cursor-pointer">
+                <Card className="group h-full overflow-hidden border-4 border-primary/30 hover:border-primary transition-all duration-300 hover:shadow-2xl bg-card/50 backdrop-blur cursor-pointer">
                   {/* Cover Image */}
                   {post.cover ? (
                     <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
@@ -165,13 +165,13 @@ export default function Blog() {
                   )}
 
                   {/* Content */}
-                  <div className="p-6">
-                    <h2 className="text-2xl font-pixel text-foreground mb-3 group-hover:text-primary transition-colors">
+                  <div className="p-4 sm:p-6">
+                    <h2 className="text-xl sm:text-2xl font-pixel text-foreground mb-3 group-hover:text-primary transition-colors">
                       {post.title}
                     </h2>
 
                     {/* Metadata */}
-                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
+                    <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-4">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         <span className="font-mono">{post.date}</span>
@@ -182,12 +182,12 @@ export default function Blog() {
                       </div>
                     </div>
 
-                    <p className="text-muted-foreground mb-4 line-clamp-3">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-4 line-clamp-3">
                       {post.summary}
                     </p>
 
                     {/* Read More */}
-                    <div className="flex items-center gap-2 text-primary font-pixel group-hover:gap-4 transition-all">
+                    <div className="flex items-center gap-2 text-primary font-pixel text-xs sm:text-sm group-hover:gap-4 transition-all">
                       <span>READ MORE</span>
                       <ArrowRight className="w-5 h-5" />
                     </div>

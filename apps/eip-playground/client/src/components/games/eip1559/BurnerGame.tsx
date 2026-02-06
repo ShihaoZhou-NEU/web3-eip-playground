@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import AITutor, { TutorPose } from "@/components/AITutor";
+import { getTutorGreeting, getEip1559TutorMessage } from "@/data/tutorScripts";
 
 // Constants
 const TARGET_GAS = 15000000; // Target block size
@@ -25,7 +26,12 @@ interface ChatMessage {
   timestamp: number;
 }
 
-const BurnerGame: React.FC = () => {
+type BurnerGameProps = {
+  // Forward tutor messages to the page-level tutor.
+  onTutorSpeak?: (message: string, pose?: TutorPose) => void;
+};
+
+const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
   const [baseFee, setBaseFee] = useState<number>(100);
   const [blockHistory, setBlockHistory] = useState<
     { block: number; baseFee: number; usage: number }[]
@@ -49,7 +55,10 @@ const BurnerGame: React.FC = () => {
   const prevIncludedRef = useRef<boolean>(true);
 
   // Tutor speak function
-  const tutorSpeak = (message: string, pose: TutorPose = "teaching") => {
+  const internalTutorSpeak = (
+    message: string,
+    pose: TutorPose = "teaching"
+  ) => {
     setTutorMessage(message);
     setTutorPose(pose);
     setChatHistory(prev => [
@@ -62,17 +71,19 @@ const BurnerGame: React.FC = () => {
       },
     ]);
   };
+  const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
 
-  // Initial greeting
+  // Initial greeting (only when running standalone, not embedded).
   useEffect(() => {
+    if (onTutorSpeak) return;
     if (!hasGreeted) {
       setHasGreeted(true);
       tutorSpeak(
-        "Hello! I'm Dr. Panda, your EIP-1559 guide. I'll help you understand how the base fee mechanism works. Try adjusting the network congestion slider and watch what happens!",
+        getTutorGreeting({ eipId: "eip-1559", gameId: "burner" }),
         "standing"
       );
     }
-  }, [hasGreeted]);
+  }, [hasGreeted, onTutorSpeak, tutorSpeak]);
 
   const calculateNextBaseFee = (currentBaseFee: number, gasUsed: number) => {
     // EIP-1559 Formula
@@ -136,12 +147,18 @@ const BurnerGame: React.FC = () => {
         if (Math.abs(feeChange) > 10) {
           if (feeChange > 0) {
             tutorSpeak(
-              `Base fee increased from ${prevBaseFee} to ${next} Gwei! This happens when blocks are more than 50% full. The network is getting congested.`,
+              getEip1559TutorMessage("base_fee_rise", {
+                prevFee: prevBaseFee,
+                nextFee: next,
+              }),
               "teaching"
             );
           } else {
             tutorSpeak(
-              `Base fee decreased from ${prevBaseFee} to ${next} Gwei! This happens when blocks are less than 50% full. The network has spare capacity.`,
+              getEip1559TutorMessage("base_fee_drop", {
+                prevFee: prevBaseFee,
+                nextFee: next,
+              }),
               "praising"
             );
           }
@@ -162,19 +179,19 @@ const BurnerGame: React.FC = () => {
     };
   }, [isPlaying, demandLevel, blockNumber]);
 
-  // Monitor transaction inclusion status
+  // Monitor transaction inclusion status and explain inclusion/refund logic.
   useEffect(() => {
     const totalCost = baseFee + priorityFee;
     const isIncluded = maxFee >= totalCost;
 
     if (prevIncludedRef.current && !isIncluded) {
       tutorSpeak(
-        `⚠️ Your transaction was rejected! Your max fee (${maxFee} Gwei) is lower than the required cost (${totalCost} Gwei). Try increasing your max fee cap.`,
+        getEip1559TutorMessage("tx_rejected", { maxFee, totalCost }),
         "thinking"
       );
     } else if (!prevIncludedRef.current && isIncluded) {
       tutorSpeak(
-        `✅ Great! Your transaction is now included. You set a max fee of ${maxFee} Gwei, but you'll only pay ${totalCost} Gwei. The difference is automatically refunded!`,
+        getEip1559TutorMessage("tx_included", { maxFee, totalCost }),
         "praising"
       );
     }
@@ -182,19 +199,19 @@ const BurnerGame: React.FC = () => {
     prevIncludedRef.current = isIncluded;
   }, [baseFee, priorityFee, maxFee]);
 
-  // Monitor demand level changes
+  // Monitor demand level changes to explain base fee dynamics.
   const prevDemandRef = useRef(demandLevel);
   useEffect(() => {
     const demandChange = demandLevel - prevDemandRef.current;
     if (Math.abs(demandChange) >= 20) {
       if (demandLevel > 50) {
         tutorSpeak(
-          `You've increased network congestion to ${demandLevel}%! Watch how the base fee starts climbing. This is EIP-1559's automatic price discovery in action.`,
+          getEip1559TutorMessage("demand_high", { demandLevel }),
           "working"
         );
       } else {
         tutorSpeak(
-          `You've reduced network congestion to ${demandLevel}%. The base fee will gradually decrease, making transactions cheaper for everyone.`,
+          getEip1559TutorMessage("demand_low", { demandLevel }),
           "praising"
         );
       }
@@ -210,19 +227,19 @@ const BurnerGame: React.FC = () => {
   const minerTip = isIncluded ? Math.min(maxFee - baseFee, priorityFee) : 0;
 
   return (
-    <div className="bg-card border-4 border-border p-6 shadow-pixel relative overflow-hidden">
+    <div className="bg-card border-4 border-border p-4 sm:p-6 shadow-pixel relative overflow-hidden">
       {/* CRT Scanline Effect */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-0 pointer-events-none bg-[length:100%_4px,3px_100%]" />
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-6 border-b-4 border-border pb-4">
-          <h2 className="text-xl md:text-2xl font-pixel text-primary flex items-center gap-3 text-shadow-pixel">
-            <Flame className="text-orange-500 w-6 h-6 md:w-8 md:h-8" />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6 border-b-4 border-border pb-3 sm:pb-4">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-pixel text-primary flex items-center gap-2 sm:gap-3 text-shadow-pixel">
+            <Flame className="text-orange-500 w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
             EIP-1559 SIMULATOR
           </h2>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div
-              className={`px-3 py-1 border-2 font-pixel text-xs ${baseFee > 150 ? "bg-red-500/20 border-red-500 text-red-400" : "bg-green-500/20 border-green-500 text-green-400"}`}
+              className={`px-2 sm:px-3 py-1 border-2 font-pixel text-[10px] sm:text-xs ${baseFee > 150 ? "bg-red-500/20 border-red-500 text-red-400" : "bg-green-500/20 border-green-500 text-green-400"}`}
             >
               BASE FEE: {baseFee} GWEI
             </div>
@@ -230,7 +247,7 @@ const BurnerGame: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="font-pixel text-xs h-8 border-2"
+              className="font-pixel text-[10px] sm:text-xs h-8 border-2"
             >
               {isPlaying ? (
                 <Pause className="w-4 h-4 mr-2" />
@@ -244,10 +261,10 @@ const BurnerGame: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Control Panel */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
             {/* Network Demand Control */}
-            <div className="bg-black/40 p-4 border-2 border-border/50">
-              <h3 className="text-xs font-pixel text-muted-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <div className="bg-black/40 p-3 sm:p-4 border-2 border-border/50">
+              <h3 className="text-[10px] sm:text-xs font-pixel text-muted-foreground mb-3 sm:mb-4 flex items-center gap-2 uppercase tracking-wider">
                 <Activity size={14} /> NETWORK CONGESTION
               </h3>
               <div className="px-2 mb-2">
@@ -274,7 +291,7 @@ const BurnerGame: React.FC = () => {
                 </span>
                 <span>CONGESTED (100%)</span>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-4 leading-relaxed border-t border-border/30 pt-2">
+              <p className="text-[10px] text-muted-foreground mt-3 sm:mt-4 leading-relaxed border-t border-border/30 pt-2">
                 {">"} 50% Fill: Base Fee INCREASES
                 <br />
                 {"<"} 50% Fill: Base Fee DECREASES
@@ -282,8 +299,8 @@ const BurnerGame: React.FC = () => {
             </div>
 
             {/* User Transaction Settings */}
-            <div className="bg-black/40 p-4 border-2 border-border/50">
-              <h3 className="text-xs font-pixel text-muted-foreground mb-4 uppercase tracking-wider">
+            <div className="bg-black/40 p-3 sm:p-4 border-2 border-border/50">
+              <h3 className="text-[10px] sm:text-xs font-pixel text-muted-foreground mb-3 sm:mb-4 uppercase tracking-wider">
                 YOUR TRANSACTION
               </h3>
 
@@ -296,7 +313,7 @@ const BurnerGame: React.FC = () => {
                     type="number"
                     value={maxFee}
                     onChange={e => setMaxFee(Number(e.target.value))}
-                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-sm w-24 focus:outline-none focus:border-primary"
+                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-xs sm:text-sm w-20 sm:w-24 focus:outline-none focus:border-primary"
                   />
                   <span className="text-xs font-pixel text-muted-foreground">
                     GWEI
@@ -313,7 +330,7 @@ const BurnerGame: React.FC = () => {
                     type="number"
                     value={priorityFee}
                     onChange={e => setPriorityFee(Number(e.target.value))}
-                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-sm w-24 focus:outline-none focus:border-primary"
+                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-xs sm:text-sm w-20 sm:w-24 focus:outline-none focus:border-primary"
                   />
                   <span className="text-xs font-pixel text-muted-foreground">
                     GWEI
@@ -324,9 +341,9 @@ const BurnerGame: React.FC = () => {
           </div>
 
           {/* Visualizers */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Chart */}
-            <div className="h-48 w-full bg-black/60 border-2 border-border p-2 relative">
+            <div className="h-40 sm:h-48 w-full bg-black/60 border-2 border-border p-2 relative">
               <div className="absolute top-2 right-2 z-10 flex gap-4 text-[10px] font-mono">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-[#8a63d2]"></div>Base Fee
@@ -377,22 +394,22 @@ const BurnerGame: React.FC = () => {
             </div>
 
             {/* Transaction Result Block */}
-            <div className="bg-black/60 p-6 border-2 border-border">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xs font-pixel text-muted-foreground uppercase tracking-wider">
+            <div className="bg-black/60 p-4 sm:p-6 border-2 border-border">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <h3 className="text-[10px] sm:text-xs font-pixel text-muted-foreground uppercase tracking-wider">
                   CURRENT BLOCK STATUS
                 </h3>
                 <div
-                  className={`px-3 py-1 border-2 font-pixel text-xs ${isIncluded ? "bg-green-500/20 border-green-500 text-green-400" : "bg-red-500/20 border-red-500 text-red-400"}`}
+                  className={`px-2 sm:px-3 py-1 border-2 font-pixel text-[10px] sm:text-xs ${isIncluded ? "bg-green-500/20 border-green-500 text-green-400" : "bg-red-500/20 border-red-500 text-red-400"}`}
                 >
                   {isIncluded ? "✅ INCLUDED" : "⛔ REJECTED (MAX FEE TOO LOW)"}
                 </div>
               </div>
 
               {isIncluded && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {/* Cost Breakdown Bar */}
-                  <div className="h-12 w-full flex border-2 border-border relative bg-card/30">
+                  <div className="h-10 sm:h-12 w-full flex border-2 border-border relative bg-card/30">
                     {/* Burn Part */}
                     <div
                       className="bg-orange-500/80 flex items-center justify-center text-[10px] font-pixel text-white transition-all duration-300 border-r-2 border-black/20 relative overflow-hidden group"
@@ -416,7 +433,7 @@ const BurnerGame: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 text-center font-mono text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-center font-mono text-xs sm:text-sm">
                     <div className="bg-card/50 p-3 border border-border/50">
                       <div className="text-muted-foreground text-[10px] uppercase mb-1">
                         Actual Paid
@@ -455,11 +472,13 @@ const BurnerGame: React.FC = () => {
       </div>
 
       {/* AI Tutor */}
-      <AITutor
-        message={tutorMessage}
-        pose={tutorPose}
-        chatHistory={chatHistory}
-      />
+      {!onTutorSpeak && (
+        <AITutor
+          message={tutorMessage}
+          pose={tutorPose}
+          chatHistory={chatHistory}
+        />
+      )}
     </div>
   );
 };

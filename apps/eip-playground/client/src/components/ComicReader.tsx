@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createPortal } from "react-dom";
 
 interface ComicReaderProps {
   eipId: string;
@@ -22,40 +23,46 @@ const ComicReader: React.FC<ComicReaderProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([1]));
+  const loadedImagesRef = useRef<Set<number>>(new Set([1]));
   const [isLoading, setIsLoading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const touchStartX = React.useRef<number | null>(null);
 
-  // Optimize preloading logic to preload all images at the start
+  // Optimize preloading logic to preload all images at the start.
   useEffect(() => {
-    const preloadAllImages = () => {
-      for (let i = 1; i <= pageCount; i++) {
-        if (!loadedImages.has(i)) {
-          const img = new Image();
-          img.src = `/comics/${eipId}/${i}.jpg`;
-          img.onload = () => {
-            setLoadedImages(prev => new Set(prev).add(i));
-          };
-        }
-      }
-    };
+    loadedImagesRef.current = new Set([1]);
+    setLoadedImages(new Set([1]));
 
-    preloadAllImages();
-  }, [eipId, pageCount, loadedImages]);
+    for (let i = 1; i <= pageCount; i++) {
+      const img = new Image();
+      img.src = `/comics/${eipId}/${i}.jpg`;
+      img.onload = () => {
+        if (loadedImagesRef.current.has(i)) return;
+        loadedImagesRef.current.add(i);
+        setLoadedImages(new Set(loadedImagesRef.current));
+      };
+    }
+  }, [eipId, pageCount]);
 
   // Handle page change loading state
   useEffect(() => {
-    if (!loadedImages.has(currentPage)) {
+    if (!loadedImagesRef.current.has(currentPage)) {
       setIsLoading(true);
       const img = new Image();
       img.src = `/comics/${eipId}/${currentPage}.jpg`;
       img.onload = () => {
-        setLoadedImages(prev => new Set(prev).add(currentPage));
+        if (!loadedImagesRef.current.has(currentPage)) {
+          loadedImagesRef.current.add(currentPage);
+          setLoadedImages(new Set(loadedImagesRef.current));
+        }
         setIsLoading(false);
       };
     } else {
       setIsLoading(false);
     }
-  }, [currentPage, eipId, loadedImages]);
+  }, [currentPage, eipId]);
 
   // Handle ESC key to exit fullscreen
   useEffect(() => {
@@ -64,6 +71,18 @@ const ComicReader: React.FC<ComicReaderProps> = ({
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 640px)");
+    const handleChange = () => setIsMobileScreen(mql.matches);
+    handleChange();
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
   }, []);
 
   const nextPage = () => {
@@ -83,7 +102,29 @@ const ComicReader: React.FC<ComicReaderProps> = ({
     setIsFullscreen(!isFullscreen);
   };
 
-  const ReaderContent = ({ isFullscreenMode = false }) => (
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const endX = e.changedTouches[0]?.clientX ?? null;
+    if (endX === null) return;
+    const deltaX = endX - touchStartX.current;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX < 0) {
+        nextPage();
+      } else {
+        prevPage();
+      }
+    }
+    touchStartX.current = null;
+  };
+
+  const ReaderContent = ({ isFullscreenMode = false }) => {
+    const fullscreenLandscape = isFullscreenMode && isMobileScreen;
+
+    return (
     <div
       className={`relative flex flex-col items-center justify-center bg-black/90 w-full ${isFullscreenMode ? "h-screen" : ""}`}
       onKeyDown={handleKeyDown}
@@ -91,7 +132,11 @@ const ComicReader: React.FC<ComicReaderProps> = ({
     >
       {/* Comic Image Container */}
       <div
-        className={`relative w-full flex items-center justify-center p-4 md:p-8 overflow-hidden ${isFullscreenMode ? "h-full" : "aspect-video"}`}
+        className={`relative w-full flex items-center justify-center ${
+          fullscreenLandscape ? "p-0 overflow-visible" : "p-4 md:p-8 overflow-hidden"
+        } ${isFullscreenMode ? "h-full" : "aspect-video"}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {isLoading ? (
           <div className="flex flex-col items-center gap-4 text-primary animate-pulse">
@@ -106,7 +151,13 @@ const ComicReader: React.FC<ComicReaderProps> = ({
               loadedImages.has(currentPage)
                 ? ""
                 : "animate-in fade-in duration-300"
-            } ${isFullscreenMode ? "max-h-[90vh] max-w-[90vw]" : "w-full h-full"}`}
+            } ${
+              isFullscreenMode
+                ? fullscreenLandscape
+                  ? "comic-fullscreen-landscape"
+                  : "max-h-[90vh] max-w-[90vw]"
+                : "w-full h-full"
+            }`}
           />
         )}
 
@@ -132,6 +183,26 @@ const ComicReader: React.FC<ComicReaderProps> = ({
         >
           <ChevronRight size={32} />
         </button>
+
+        {/* Mobile tap zones: left half = prev, right half = next */}
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            prevPage();
+          }}
+          disabled={currentPage === 1}
+          className="absolute inset-y-0 left-0 w-1/2 md:hidden z-10 disabled:opacity-0"
+          aria-label="Previous page"
+        />
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            nextPage();
+          }}
+          disabled={currentPage === pageCount}
+          className="absolute inset-y-0 right-0 w-1/2 md:hidden z-10 disabled:opacity-0"
+          aria-label="Next page"
+        />
 
         {/* Close Fullscreen Button */}
         {isFullscreenMode && (
@@ -204,26 +275,27 @@ const ComicReader: React.FC<ComicReaderProps> = ({
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   return (
     <>
       <div className="w-full">
         <div className="bg-card border-4 border-border shadow-pixel overflow-hidden rounded-xl">
           {/* Header */}
-          <div className="bg-primary/10 border-b-4 border-border p-4 flex justify-between items-center">
-            <h3 className="font-pixel text-lg md:text-xl text-primary flex items-center gap-2">
-              <BookOpen className="w-6 h-6" />
+          <div className="bg-primary/10 border-b-4 border-border p-3 sm:p-4 flex justify-between items-center gap-2">
+            <h3 className="font-pixel text-sm sm:text-lg md:text-xl text-primary flex items-center gap-2">
+              <BookOpen className="w-4 h-4 sm:w-6 sm:h-6" />
               {title}
             </h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleFullscreen}
-              className="font-pixel text-xs hover:bg-primary hover:text-primary-foreground"
+              className="font-pixel text-[10px] sm:text-xs hover:bg-primary hover:text-primary-foreground"
             >
-              <Maximize2 className="w-4 h-4 mr-2" />
-              FULLSCREEN
+              <Maximize2 className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">FULLSCREEN</span>
             </Button>
           </div>
 
@@ -233,11 +305,14 @@ const ComicReader: React.FC<ComicReaderProps> = ({
       </div>
 
       {/* Fullscreen Overlay */}
-      {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-          <ReaderContent isFullscreenMode={true} />
-        </div>
-      )}
+      {isFullscreen &&
+        isMounted &&
+        createPortal(
+          <div className="fixed inset-0 z-[999] bg-black flex items-center justify-center">
+            <ReaderContent isFullscreenMode={true} />
+          </div>,
+          document.body
+        )}
     </>
   );
 };

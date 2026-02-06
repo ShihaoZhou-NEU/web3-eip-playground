@@ -1,10 +1,11 @@
+import { useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import ComicsPage from "@/pages/ComicsPage";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { ScrollProvider } from "./contexts/ScrollContext";
 import Home from "./pages/Home";
 import EIPDetail from "./pages/EIPDetail";
 import Blog from "./pages/Blog";
@@ -28,6 +29,7 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/comics"} component={ComicsPage} />
       <Route path={"/eip/:id"} component={EIPDetail} />
       <Route path={"/404"} component={NotFound} />
       <Route path={"/blog"} component={Blog} />
@@ -38,6 +40,42 @@ function Router() {
       <Route component={NotFound} />
     </Switch>
   );
+}
+
+function ScrollRestoration() {
+  const [location] = useLocation();
+  const previousLocationRef = useRef(location);
+  const positionsRef = useRef<Record<string, number>>({});
+  const isPopstateRef = useRef(false);
+
+  useEffect(() => {
+    const handlePopstate = () => {
+      isPopstateRef.current = true;
+    };
+
+    window.addEventListener("popstate", handlePopstate);
+    return () => window.removeEventListener("popstate", handlePopstate);
+  }, []);
+
+  useEffect(() => {
+    positionsRef.current[previousLocationRef.current] = window.scrollY;
+
+    const isEipDetail = location.startsWith("/eip/");
+    if (isEipDetail) {
+      window.scrollTo(0, 0);
+      positionsRef.current[location] = 0;
+    } else if (isPopstateRef.current) {
+      const savedPosition = positionsRef.current[location] ?? 0;
+      window.scrollTo(0, savedPosition);
+    } else {
+      window.scrollTo(0, 0);
+    }
+
+    isPopstateRef.current = false;
+    previousLocationRef.current = location;
+  }, [location]);
+
+  return null;
 }
 
 function App() {
@@ -53,15 +91,15 @@ function App() {
               fontStack: "system",
               overlayBlur: "small",
             })}
+            modalSize="compact"
           >
             <ThemeProvider defaultTheme="dark">
-              <ScrollProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Router />
-                  <Analytics />
-                </TooltipProvider>
-              </ScrollProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Router />
+                <ScrollRestoration />
+                <Analytics />
+              </TooltipProvider>
             </ThemeProvider>
           </RainbowKitProvider>
         </QueryClientProvider>

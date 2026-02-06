@@ -83,7 +83,7 @@ export default function FAQ() {
       {/* Banner */}
       <PageBanner title="FAQ" subtitle="Frequently Asked Questions" />
 
-      <div className="container max-w-4xl mx-auto py-16 px-4">
+      <div className="container max-w-4xl mx-auto py-10 sm:py-14 md:py-16 px-4">
         {/* Header */}
         <div className="text-center mb-12">
           {/* <div className="flex items-center justify-center gap-4 mb-4">
@@ -98,7 +98,7 @@ export default function FAQ() {
         </div>
 
         {/* FAQ List */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {faqs.map(faq => (
             <Card
               key={faq.id}
@@ -106,21 +106,21 @@ export default function FAQ() {
             >
               <button
                 onClick={() => toggleFAQ(faq.id)}
-                className="w-full p-6 text-left flex items-start justify-between gap-4 hover:bg-primary/5 transition-colors"
+                className="w-full p-4 sm:p-6 text-left flex items-start justify-between gap-4 hover:bg-primary/5 transition-colors"
               >
                 <div className="flex-1">
                   <div className="flex items-start gap-3">
-                    <span className="text-primary font-pixel text-xl shrink-0">
+                    <span className="text-primary font-pixel text-lg sm:text-xl shrink-0">
                       Q:
                       {/* {faq.id + 1} */}
                     </span>
-                    <h3 className="text-xl font-bold text-foreground">
+                    <h3 className="text-base sm:text-xl font-bold text-foreground">
                       {faq.question}
                     </h3>
                   </div>
                 </div>
                 <ChevronDown
-                  className={`w-6 h-6 text-primary shrink-0 transition-transform duration-300 ${
+                  className={`w-5 h-5 sm:w-6 sm:h-6 text-primary shrink-0 transition-transform duration-300 ${
                     openId === faq.id ? "rotate-180" : ""
                   }`}
                 />
@@ -133,12 +133,14 @@ export default function FAQ() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <div className="px-6 pb-6 pt-2">
-                    <div className="flex items-start gap-3 pl-10">
-                      <span className="text-accent font-pixel text-xl shrink-0">
+                  <div className="px-4 sm:px-6 pb-6 pt-2">
+                    <div className="flex items-start gap-3 pl-4 sm:pl-6">
+                      <span className="text-accent font-pixel text-lg sm:text-xl shrink-0">
                         A:
                       </span>
-                      <Streamdown>{faq.answer}</Streamdown>
+                      <div className="markdown-content flex-1 min-w-0">
+                        <Streamdown>{faq.answer}</Streamdown>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -148,18 +150,18 @@ export default function FAQ() {
         </div>
 
         {/* Contact Section */}
-        <div className="mt-16 text-center">
-          <Card className="p-8 border-2 border-accent/30 bg-accent/5">
-            <h2 className="text-2xl font-pixel text-accent mb-4">
+        <div className="mt-12 sm:mt-16 text-center">
+          <Card className="p-5 sm:p-8 border-2 border-accent/30 bg-accent/5">
+            <h2 className="text-xl sm:text-2xl font-pixel text-accent mb-4">
               More questions?
             </h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-sm sm:text-base text-muted-foreground mb-6">
               Didn't find what you need? Head over to the Team page and say
               hello!
             </p>
             <Link
               href="/team"
-              className="inline-block px-6 py-3 bg-accent hover:bg-accent/80 text-accent-foreground font-pixel rounded transition-colors"
+              className="inline-block px-5 py-3 bg-accent hover:bg-accent/80 text-accent-foreground font-pixel rounded transition-colors text-sm sm:text-base"
             >
               CONTACT TEAM
             </Link>

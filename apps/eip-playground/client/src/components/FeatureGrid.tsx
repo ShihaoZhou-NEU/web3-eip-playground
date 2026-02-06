@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { eips } from "@/data/eips";
 
 interface FeatureCardProps {
   id: string;
@@ -24,7 +25,7 @@ function FeatureCard({
   return (
     <Link
       href={`/eip/${id}`}
-      className="block group h-[320px] perspective-1000 cursor-pointer"
+      className="block group h-[260px] sm:h-[300px] lg:h-[320px] perspective-1000 cursor-pointer"
     >
       <div
         className="relative w-full h-full transition-transform duration-500 transform-style-3d group-hover:rotate-y-180"
@@ -80,45 +81,24 @@ function FeatureCard({
 }
 
 export default function FeatureGrid() {
-  const features = [
-    {
-      id: "eip-1559",
-      title: "EIP-1559",
-      subtitle: "Gas Fee Market",
-      description:
-        "A transaction pricing mechanism that includes fixed-per-block network fee that is burned and dynamically expands/contracts block sizes.",
-      image: "/images/eip-1559-gas.png",
-      backgroundImage: "/images/eip-1559-gas.png",
-      gradient: "bg-gradient-to-br from-red-900 to-yellow-700",
-      icon: "🔥",
-    },
-    {
-      id: "eip-7702",
-      title: "EIP-7702",
-      subtitle: "Account Abstraction",
-      description:
-        "Adds a new transaction type that sets the code for an EOA for one transaction, enabling batching and sponsorship.",
-      image: "/images/eip-7702-robot.png",
-      backgroundImage: "/images/eip-7702-robot.png",
-      gradient: "bg-gradient-to-br from-orange-800 to-amber-600",
-      icon: "🤖",
-    },
-    {
-      id: "erc-8004",
-      title: "ERC-8004",
-      subtitle: "Trustless Agents",
-      description:
-        "A standard for discovering, choosing, and interacting with AI agents across organizational boundaries using on-chain registries.",
-      image: "/images/erc-8004-agent.png",
-      backgroundImage: "/images/erc-8004-agent.png",
-      gradient: "bg-gradient-to-br from-blue-900 to-purple-800",
-      icon: "📦",
-    },
-  ];
+  const featureOrder = ["eip-1559", "eip-7702", "erc-8004"];
+  const features = featureOrder
+    .map(id => eips[id])
+    .filter(Boolean)
+    .map(eip => ({
+      id: eip.id,
+      title: eip.title,
+      subtitle: eip.subtitle,
+      description: eip.description,
+      image: eip.image,
+      backgroundImage: eip.image,
+      gradient: eip.gradient,
+      icon: eip.icon,
+    }));
 
   return (
     <section className="container py-12 relative z-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {features.map((feature, index) => (
           <FeatureCard key={index} {...feature} />
         ))}

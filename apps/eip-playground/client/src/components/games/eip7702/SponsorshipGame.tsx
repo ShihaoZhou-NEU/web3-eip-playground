@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { getEip7702TutorMessage } from "@/data/tutorScripts";
 
-export const SponsorshipGame: React.FC = () => {
+type SponsorshipGameProps = {
+  // Forward tutor messages to the page-level tutor.
+  onTutorSpeak?: (message: string) => void;
+};
+
+export const SponsorshipGame: React.FC<SponsorshipGameProps> = ({
+  onTutorSpeak,
+}) => {
   const [gasBalance, setGasBalance] = useState(0);
   const [hasApple, setHasApple] = useState(false);
   const [showPaymaster, setShowPaymaster] = useState(false);
@@ -19,9 +27,11 @@ export const SponsorshipGame: React.FC = () => {
   const tryClaim = () => {
     if (gasBalance === 0) {
       setMessage("ERROR: INSUFFICIENT GAS! CANNOT CLAIM.");
+      onTutorSpeak?.(getEip7702TutorMessage("sponsor_blocked"));
       setTimeout(() => {
         setShowPaymaster(true);
         setMessage("WAIT! A SPONSOR APPEARED!");
+        onTutorSpeak?.(getEip7702TutorMessage("sponsor_appears"));
       }, 1500);
     }
   };
@@ -29,31 +39,33 @@ export const SponsorshipGame: React.FC = () => {
   const handleSponsorSign = () => {
     setProcessing(true);
     setMessage("SIGNING SPONSORSHIP REQUEST...");
+    onTutorSpeak?.(getEip7702TutorMessage("sponsor_signing"));
     setTimeout(() => {
       setProcessing(false);
       setHasApple(true);
       setMessage("SUCCESS! GAS PAID BY SPONSOR!");
+      onTutorSpeak?.(getEip7702TutorMessage("sponsor_success"));
     }, 2000);
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden mt-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
+    <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden mt-6 sm:mt-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-8">
         <div>
-          <h2 className="text-xl text-yellow-400 mb-2 text-shadow-pixel">
+          <h2 className="text-base sm:text-xl text-yellow-400 mb-2 text-shadow-pixel">
             LEVEL 2: GAS CRISIS
           </h2>
           <p
-            className="text-xs text-gray-400 font-pixel"
+            className="text-[10px] sm:text-xs text-gray-400 font-pixel"
             style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
           >
             MISSION: CLAIM THE GOLDEN APPLE
           </p>
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right">
           <div
-            className={`text-sm ${gasBalance === 0 ? "text-red-500" : "text-green-400"} font-pixel font-bold`}
+            className={`text-[10px] sm:text-sm ${gasBalance === 0 ? "text-red-500" : "text-green-400"} font-pixel font-bold`}
             style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
           >
             GAS: {gasBalance.toFixed(4)} ETH
@@ -62,7 +74,7 @@ export const SponsorshipGame: React.FC = () => {
       </div>
 
       {/* Game Area */}
-      <div className="relative min-h-[300px] flex flex-col items-center justify-center gap-8 bg-black/30 border-2 border-white/10 p-4">
+      <div className="relative min-h-[240px] sm:min-h-[300px] flex flex-col items-center justify-center gap-6 sm:gap-8 bg-black/30 border-2 border-white/10 p-3 sm:p-4">
         {/* Item Display */}
         <motion.div
           animate={{
@@ -87,7 +99,7 @@ export const SponsorshipGame: React.FC = () => {
                 ? "Warrior holding golden apple"
                 : "Golden apple on pedestal"
             }
-            className="w-full rounded-xl max-w-sm h-auto border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]"
+            className="w-full rounded-xl max-w-[240px] sm:max-w-sm h-auto border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -98,7 +110,7 @@ export const SponsorshipGame: React.FC = () => {
         {!hasApple && !showPaymaster && (
           <button
             onClick={tryClaim}
-            className="px-8 py-4 bg-yellow-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-sm font-bold"
+            className="px-5 sm:px-8 py-3 sm:py-4 bg-yellow-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-sm font-bold"
           >
             CLAIM REWARD
           </button>
@@ -109,11 +121,11 @@ export const SponsorshipGame: React.FC = () => {
           <motion.div
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-800 p-4 border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-xs z-10"
+            className="relative sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 bg-gray-800 p-4 border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-full max-w-xs z-10"
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">🎩</span>
-              <h3 className="text-green-400 text-xs text-shadow-pixel">
+              <h3 className="text-green-400 text-[10px] sm:text-xs text-shadow-pixel">
                 PAYMASTER
               </h3>
             </div>
@@ -121,13 +133,13 @@ export const SponsorshipGame: React.FC = () => {
               "I'll cover the gas fees for you. Just sign here."
             </p>
             {processing ? (
-              <div className="text-xs text-green-400 animate-pulse font-pixel">
+              <div className="text-[10px] sm:text-xs text-green-400 animate-pulse font-pixel">
                 PROCESSING...
               </div>
             ) : (
               <button
                 onClick={handleSponsorSign}
-                className="w-full py-2 bg-green-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-xs font-bold"
+                className="w-full py-2 bg-green-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-xs font-bold"
               >
                 ACCEPT SPONSORSHIP
               </button>
@@ -142,15 +154,15 @@ export const SponsorshipGame: React.FC = () => {
             animate={{ scale: 1, opacity: 1 }}
             className="text-center"
           >
-            <h3 className="text-xl text-green-400 mb-2 text-shadow-pixel">
+            <h3 className="text-base sm:text-xl text-green-400 mb-2 text-shadow-pixel">
               ITEM CLAIMED!
             </h3>
-            <p className="text-xs text-gray-400 mb-6 font-pixel">
+            <p className="text-[10px] sm:text-xs text-gray-400 mb-4 sm:mb-6 font-pixel">
               Gas Paid: 0.00 ETH (User) / 0.005 ETH (Sponsor)
             </p>
             <button
               onClick={resetGame}
-              className="px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors text-xs font-bold"
+              className="px-5 sm:px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors text-[10px] sm:text-xs font-bold"
             >
               REPLAY
             </button>
@@ -159,14 +171,16 @@ export const SponsorshipGame: React.FC = () => {
 
         {/* Message Toast */}
         <div className="flex flex-col items-center">
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full text-center">
-            <span
-              className={`text-xs ${message.includes("ERROR") ? "text-red-400" : "text-yellow-300"} font-pixel font-bold bg-black/50 px-2 py-1 rounded`}
+          {message && (
+            <div
+              className={`mt-3 sm:mt-4 bg-gray-800 px-3 sm:px-4 py-2 border-2 border-white text-[10px] sm:text-xs ${
+                message.includes("ERROR") ? "text-red-400" : "text-yellow-300"
+              } font-pixel font-bold shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}
               style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
             >
               {message}
-            </span>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

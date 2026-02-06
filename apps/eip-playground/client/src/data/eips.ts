@@ -11,7 +11,30 @@ export interface EIPData {
     pageCount: number;
     title?: string;
   };
+  sections: EIPSection[];
 }
+
+export type EIPSection =
+  | {
+      type: "comic";
+    }
+  | {
+      type: "games";
+      title: string;
+      intro?: string;
+      spacingClass?: string;
+      blocks: EIPGameBlock[];
+    }
+  | {
+      type: "content";
+    };
+
+export type EIPGameBlock = {
+  gameId: string;
+  title?: string;
+  description?: string;
+  dividerTop?: boolean;
+};
 
 export const eips: Record<string, EIPData> = {
   "eip-1559": {
@@ -45,6 +68,30 @@ Since its activation in the London Hard Fork (August 2021), EIP-1559 has burned 
       pageCount: 12,
       title: "THE GAS WARS: A VISUAL GUIDE",
     },
+    sections: [
+      { type: "comic" },
+      {
+        type: "games",
+        title: "Interactive Demo: Before vs After",
+        spacingClass: "space-y-10 md:space-y-12",
+        blocks: [
+          {
+            gameId: "gaswar",
+            title: "PART 1: THE OLD WAY (First-Price Auction)",
+            description:
+              "Before EIP-1559, you had to guess the gas price. Bid too low? You wait forever. Bid too high? You overpay. Try to beat the NPCs!",
+          },
+          {
+            gameId: "burner",
+            title: "PART 2: THE NEW WAY (EIP-1559 Mechanism)",
+            description:
+              "EIP-1559 introduced a predictable base fee that burns, plus a tip to miners. No more guessing games!",
+            dividerTop: true,
+          },
+        ],
+      },
+      { type: "content" },
+    ],
   },
   "eip-7702": {
     id: "eip-7702",
@@ -76,6 +123,20 @@ This EIP is currently a strong candidate for the next major Ethereum upgrade (Pe
       pageCount: 13,
       title: "SET CODE: THE TEMPORARY SUPERPOWER",
     },
+    sections: [
+      { type: "comic" },
+      {
+        type: "games",
+        title: "Game Start: The Power of Set Code",
+        spacingClass: "space-y-8 md:space-y-12",
+        blocks: [
+          { gameId: "batching" },
+          { gameId: "sponsorship",dividerTop: true },
+          { gameId: "delegation",dividerTop: true  },
+        ],
+      },
+      { type: "content" },
+    ],
   },
   "erc-8004": {
     id: "erc-8004",
@@ -107,5 +168,17 @@ As AI agents become more autonomous, we need a way to trust them without relying
       pageCount: 14,
       title: "THE TRUSTLESS AGENT",
     },
+    sections: [
+      { type: "comic" },
+      {
+        type: "games",
+        title: "Agent Academy: Trustless AI",
+        intro:
+          "Welcome to the Agent Academy! Your goal is to train an AI agent that can be trusted by the blockchain. Navigate through the three pillars of ERC-8004: Identity, Reputation, and Validation.",
+        spacingClass: "space-y-10 md:space-y-12",
+        blocks: [{ gameId: "academy" }],
+      },
+      { type: "content" },
+    ],
   },
 };

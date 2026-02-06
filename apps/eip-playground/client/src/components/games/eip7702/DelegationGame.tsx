@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { getEip7702TutorMessage } from "@/data/tutorScripts";
 
 // Comic panels data
 const PANELS = [
@@ -33,7 +34,12 @@ const PANELS = [
   },
 ];
 
-const DelegationGame: React.FC = () => {
+type DelegationGameProps = {
+  // Forward tutor messages to the page-level tutor.
+  onTutorSpeak?: (message: string) => void;
+};
+
+const DelegationGame: React.FC<DelegationGameProps> = ({ onTutorSpeak }) => {
   const [currentPanel, setCurrentPanel] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
@@ -78,15 +84,21 @@ const DelegationGame: React.FC = () => {
 
   const panel = PANELS[currentPanel];
 
+  useEffect(() => {
+    // Speak when the panel changes so the tutor narrates the story.
+    const key = `panel_${panel.id}` as const;
+    onTutorSpeak?.(getEip7702TutorMessage(key));
+  }, [panel.id, onTutorSpeak]);
+
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden mt-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
+    <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden mt-6 sm:mt-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
       {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-xl text-yellow-400 mb-2 text-shadow-pixel">
+      <div className="mb-4 sm:mb-8">
+        <h2 className="text-base sm:text-xl text-yellow-400 mb-2 text-shadow-pixel">
           LEVEL 3: THE GREAT LEAP
         </h2>
         <p
-          className="text-xs text-gray-400 font-sans"
+          className="text-[10px] sm:text-xs text-gray-400 font-sans"
           style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
         >
           MISSION: CROSS THE IMPOSSIBLE ABYSS
@@ -94,9 +106,9 @@ const DelegationGame: React.FC = () => {
       </div>
 
       {/* Status Display - Above Comic */}
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-3 sm:mb-4">
         <div
-          className={`px-6 py-3 border-4 ${panel.status === "SMART CONTRACT" ? "bg-blue-600 border-blue-400" : panel.status === "TRANSFORMING" ? "bg-yellow-600 border-yellow-400" : "bg-gray-700 border-gray-500"} font-sans font-bold text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)]`}
+          className={`px-4 sm:px-6 py-2 sm:py-3 border-4 ${panel.status === "SMART CONTRACT" ? "bg-blue-600 border-blue-400" : panel.status === "TRANSFORMING" ? "bg-yellow-600 border-yellow-400" : "bg-gray-700 border-gray-500"} font-sans font-bold text-sm sm:text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)]`}
           style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
         >
           {panel.status === "SMART CONTRACT"
@@ -108,7 +120,7 @@ const DelegationGame: React.FC = () => {
       </div>
 
       {/* Comic Panel */}
-      <div className="relative min-h-[400px] flex flex-col items-center justify-center bg-black/30 border-2 border-white/10 p-4">
+      <div className="relative min-h-[260px] sm:min-h-[400px] flex flex-col items-center justify-center bg-black/30 border-2 border-white/10 p-3 sm:p-4">
         <motion.img
           key={panel.id}
           src={panel.image}
@@ -121,19 +133,19 @@ const DelegationGame: React.FC = () => {
         />
 
         {/* Panel Counter */}
-        <div className="absolute top-4 right-4 bg-black/70 px-3 py-1 border-2 border-white">
-          <span className="text-xs font-sans font-bold">
+        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/70 px-2 sm:px-3 py-1 border-2 border-white">
+          <span className="text-[10px] sm:text-xs font-sans font-bold">
             {currentPanel + 1} / {PANELS.length}
           </span>
         </div>
       </div>
 
       {/* Navigation Controls */}
-      <div className="mt-6 flex justify-center items-center gap-4">
+      <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
         <button
           onClick={prevPanel}
           disabled={currentPanel === 0}
-          className={`px-6 py-2 border-2 border-white font-bold text-sm ${currentPanel === 0 ? "opacity-30 cursor-not-allowed" : "hover:bg-white hover:text-black"} transition-colors`}
+          className={`px-5 sm:px-6 py-2 border-2 border-white font-bold text-[10px] sm:text-sm ${currentPanel === 0 ? "opacity-30 cursor-not-allowed" : "hover:bg-white hover:text-black"} transition-colors`}
         >
           ← PREV
         </button>
@@ -141,14 +153,14 @@ const DelegationGame: React.FC = () => {
         {currentPanel === PANELS.length - 1 ? (
           <button
             onClick={reset}
-            className="px-8 py-3 bg-yellow-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-sm font-bold"
+            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-yellow-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-sm font-bold"
           >
             REPLAY
           </button>
         ) : (
           <button
             onClick={nextPanel}
-            className="px-8 py-3 bg-blue-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-sm font-bold"
+            className="px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-sm font-bold"
           >
             NEXT →
           </button>
@@ -156,10 +168,10 @@ const DelegationGame: React.FC = () => {
       </div>
 
       {/* Story Message Box */}
-      <div className="mt-6 p-6 bg-black/70 border-2 border-white/30">
+      <div className="mt-4 sm:mt-6 p-4 sm:p-6 bg-black/70 border-2 border-white/30">
         <motion.p
           key={panel.id}
-          className="text-sm text-gray-200 leading-relaxed font-pixel"
+          className="text-xs sm:text-sm text-gray-200 leading-relaxed font-pixel"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}

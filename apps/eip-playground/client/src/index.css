@@ -160,9 +160,36 @@
   .text-shadow-pixel {
     text-shadow: 2px 2px 0px #000000;
   }
+
+  .markdown-content ol {
+    @apply list-decimal list-outside pl-8;
+  }
+
+  .markdown-content ul {
+    @apply list-disc list-outside pl-8;
+  }
+
+  .markdown-content li {
+    @apply mb-2 leading-relaxed;
+  }
 }
 
 @layer utilities {
+  @media (max-width: 640px) {
+    .mobile-scale {
+      transform: scale(0.92);
+      transform-origin: top center;
+    }
+
+    .comic-fullscreen-landscape {
+      transform: rotate(90deg);
+      width: 100vh;
+      height: 100vw;
+      max-width: none;
+      max-height: none;
+    }
+  }
+
   .perspective-1000 {
     perspective: 1000px;
   }
