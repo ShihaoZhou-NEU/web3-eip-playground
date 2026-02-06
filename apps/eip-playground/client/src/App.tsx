@@ -16,9 +16,10 @@ import Team from "./pages/Team";
 // Wagmi & RainbowKit Imports
 import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, useAccount } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { config } from "./lib/wagmi";
+import { trackEvent } from "@/lib/analytics";
 
 // Vercel Analytics
 import { Analytics } from "@vercel/analytics/react";
@@ -78,6 +79,20 @@ function ScrollRestoration() {
   return null;
 }
 
+function AnalyticsTracker() {
+  const { address, isConnected } = useAccount();
+  const prevConnectedRef = useRef(false);
+
+  useEffect(() => {
+    if (isConnected && address && !prevConnectedRef.current) {
+      trackEvent("wallet_connect", { wallet_address: address });
+    }
+    prevConnectedRef.current = isConnected;
+  }, [isConnected, address]);
+
+  return null;
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -96,6 +111,7 @@ function App() {
             <ThemeProvider defaultTheme="dark">
               <TooltipProvider>
                 <Toaster />
+                <AnalyticsTracker />
                 <Router />
                 <ScrollRestoration />
                 <Analytics />

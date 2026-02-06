@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,7 @@ import { startQuiz, submitAnswer } from "@/lib/quizApi";
 import { claimERC8004Badge } from "@/lib/nftMint";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { trackEvent } from "@/lib/analytics";
 
 type Stage = "IDENTITY" | "REPUTATION" | "VALIDATION";
 type TaskType = "BOX" | "DELIVERY" | "CODING";
@@ -41,6 +42,7 @@ type AgentAcademyGameProps = {
 export default function AgentAcademyGame({
   onTutorSpeak,
 }: AgentAcademyGameProps) {
+  const gameContext = { eip_id: "erc-8004", game_id: "academy" };
   const [stage, setStage] = useState<Stage>("IDENTITY");
   const [agentId, setAgentId] = useState<string | null>(null);
   const [reputation, setReputation] = useState(0);
@@ -85,6 +87,7 @@ export default function AgentAcademyGame({
     contractAddress: string;
     txHash: string;
   } | null>(null);
+  const hasTrackedCompletionRef = useRef(false);
 
   // Helper to show in-game messages
   const showMessage = (msg: string, duration = 3000) => {
@@ -128,6 +131,7 @@ export default function AgentAcademyGame({
   const mintIdentity = () => {
     if (isIdentityLocked) return;
     setIsIdentityLocked(true);
+    trackEvent("game_start", { ...gameContext, stage: "IDENTITY" });
     setIsMinting(true);
     showMessage("Minting your agent identity...");
 
@@ -292,6 +296,7 @@ export default function AgentAcademyGame({
     setQuizPassed(null);
     setQuizMessages([]);
     setIsIdentityLocked(false);
+    hasTrackedCompletionRef.current = false;
     tutorSpeak(getErc8004TutorMessage("reset"), "standing");
   };
 
@@ -418,6 +423,16 @@ export default function AgentAcademyGame({
       setIsClaimingNFT(false);
     }
   };
+
+  useEffect(() => {
+    if (!nftMinted || hasTrackedCompletionRef.current) return;
+    hasTrackedCompletionRef.current = true;
+    trackEvent("game_complete", {
+      ...gameContext,
+      success: true,
+      token_id: nftData?.tokenId,
+    });
+  }, [nftMinted, nftData?.tokenId]);
 
   return (
     <div>

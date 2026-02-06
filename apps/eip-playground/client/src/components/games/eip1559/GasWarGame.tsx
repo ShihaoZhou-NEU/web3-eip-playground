@@ -3,6 +3,7 @@ import { RefreshCw, ArrowRight, Coins, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { getEip1559TutorMessage } from "@/data/tutorScripts";
+import { trackEvent } from "@/lib/analytics";
 
 interface Transaction {
   id: string;
@@ -19,6 +20,7 @@ type GasWarGameProps = {
 };
 
 const GasWarGame: React.FC<GasWarGameProps> = ({ onTutorSpeak }) => {
+  const gameContext = { eip_id: "eip-1559", game_id: "gaswar" };
   const [mempool, setMempool] = useState<Transaction[]>([]);
   const [userBid, setUserBid] = useState<number>(50);
   const [lastBlock, setLastBlock] = useState<Transaction[] | null>(null);
@@ -51,6 +53,7 @@ const GasWarGame: React.FC<GasWarGameProps> = ({ onTutorSpeak }) => {
   }, []);
 
   const runSimulation = () => {
+    trackEvent("game_start", gameContext);
     // First-price auction: top bids fill the block.
     const userTx: Transaction = {
       id: "user-tx",
@@ -81,6 +84,13 @@ const GasWarGame: React.FC<GasWarGameProps> = ({ onTutorSpeak }) => {
       : 0;
 
     if (userResult) {
+      trackEvent("game_complete", {
+        ...gameContext,
+        success: true,
+        user_bid: userBid,
+        lowest_included: lowestIncludedPrice,
+        overpaid: userBid - lowestIncludedPrice,
+      });
       setSimulationStatus(`SUCCESS! TRANSACTION MINED.`);
       setAnalysis({
         userBid: userBid,
@@ -98,6 +108,12 @@ const GasWarGame: React.FC<GasWarGameProps> = ({ onTutorSpeak }) => {
         );
       }
     } else {
+      trackEvent("game_complete", {
+        ...gameContext,
+        success: false,
+        user_bid: userBid,
+        lowest_included: lowestIncludedPrice,
+      });
       setSimulationStatus("FAILED. BID TOO LOW.");
       setAnalysis(null);
       onTutorSpeak?.(getEip1559TutorMessage("simulation_fail"));

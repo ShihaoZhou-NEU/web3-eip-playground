@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { getEip7702TutorMessage } from "@/data/tutorScripts";
+import { trackEvent } from "@/lib/analytics";
 
 type SponsorshipGameProps = {
   // Forward tutor messages to the page-level tutor.
@@ -10,6 +11,7 @@ type SponsorshipGameProps = {
 export const SponsorshipGame: React.FC<SponsorshipGameProps> = ({
   onTutorSpeak,
 }) => {
+  const gameContext = { eip_id: "eip-7702", game_id: "sponsorship" };
   const [gasBalance, setGasBalance] = useState(0);
   const [hasApple, setHasApple] = useState(false);
   const [showPaymaster, setShowPaymaster] = useState(false);
@@ -25,6 +27,7 @@ export const SponsorshipGame: React.FC<SponsorshipGameProps> = ({
   };
 
   const tryClaim = () => {
+    trackEvent("game_start", gameContext);
     if (gasBalance === 0) {
       setMessage("ERROR: INSUFFICIENT GAS! CANNOT CLAIM.");
       onTutorSpeak?.(getEip7702TutorMessage("sponsor_blocked"));
@@ -45,6 +48,7 @@ export const SponsorshipGame: React.FC<SponsorshipGameProps> = ({
       setHasApple(true);
       setMessage("SUCCESS! GAS PAID BY SPONSOR!");
       onTutorSpeak?.(getEip7702TutorMessage("sponsor_success"));
+      trackEvent("game_complete", { ...gameContext, success: true });
     }, 2000);
   };
 
