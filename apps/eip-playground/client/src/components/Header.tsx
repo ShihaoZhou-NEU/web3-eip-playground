@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Link } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Wallet } from "lucide-react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,9 +60,32 @@ export default function Header() {
           </button>
 
           {/* Status Bar / Wallet Connect */}
-          {/* Desktop / large screens: default button with text */}
+          {/* Desktop / large screens: pixel button with text */}
           <div className="hidden lg:block">
-            <ConnectButton />
+            <ConnectButton.Custom>
+              {({
+                account,
+                chain,
+                openAccountModal,
+                openConnectModal,
+                mounted,
+              }) => {
+                const ready = mounted;
+                const connected = ready && account && chain;
+                const label = connected ? account.displayName : "CONNECT WALLET";
+
+                return (
+                  <button
+                    type="button"
+                    onClick={connected ? openAccountModal : openConnectModal}
+                    className="btn-pixel btn-pixel-primary h-10 px-5 text-[10px] font-pixel uppercase tracking-widest hover:-translate-y-0.5 hover:brightness-110 transition-transform"
+                    aria-label={connected ? "Account" : "Connect wallet"}
+                  >
+                    {label}
+                  </button>
+                );
+              }}
+            </ConnectButton.Custom>
           </div>
 
           {/* Mobile / small screens: icon-only */}
@@ -78,14 +101,10 @@ export default function Header() {
                     onClick={connected ? openAccountModal : openConnectModal}
                     className={`relative inline-flex items-center justify-center w-10 h-10 border-2 border-border ${
                       connected ? "bg-primary/20 text-primary" : "bg-black/40 text-primary"
-                    } hover:bg-black/60 transition-colors`}
+                    } hover:bg-black/60 hover:scale-105 transition-all`}
                     aria-label={connected ? "Account" : "Connect wallet"}
                   >
-                    <img
-                      src="/images/wallet_icon.png"
-                      alt=""
-                      className="w-4 h-4 pixelated"
-                    />
+                    <Wallet className="w-4 h-4" />
                     {connected && (
                       <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background" />
                     )}
@@ -105,7 +124,7 @@ export default function Header() {
               <Link
                 key={item}
                 href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                className="font-pixel text-xs text-foreground hover:text-primary transition-colors uppercase"
+                className="font-pixel text-xs text-foreground hover:text-primary hover:bg-black/40 transition-colors uppercase px-2 py-1 border-2 border-transparent hover:border-primary/40"
                 onClick={() => setIsOpen(false)}
               >
                 {item}

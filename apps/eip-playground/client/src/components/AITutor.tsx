@@ -119,7 +119,7 @@ export default function AITutor({
   return (
     <>
       {/* Fixed Container for Tutor and Dialog */}
-      <div className="fixed bottom-2 right-2 sm:bottom-4 sm:right-15 z-50 w-40 sm:w-64 flex flex-col items-center pointer-events-none">
+      <div className="fixed bottom-16 right-2 sm:bottom-4 sm:right-4 md:right-6 z-50 w-40 sm:w-64 flex flex-col items-center pointer-events-none">
         {/* Speech Bubble Area */}
         <div className="relative w-full mb-3 sm:mb-4 h-32 sm:h-40 flex items-end justify-center">
           <AnimatePresence>
@@ -160,7 +160,7 @@ export default function AITutor({
           {/* Chat History Toggle Button - Anchored to the tutor image */}
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-primary text-white p-2.5 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all border-2 border-black pointer-events-auto z-10"
+            className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-primary text-white p-2 sm:p-2.5 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all border-2 border-black pointer-events-auto z-10"
             aria-label="Toggle chat history"
           >
             {isChatOpen ? <X size={16} /> : <MessageCircle size={16} />}
@@ -187,7 +187,7 @@ export default function AITutor({
               <span>Chat History</span>
               <button
                 onClick={() => setIsChatOpen(false)}
-                className="p-1 rounded border-2 border-black bg-white/10 hover:bg-white/20 transition-colors"
+                className="p-1 rounded border-2 border-white bg-white/10 hover:bg-white/20 transition-colors"
                 aria-label="Close chat history"
               >
                 <X size={14} />

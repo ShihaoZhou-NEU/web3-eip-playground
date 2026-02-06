@@ -60,7 +60,11 @@ function ScrollRestoration() {
   useEffect(() => {
     positionsRef.current[previousLocationRef.current] = window.scrollY;
 
-    if (isPopstateRef.current) {
+    const isEipDetail = location.startsWith("/eip/");
+    if (isEipDetail) {
+      window.scrollTo(0, 0);
+      positionsRef.current[location] = 0;
+    } else if (isPopstateRef.current) {
       const savedPosition = positionsRef.current[location] ?? 0;
       window.scrollTo(0, savedPosition);
     } else {

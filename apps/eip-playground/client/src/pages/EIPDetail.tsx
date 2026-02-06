@@ -30,6 +30,9 @@ export default function EIPDetail() {
   const greetedGameRef = useRef<Record<string, boolean>>({});
   const activeGameRef = useRef<Record<string, boolean>>({});
   const gameSectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const gameTutorSpeakRef = useRef<
+    Record<string, (message: string, pose?: TutorPose) => void>
+  >({});
 
   const GAME_COMPONENTS: Record<
     string,
@@ -81,14 +84,25 @@ export default function EIPDetail() {
     []
   );
 
-  const makeGameTutorSpeak = useCallback(
-    (gameId: string) =>
-      (message: string, pose: TutorPose = "standing") => {
-        if (!eip?.id) return;
-        const key = `${eip.id}:${gameId}`;
-        if (!activeGameRef.current[key]) return;
-        tutorSpeak(message, pose);
-      },
+  useEffect(() => {
+    gameTutorSpeakRef.current = {};
+  }, [eip?.id]);
+
+  const getGameTutorSpeak = useCallback(
+    (gameId: string) => {
+      if (!gameTutorSpeakRef.current[gameId]) {
+        gameTutorSpeakRef.current[gameId] = (
+          message: string,
+          pose: TutorPose = "standing"
+        ) => {
+          if (!eip?.id) return;
+          const key = `${eip.id}:${gameId}`;
+          if (!activeGameRef.current[key]) return;
+          tutorSpeak(message, pose);
+        };
+      }
+      return gameTutorSpeakRef.current[gameId];
+    },
     [eip?.id, tutorSpeak]
   );
 
@@ -203,13 +217,17 @@ export default function EIPDetail() {
       {showScrollTop && (
         <button
           onClick={handleScrollTop}
-          className="fixed bottom-8 right-8 z-50 p-3 bg-primary/80 hover:bg-primary text-white border-4 border-primary-foreground/40 hover:border-primary-foreground transition-all shadow-lg flex items-center justify-center group"
+          className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50 p-2 sm:p-3 bg-primary/80 hover:bg-primary text-white border-4 border-primary-foreground/40 hover:border-primary-foreground transition-all shadow-lg flex items-center justify-center group"
           aria-label="Scroll to top"
           style={{ imageRendering: "pixelated" }}
         >
           <ChevronUp
+            size={24}
+            className="sm:hidden group-hover:-translate-y-1 transition-transform"
+          />
+          <ChevronUp
             size={32}
-            className="group-hover:-translate-y-1 transition-transform"
+            className="hidden sm:block group-hover:-translate-y-1 transition-transform"
           />
         </button>
       )}
@@ -293,7 +311,7 @@ export default function EIPDetail() {
                       const blockContent = (
                         <div ref={setGameSectionRef(block.gameId)}>
                           <GameComponent
-                            onTutorSpeak={makeGameTutorSpeak(block.gameId)}
+                            onTutorSpeak={getGameTutorSpeak(block.gameId)}
                           />
                         </div>
                       );

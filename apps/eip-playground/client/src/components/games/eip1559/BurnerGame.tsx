@@ -227,19 +227,19 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
   const minerTip = isIncluded ? Math.min(maxFee - baseFee, priorityFee) : 0;
 
   return (
-    <div className="bg-card border-4 border-border p-6 shadow-pixel relative overflow-hidden">
+    <div className="bg-card border-4 border-border p-4 sm:p-6 shadow-pixel relative overflow-hidden">
       {/* CRT Scanline Effect */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-0 pointer-events-none bg-[length:100%_4px,3px_100%]" />
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-6 border-b-4 border-border pb-4">
-          <h2 className="text-xl md:text-2xl font-pixel text-primary flex items-center gap-3 text-shadow-pixel">
-            <Flame className="text-orange-500 w-6 h-6 md:w-8 md:h-8" />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6 border-b-4 border-border pb-3 sm:pb-4">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-pixel text-primary flex items-center gap-2 sm:gap-3 text-shadow-pixel">
+            <Flame className="text-orange-500 w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
             EIP-1559 SIMULATOR
           </h2>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div
-              className={`px-3 py-1 border-2 font-pixel text-xs ${baseFee > 150 ? "bg-red-500/20 border-red-500 text-red-400" : "bg-green-500/20 border-green-500 text-green-400"}`}
+              className={`px-2 sm:px-3 py-1 border-2 font-pixel text-[10px] sm:text-xs ${baseFee > 150 ? "bg-red-500/20 border-red-500 text-red-400" : "bg-green-500/20 border-green-500 text-green-400"}`}
             >
               BASE FEE: {baseFee} GWEI
             </div>
@@ -247,7 +247,7 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
               variant="outline"
               size="sm"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="font-pixel text-xs h-8 border-2"
+              className="font-pixel text-[10px] sm:text-xs h-8 border-2"
             >
               {isPlaying ? (
                 <Pause className="w-4 h-4 mr-2" />
@@ -261,10 +261,10 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Control Panel */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6">
             {/* Network Demand Control */}
-            <div className="bg-black/40 p-4 border-2 border-border/50">
-              <h3 className="text-xs font-pixel text-muted-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <div className="bg-black/40 p-3 sm:p-4 border-2 border-border/50">
+              <h3 className="text-[10px] sm:text-xs font-pixel text-muted-foreground mb-3 sm:mb-4 flex items-center gap-2 uppercase tracking-wider">
                 <Activity size={14} /> NETWORK CONGESTION
               </h3>
               <div className="px-2 mb-2">
@@ -291,7 +291,7 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
                 </span>
                 <span>CONGESTED (100%)</span>
               </div>
-              <p className="text-[10px] text-muted-foreground mt-4 leading-relaxed border-t border-border/30 pt-2">
+              <p className="text-[10px] text-muted-foreground mt-3 sm:mt-4 leading-relaxed border-t border-border/30 pt-2">
                 {">"} 50% Fill: Base Fee INCREASES
                 <br />
                 {"<"} 50% Fill: Base Fee DECREASES
@@ -299,8 +299,8 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
             </div>
 
             {/* User Transaction Settings */}
-            <div className="bg-black/40 p-4 border-2 border-border/50">
-              <h3 className="text-xs font-pixel text-muted-foreground mb-4 uppercase tracking-wider">
+            <div className="bg-black/40 p-3 sm:p-4 border-2 border-border/50">
+              <h3 className="text-[10px] sm:text-xs font-pixel text-muted-foreground mb-3 sm:mb-4 uppercase tracking-wider">
                 YOUR TRANSACTION
               </h3>
 
@@ -313,7 +313,7 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
                     type="number"
                     value={maxFee}
                     onChange={e => setMaxFee(Number(e.target.value))}
-                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-sm w-24 focus:outline-none focus:border-primary"
+                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-xs sm:text-sm w-20 sm:w-24 focus:outline-none focus:border-primary"
                   />
                   <span className="text-xs font-pixel text-muted-foreground">
                     GWEI
@@ -330,7 +330,7 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
                     type="number"
                     value={priorityFee}
                     onChange={e => setPriorityFee(Number(e.target.value))}
-                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-sm w-24 focus:outline-none focus:border-primary"
+                    className="bg-card border-2 border-border px-2 py-1 text-primary font-mono text-xs sm:text-sm w-20 sm:w-24 focus:outline-none focus:border-primary"
                   />
                   <span className="text-xs font-pixel text-muted-foreground">
                     GWEI
@@ -341,9 +341,9 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
           </div>
 
           {/* Visualizers */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Chart */}
-            <div className="h-48 w-full bg-black/60 border-2 border-border p-2 relative">
+            <div className="h-40 sm:h-48 w-full bg-black/60 border-2 border-border p-2 relative">
               <div className="absolute top-2 right-2 z-10 flex gap-4 text-[10px] font-mono">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-[#8a63d2]"></div>Base Fee
@@ -394,22 +394,22 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
             </div>
 
             {/* Transaction Result Block */}
-            <div className="bg-black/60 p-6 border-2 border-border">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xs font-pixel text-muted-foreground uppercase tracking-wider">
+            <div className="bg-black/60 p-4 sm:p-6 border-2 border-border">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
+                <h3 className="text-[10px] sm:text-xs font-pixel text-muted-foreground uppercase tracking-wider">
                   CURRENT BLOCK STATUS
                 </h3>
                 <div
-                  className={`px-3 py-1 border-2 font-pixel text-xs ${isIncluded ? "bg-green-500/20 border-green-500 text-green-400" : "bg-red-500/20 border-red-500 text-red-400"}`}
+                  className={`px-2 sm:px-3 py-1 border-2 font-pixel text-[10px] sm:text-xs ${isIncluded ? "bg-green-500/20 border-green-500 text-green-400" : "bg-red-500/20 border-red-500 text-red-400"}`}
                 >
                   {isIncluded ? "✅ INCLUDED" : "⛔ REJECTED (MAX FEE TOO LOW)"}
                 </div>
               </div>
 
               {isIncluded && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {/* Cost Breakdown Bar */}
-                  <div className="h-12 w-full flex border-2 border-border relative bg-card/30">
+                  <div className="h-10 sm:h-12 w-full flex border-2 border-border relative bg-card/30">
                     {/* Burn Part */}
                     <div
                       className="bg-orange-500/80 flex items-center justify-center text-[10px] font-pixel text-white transition-all duration-300 border-r-2 border-black/20 relative overflow-hidden group"
@@ -433,7 +433,7 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 text-center font-mono text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-center font-mono text-xs sm:text-sm">
                     <div className="bg-card/50 p-3 border border-border/50">
                       <div className="text-muted-foreground text-[10px] uppercase mb-1">
                         Actual Paid

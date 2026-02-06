@@ -24,13 +24,14 @@ export default function Footer() {
               href="https://lxdao.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:opacity-80 transition-opacity"
+              className="hover:opacity-80 transition-opacity flex flex-col items-center"
             >
               <img
                 src="/images/lxdao-logo.svg"
                 alt="LXDAO"
                 className="h-7 sm:h-8 md:h-10 w-auto"
               />
+              <p className="font-pixel text-xs sm:text-sm">LXDAO</p>
             </a>
             <span className="text-white/30 text-xl sm:text-2xl">×</span>
             <a

@@ -421,7 +421,7 @@ export default function AgentAcademyGame({
 
   return (
     <div>
-      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
         {/* AI Tutor */}
         {!onTutorSpeak && (
           <AITutor
@@ -432,37 +432,39 @@ export default function AgentAcademyGame({
           />
         )}
         {/* Left Column: Game Area (8 cols) */}
-        <div className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-6 sm:space-y-8">
           {/* Progress Header */}
-          <div className="flex justify-between items-center bg-black/60 p-4 rounded-xl border-2 border-white/20 backdrop-blur-sm">
+          <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2 sm:gap-0 bg-black/60 p-3 sm:p-4 rounded-xl border-2 border-white/20 backdrop-blur-sm">
             <div
               className={`flex items-center gap-2 ${stage === "IDENTITY" ? "text-green-400 animate-pulse" : "text-gray-500"}`}
             >
-              <User />{" "}
-              <span className="font-pixel text-sm md:text-base">IDENTITY</span>
+              <User className="h-4 w-4 sm:h-5 sm:w-5" />{" "}
+              <span className="font-pixel text-xs sm:text-sm md:text-base">
+                IDENTITY
+              </span>
             </div>
-            <ArrowRight className="text-gray-600" />
+            <ArrowRight className="hidden sm:inline-block text-gray-600 h-4 w-4" />
             <div
               className={`flex items-center gap-2 ${stage === "REPUTATION" ? "text-yellow-400 animate-pulse" : "text-gray-500"}`}
             >
-              <Star />{" "}
-              <span className="font-pixel text-sm md:text-base">
+              <Star className="h-4 w-4 sm:h-5 sm:w-5" />{" "}
+              <span className="font-pixel text-xs sm:text-sm md:text-base">
                 REPUTATION
               </span>
             </div>
-            <ArrowRight className="text-gray-600" />
+            <ArrowRight className="hidden sm:inline-block text-gray-600 h-4 w-4" />
             <div
               className={`flex items-center gap-2 ${stage === "VALIDATION" ? "text-blue-400 animate-pulse" : isVerified ? "text-green-400" : "text-gray-500"}`}
             >
-              <ShieldCheck />{" "}
-              <span className="font-pixel text-sm md:text-base">
+              <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />{" "}
+              <span className="font-pixel text-xs sm:text-sm md:text-base">
                 {isVerified ? "VERIFIED" : "VALIDATION"}
               </span>
             </div>
           </div>
 
           {/* Main Game Card */}
-          <Card className="p-8 bg-gray-900 border-4 border-primary min-h-[600px] flex flex-col relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <Card className="p-4 sm:p-6 md:p-8 bg-gray-900 border-4 border-primary min-h-[520px] sm:min-h-[600px] flex flex-col relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             {/* Background Grid Animation */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
@@ -470,12 +472,12 @@ export default function AgentAcademyGame({
             <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full">
               {/* Stage 1: Identity */}
               {stage === "IDENTITY" && (
-                <div className="text-center space-y-8 animate-in fade-in zoom-in">
+                <div className="text-center space-y-6 sm:space-y-8 animate-in fade-in zoom-in">
                   <div className="space-y-2">
-                    <h2 className="text-4xl font-pixel text-green-400 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-pixel text-green-400 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
                       MINT AGENT IDENTITY
                     </h2>
-                    <p className="text-gray-400 text-sm font-pixel">
+                    <p className="text-gray-400 text-xs sm:text-sm font-pixel">
                       Create a verifiable on-chain identity for your AI agent.
                     </p>
                   </div>
@@ -486,21 +488,21 @@ export default function AgentAcademyGame({
                       size="lg"
                       onClick={mintIdentity}
                       disabled={isMinting || isIdentityLocked}
-                      className="relative text-xl px-12 py-8 bg-green-600 hover:bg-green-500 border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all font-pixel disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative text-base sm:text-lg md:text-xl px-6 sm:px-10 md:px-12 py-4 sm:py-6 md:py-8 bg-green-600 hover:bg-green-500 border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all font-pixel disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isMinting ? (
                         <>
-                          <Loader2 className="mr-3 w-6 h-6 animate-spin" />{" "}
+                          <Loader2 className="mr-3 w-5 h-5 sm:w-6 sm:h-6 animate-spin" />{" "}
                           MINTING...
                         </>
                       ) : isIdentityLocked ? (
                         <>
-                          <CheckCircle className="mr-3 w-6 h-6" /> IDENTITY
+                          <CheckCircle className="mr-3 w-5 h-5 sm:w-6 sm:h-6" /> IDENTITY
                           MINTED
                         </>
                       ) : (
                         <>
-                          <User className="mr-3 w-6 h-6" /> MINT Identity
+                          <User className="mr-3 w-5 h-5 sm:w-6 sm:h-6" /> MINT Identity
                         </>
                       )}
                     </Button>
@@ -510,11 +512,11 @@ export default function AgentAcademyGame({
 
               {/* Stage 2: Reputation */}
               {stage === "REPUTATION" && (
-                <div className="w-full max-w-3xl space-y-8 animate-in fade-in slide-in-from-right">
+                <div className="w-full max-w-3xl space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-right">
                   {!isTaskAnimating ? (
                     <>
                       <div className="text-center space-y-2">
-                        <h2 className="text-3xl font-pixel text-yellow-400 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
+                        <h2 className="text-2xl sm:text-3xl font-pixel text-yellow-400 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
                           {isVerified ? "AGENT TASKS" : "BUILD REPUTATION"}
                         </h2>
                         <p className="text-xs text-gray-400 font-pixel">
@@ -531,22 +533,22 @@ export default function AgentAcademyGame({
                         </p>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {/* Task 1: Box */}
                         <Button
                           variant="default"
                           onClick={() => performTask("BOX", "EASY")}
-                          className="h-auto py-6 flex flex-col gap-4 bg-gray-800/50 border-5 border-green-500/80 hover:bg-green-900/20 hover:border-green-400 hover:-translate-y-1 transition-all"
+                          className="h-auto py-4 sm:py-6 flex flex-col gap-3 sm:gap-4 bg-gray-800/50 border-5 border-green-500/80 hover:bg-green-900/20 hover:border-green-400 hover:-translate-y-1 transition-all"
                         >
-                          <div className="w-44 h-44 bg-green-900/30 rounded-lg flex items-center justify-center border border-green-500/30">
+                          <div className="w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 bg-green-900/30 rounded-lg flex items-center justify-center border border-green-500/30">
                             <img
                               src="/images/erc8004/task-box.png"
                               alt="Box Task"
-                              className="w-40 h-40 object-contain pixelated rounded-lg"
+                              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain pixelated rounded-lg"
                             />
                           </div>
                           <div className="text-center">
-                            <div className="text-green-400 font-bold font-pixel text-lg">
+                            <div className="text-green-400 font-bold font-pixel text-sm sm:text-base lg:text-lg">
                               LOGISTICS
                             </div>
                             <div className="text-xs text-gray-400 mt-1 font-pixel">
@@ -559,17 +561,17 @@ export default function AgentAcademyGame({
                         <Button
                           variant="default"
                           onClick={() => performTask("DELIVERY", "MEDIUM")}
-                          className="h-auto py-6 flex flex-col gap-4 bg-gray-800/50 border-5 border-green-500/80 hover:bg-green-900/20 hover:border-green-400 hover:-translate-y-1 transition-all"
+                          className="h-auto py-4 sm:py-6 flex flex-col gap-3 sm:gap-4 bg-gray-800/50 border-5 border-green-500/80 hover:bg-green-900/20 hover:border-green-400 hover:-translate-y-1 transition-all"
                         >
-                          <div className="w-44 h-44 bg-yellow-900/30 rounded-lg flex items-center justify-center border border-yellow-500/30">
+                          <div className="w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 bg-yellow-900/30 rounded-lg flex items-center justify-center border border-yellow-500/30">
                             <img
                               src="/images/erc8004/task-delivery.png"
                               alt="Delivery Task"
-                              className="w-40 h-40 object-contain pixelated rounded-lg"
+                              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain pixelated rounded-lg"
                             />
                           </div>
                           <div className="text-center">
-                            <div className="text-yellow-400 font-bold font-pixel text-lg">
+                            <div className="text-yellow-400 font-bold font-pixel text-sm sm:text-base lg:text-lg">
                               DELIVERY
                             </div>
                             <div className="text-xs text-gray-400 mt-1 font-pixel">
@@ -585,14 +587,14 @@ export default function AgentAcademyGame({
                           onClick={() =>
                             isVerified && performTask("CODING", "HARD")
                           }
-                          className={`h-auto py-6 flex flex-col gap-4 bg-gray-800/50 border-5 transition-all ${
+                          className={`h-auto py-4 sm:py-6 flex flex-col gap-3 sm:gap-4 bg-gray-800/50 border-5 transition-all ${
                             isVerified
                               ? "border-green-500/80 hover:bg-green-900/20 hover:border-green-400 hover:-translate-y-1 cursor-pointer"
                               : "border-red-500/50 hover:bg-red-900/10 opacity-70 cursor-not-allowed"
                           }`}
                         >
                           <div
-                            className={`w-44 h-44 rounded-lg flex items-center justify-center border relative ${
+                            className={`w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 rounded-lg flex items-center justify-center border relative ${
                               isVerified
                                 ? "bg-red-900/30 border-red-500/30"
                                 : "bg-gray-900/80 border-gray-700"
@@ -601,15 +603,14 @@ export default function AgentAcademyGame({
                             <img
                               src="/images/erc8004/task-coding.png"
                               alt="Coding Task"
-                              className={`rounded-lg w-40 h-40 object-contain pixelated ${!isVerified ? "grayscale opacity-40" : ""}`}
+                              className={`rounded-lg w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain pixelated ${!isVerified ? "grayscale opacity-40" : ""}`}
                             />
 
                             {/* 锁图标 - 当未验证时显示在正中间 */}
                             {!isVerified && (
                               <div className="absolute inset-0 flex items-center justify-center">
                                 <Lock
-                                  className="text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.9)] animate-pulse z-10 
-             transform scale-[5] origin-center"
+                                  className="text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.9)] animate-pulse z-10 transform scale-[3] sm:scale-[4] lg:scale-[5] origin-center"
                                   strokeWidth={2.5}
                                 />
                               </div>
@@ -618,7 +619,7 @@ export default function AgentAcademyGame({
 
                           <div className="text-center">
                             <div
-                              className={`${isVerified ? "text-red-400" : "text-gray-500"} font-bold font-pixel text-lg`}
+                              className={`${isVerified ? "text-red-400" : "text-gray-500"} font-bold font-pixel text-sm sm:text-base lg:text-lg`}
                             >
                               CODING
                             </div>
@@ -632,14 +633,14 @@ export default function AgentAcademyGame({
                       </div>
 
                       {/* Action Buttons Row */}
-                      <div className="flex justify-center gap-4 mt-8">
+                      <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
                         {/* Validation Button - Shows when ready and not verified */}
                         {reputation >= 50 && !isVerified && (
                           <Button
                             onClick={() => setStage("VALIDATION")}
-                            className="animate-bounce bg-blue-600 hover:bg-blue-500 text-white font-pixel px-8 py-6 text-lg border-b-4 border-blue-800 active:border-b-0 active:translate-y-1"
+                            className="animate-bounce bg-blue-600 hover:bg-blue-500 text-white font-pixel px-5 sm:px-8 py-4 sm:py-6 text-sm sm:text-lg border-b-4 border-blue-800 active:border-b-0 active:translate-y-1"
                           >
-                            <ShieldCheck className="mr-2" /> PROCEED TO
+                            <ShieldCheck className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> PROCEED TO
                             VALIDATION
                           </Button>
                         )}
@@ -649,16 +650,16 @@ export default function AgentAcademyGame({
                           <Button
                             onClick={resetGame}
                             variant="outline"
-                            className="border-white/20 hover:bg-white/10 text-white font-pixel px-8 py-6 text-lg"
+                            className="border-white/20 hover:bg-white/10 text-white font-pixel px-5 sm:px-8 py-4 sm:py-6 text-sm sm:text-lg"
                           >
-                            <RefreshCw className="mr-2" /> DEPLOY NEW AGENT
+                            <RefreshCw className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> DEPLOY NEW AGENT
                           </Button>
                         )}
                       </div>
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center space-y-6 animate-in fade-in zoom-in">
-                      <div className="relative w-64 h-64">
+                      <div className="relative w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64">
                         <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping"></div>
                         <img
                           src={
@@ -672,7 +673,7 @@ export default function AgentAcademyGame({
                           className="w-full h-full object-contain pixelated animate-bounce rounded-lg"
                         />
                       </div>
-                      <h3 className="text-2xl font-pixel text-white animate-pulse">
+                      <h3 className="text-lg sm:text-2xl font-pixel text-white animate-pulse">
                         EXECUTING TASK...
                       </h3>
                     </div>
@@ -682,25 +683,25 @@ export default function AgentAcademyGame({
 
               {/* Stage 3: Validation */}
               {stage === "VALIDATION" && (
-                <div className="text-center space-y-8 animate-in fade-in zoom-in relative z-10 w-full max-w-2xl">
+                <div className="text-center space-y-6 sm:space-y-8 animate-in fade-in zoom-in relative z-10 w-full max-w-2xl">
                   {validationStep === "IDLE" && (
                     <>
                       <div className="space-y-4">
-                        <h2 className="text-3xl font-pixel text-blue-400 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
+                        <h2 className="text-2xl sm:text-3xl font-pixel text-blue-400 drop-shadow-[0_4px_0_rgba(0,0,0,0.5)]">
                           VALIDATION REQUIRED
                         </h2>
-                        <p className="text-gray-400 text-lg font-pixel">
+                        <p className="text-gray-400 text-sm sm:text-lg font-pixel">
                           Submit your reputation proof to the registry for
                           verification.
                         </p>
                       </div>
-                      <div className="flex gap-4 justify-center">
+                      <div className="flex gap-3 sm:gap-4 justify-center">
                         <Button
                           size="lg"
                           onClick={startValidation}
-                          className="text-xl px-12 py-8 bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all font-pixel"
+                          className="text-base sm:text-xl px-6 sm:px-12 py-4 sm:py-8 bg-blue-600 hover:bg-blue-500 border-b-4 border-blue-800 active:border-b-0 active:translate-y-1 transition-all font-pixel"
                         >
-                          <ShieldCheck className="mr-3 w-6 h-6" /> SUBMIT PROOF
+                          <ShieldCheck className="mr-3 w-5 h-5 sm:w-6 sm:h-6" /> SUBMIT PROOF
                         </Button>
                       </div>
                     </>
@@ -708,7 +709,7 @@ export default function AgentAcademyGame({
 
                   {validationStep !== "IDLE" && (
                     <div className="flex flex-col items-center justify-center space-y-6">
-                      <div className="relative w-80 h-80 bg-white/5 rounded-xl border-2 border-white/10 p-4 flex items-center justify-center overflow-hidden">
+                      <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 bg-white/5 rounded-xl border-2 border-white/10 p-4 flex items-center justify-center overflow-hidden">
                         {validationStep === "SUBMITTING" && (
                           <img
                             src="/images/erc8004/validation-submit.png"
@@ -725,8 +726,8 @@ export default function AgentAcademyGame({
                         )}
                         {validationStep === "VERIFIED" && (
                           <div className="text-center space-y-4 animate-in zoom-in">
-                            <CheckCircle className="w-32 h-32 text-green-400 mx-auto" />
-                            <h3 className="text-2xl font-pixel text-green-400">
+                            <CheckCircle className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 text-green-400 mx-auto" />
+                            <h3 className="text-lg sm:text-2xl font-pixel text-green-400">
                               VERIFIED!
                             </h3>
                           </div>
@@ -739,7 +740,7 @@ export default function AgentAcademyGame({
             </div>
 
             {/* In-Game Message Log (Bottom) */}
-            <div className="w-full h-12 bg-black/80 border-t-2 border-white/10 flex items-center px-4 font-mono text-sm">
+            <div className="w-full h-10 sm:h-12 bg-black/80 border-t-2 border-white/10 flex items-center px-3 sm:px-4 font-mono text-xs sm:text-sm">
               <Terminal className="w-4 h-4 text-green-500 mr-2" />
               <span className="text-green-500 mr-2">{">"}</span>
               {gameMessage ? (
@@ -754,7 +755,7 @@ export default function AgentAcademyGame({
         </div>
 
         {/* Right Column: Persistent UI (4 cols) */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-4 sm:space-y-6">
           {/* Identity Scroll */}
           <div className="relative w-full aspect-[3/4] group perspective-1000">
             <div
@@ -767,15 +768,15 @@ export default function AgentAcademyGame({
               />
 
               {/* Scroll Content Overlay */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pt-20 px-12 text-center space-y-4">
+              <div className="absolute inset-0 flex flex-col items-center justify-center pt-12 sm:pt-16 md:pt-20 px-6 sm:px-10 md:px-12 text-center space-y-3 sm:space-y-4">
                 <div className="font-pixel text-xs text-blue-900 opacity-70">
                   ERC-8004
                 </div>
                 <div className="font-pixel text-xs text-blue-900 opacity-70">
                   IDENTITY
                 </div>
-                <div className="w-20 h-20 bg-blue-900/20 rounded-full border-2 border-blue-800/50 flex items-center justify-center">
-                  <Bot className="w-10 h-10 text-blue-900" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-blue-900/20 rounded-full border-2 border-blue-800/50 flex items-center justify-center">
+                  <Bot className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-blue-900" />
                 </div>
                 <div className="font-mono text-xs text-blue-900 break-all font-bold">
                   {agentId || "PENDING..."}
@@ -814,24 +815,26 @@ export default function AgentAcademyGame({
               className="absolute inset-0 w-full h-full object-cover pixelated opacity-50"
             />
 
-            <div className="absolute inset-0 p-4 flex flex-col">
-              <div className="flex justify-between items-center mb-4 border-b border-blue-500/30 pb-2">
-                <h3 className="font-pixel text-blue-400 text-sm">TASK LOG</h3>
-                <div className="text-xs text-blue-300 font-mono animate-pulse">
+            <div className="absolute inset-0 p-3 sm:p-4 flex flex-col">
+              <div className="flex justify-between items-center mb-3 sm:mb-4 border-b border-blue-500/30 pb-2">
+                <h3 className="font-pixel text-blue-400 text-xs sm:text-sm">
+                  TASK LOG
+                </h3>
+                <div className="text-[10px] sm:text-xs text-blue-300 font-mono animate-pulse">
                   LIVE FEED
                 </div>
               </div>
 
               <div className="flex-1 overflow-hidden space-y-2">
                 {taskLogs.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-blue-500/30 font-pixel text-xs">
+                  <div className="h-full flex items-center justify-center text-blue-500/30 font-pixel text-[10px] sm:text-xs">
                     AWAITING DATA...
                   </div>
                 ) : (
                   taskLogs.map(log => (
                     <div
                       key={log.id}
-                      className="flex justify-between items-center bg-blue-900/20 p-2 rounded border border-blue-500/20 text-xs animate-in slide-in-from-left"
+                      className="flex justify-between items-center bg-blue-900/20 p-2 rounded border border-blue-500/20 text-[10px] sm:text-xs animate-in slide-in-from-left"
                     >
                       <div className="flex items-center gap-2">
                         {log.type === "BOX" && (
@@ -859,7 +862,7 @@ export default function AgentAcademyGame({
               </div>
 
               <div className="mt-4 pt-2 border-t border-blue-500/30">
-                <div className="flex justify-between text-xs mb-1">
+                <div className="flex justify-between text-[10px] sm:text-xs mb-1">
                   <span className="text-blue-300 font-pixel">TOTAL REP</span>
                   <span className="text-white font-pixel">
                     {reputation} / 50
@@ -890,22 +893,22 @@ export default function AgentAcademyGame({
         />
       </div>
       {/* Bottom Button Container */}
-      <div className="w-full mt-auto pt-6 pb-4 flex justify-center gap-4">
+      <div className="w-full mt-auto pt-6 pb-4 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
         {/* Challenge Button - Shows after verification */}
         {showChallenge && !quizPassed && (
           <Button
             onClick={handleStartChallenge}
             disabled={isStartingQuiz}
-            className="animate-pulse bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-pixel px-8 py-6 text-lg border-b-4 border-purple-800 active:border-b-0 active:translate-y-1"
+            className="animate-pulse bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-pixel px-4 sm:px-8 py-4 sm:py-6 text-sm sm:text-lg border-b-4 border-purple-800 active:border-b-0 active:translate-y-1"
           >
             {isStartingQuiz ? (
               <>
-                <Loader2 className="mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 LOADING...
               </>
             ) : (
               <>
-                <Terminal className="mr-2" />
+                <Terminal className="mr-2 h-4 w-4" />
                 {quizDone && !quizPassed
                   ? "RETRY CHALLENGE"
                   : "START CHALLENGE"}
@@ -919,16 +922,16 @@ export default function AgentAcademyGame({
           <Button
             onClick={handleClaimNFT}
             disabled={isClaimingNFT}
-            className="animate-bounce bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-pixel px-8 py-6 text-lg border-b-4 border-yellow-700 active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:animate-none"
+            className="animate-bounce bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black font-pixel px-4 sm:px-8 py-4 sm:py-6 text-sm sm:text-lg border-b-4 border-yellow-700 active:border-b-0 active:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:animate-none"
           >
             {isClaimingNFT ? (
               <>
-                <Loader2 className="mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 MINTING...
               </>
             ) : (
               <>
-                <Trophy className="mr-2" /> CLAIM NFT REWARD
+                <Trophy className="mr-2 h-4 w-4" /> CLAIM NFT REWARD
               </>
             )}
           </Button>
@@ -936,10 +939,10 @@ export default function AgentAcademyGame({
 
         {/* NFT Minting Success Box */}
         {nftMinted && nftData && (
-          <div className="w-full max-w-2xl bg-gradient-to-br from-green-500/20 to-emerald-600/20 border-4 border-green-500 rounded-lg p-6 animate-in zoom-in duration-500">
+          <div className="w-full max-w-2xl bg-gradient-to-br from-green-500/20 to-emerald-600/20 border-4 border-green-500 rounded-lg p-4 sm:p-6 animate-in zoom-in duration-500">
             <div className="flex items-center gap-3 mb-4">
-              <CheckCircle className="w-8 h-8 text-green-500 animate-pulse" />
-              <h3 className="text-2xl font-pixel text-green-400">
+              <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 animate-pulse" />
+              <h3 className="text-lg sm:text-2xl font-pixel text-green-400">
                 🎉 CLAIMED SUCCESSFULLY!
               </h3>
             </div>

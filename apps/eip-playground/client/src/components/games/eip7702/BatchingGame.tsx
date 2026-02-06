@@ -147,7 +147,7 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
   }, [hasGreeted, onTutorSpeak, tutorSpeak]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
+    <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
       {/* AI Tutor */}
       {!onTutorSpeak && (
         <AITutor
@@ -158,28 +158,28 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
         />
       )}
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-8">
         <div>
-          <h2 className="text-xl text-yellow-400 mb-2 text-shadow-pixel">
+          <h2 className="text-base sm:text-xl text-yellow-400 mb-2 text-shadow-pixel">
             LEVEL 1: CRAZY CLICKING
           </h2>
           <p
-            className="text-xs text-gray-400 font-sans"
+            className="text-[10px] sm:text-xs text-gray-400 font-sans"
             style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
           >
             MISSION: REVEAL 10 CARDS
           </p>
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right">
           <div
-            className={`text-2xl ${timeLeft < 5 ? "text-red-500 animate-pulse" : "text-green-400"} text-shadow-pixel`}
+            className={`text-xl sm:text-2xl ${timeLeft < 5 ? "text-red-500 animate-pulse" : "text-green-400"} text-shadow-pixel`}
           >
             {mode === "eoa"
               ? `00:${timeLeft.toString().padStart(2, "0")}`
               : "--:--"}
           </div>
           <div
-            className="text-xs text-gray-500 font-sans"
+            className="text-[10px] sm:text-xs text-gray-500 font-sans"
             style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
           >
             TIME LEFT
@@ -188,11 +188,11 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
       </div>
 
       {/* Game Area */}
-      <div className="relative min-h-[500px] flex flex-col items-center justify-center bg-black/30 border-2 border-white/10 p-4">
+      <div className="relative min-h-[360px] sm:min-h-[500px] flex flex-col items-center justify-center bg-black/30 border-2 border-white/10 p-3 sm:p-4">
         {mode === "intro" && (
-          <div className="text-center space-y-6">
+          <div className="text-center space-y-4 sm:space-y-6">
             <p
-              className="text-sm leading-relaxed max-w-lg mx-auto text-gray-300 font-sans"
+              className="text-xs sm:text-sm leading-relaxed max-w-lg mx-auto text-gray-300 font-sans"
               style={{ fontFamily: '"Press Start 2P", system-ui, sans-serif' }}
             >
               In the old world (EOA), every action requires a separate
@@ -201,16 +201,16 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
               <br />
               Can you reveal all 10 cards in 10 seconds?
             </p>
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <button
                 onClick={startEOA}
-                className="px-6 py-3 bg-red-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-xs font-bold"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-xs font-bold"
               >
                 TRY EOA MODE (HARD)
               </button>
               <button
                 onClick={start7702}
-                className="px-6 py-3 bg-blue-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-xs font-bold"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-xs font-bold"
               >
                 TRY 7702 MODE (EASY)
               </button>
@@ -219,14 +219,14 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
         )}
 
         {(mode === "eoa" || mode === "7702" || mode === "success") && (
-          <div className="grid grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-5 gap-2 sm:gap-4 mb-4 sm:mb-8">
             {cards.map((card, index) => (
               <div
                 key={index}
                 onClick={() =>
                   index === revealedCount && handleCardClick(index)
                 }
-                className={`w-24 h-36 cursor-pointer relative perspective-1000 ${
+                className={`w-12 h-16 sm:w-20 sm:h-28 md:w-24 md:h-36 cursor-pointer relative perspective-1000 ${
                   index === revealedCount && mode === "eoa"
                     ? "animate-bounce"
                     : ""
@@ -285,22 +285,24 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
               exit={{ scale: 0.8, opacity: 0 }}
               className="absolute inset-0 bg-black/80 flex items-center justify-center z-50"
             >
-              <div className="bg-gray-800 p-6 border-4 border-white max-w-sm w-full text-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                <h3 className="text-yellow-400 mb-4 text-shadow-pixel">
+              <div className="bg-gray-800 p-4 sm:p-6 border-4 border-white max-w-sm w-full text-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                <h3 className="text-yellow-400 mb-3 sm:mb-4 text-shadow-pixel text-sm sm:text-base">
                   CONFIRM TRANSACTION
                 </h3>
-                <p className="text-xs text-gray-400 mb-6 font-pixel">
+                <p className="text-[10px] sm:text-xs text-gray-400 mb-4 sm:mb-6 font-pixel">
                   Gas Fee: 0.001 ETH
                 </p>
                 {processing ? (
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-xs animate-pulse">MINING...</span>
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-[10px] sm:text-xs animate-pulse">
+                      MINING...
+                    </span>
                   </div>
                 ) : (
                   <button
                     onClick={confirmTransaction}
-                    className="w-full py-3 bg-green-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-xs font-bold"
+                    className="w-full py-2.5 sm:py-3 bg-green-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-xs font-bold"
                   >
                     CONFIRM
                   </button>
@@ -313,20 +315,20 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
         {/* 7702 Controls */}
         {mode === "7702" && (
           <div className="text-center">
-            <p className="text-xs text-blue-300 mb-4 font-pixel">
+            <p className="text-[10px] sm:text-xs text-blue-300 mb-3 sm:mb-4 font-pixel">
               EIP-7702 ALLOWS BATCHING OPERATIONS!
             </p>
             {processing ? (
               <div className="flex flex-col items-center gap-2">
-                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs animate-pulse">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <span className="text-[10px] sm:text-xs animate-pulse">
                   BATCH EXECUTING...
                 </span>
               </div>
             ) : (
               <button
                 onClick={handleBatchSign}
-                className="px-8 py-4 bg-blue-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-sm flex items-center gap-2 mx-auto font-bold"
+                className="px-5 sm:px-8 py-3 sm:py-4 bg-blue-600 border-2 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all text-[10px] sm:text-sm flex items-center gap-2 mx-auto font-bold"
               >
                 <span>✍️</span> SIGN ONCE FOR ALL
               </button>
@@ -341,15 +343,15 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
             animate={{ scale: 1, opacity: 1 }}
             className="text-center"
           >
-            <h3 className="text-2xl text-green-400 mb-2 text-shadow-pixel">
+            <h3 className="text-lg sm:text-2xl text-green-400 mb-2 text-shadow-pixel">
               MISSION COMPLETE!
             </h3>
-            <p className="text-xs text-gray-400 mb-6 font-pixel">
+            <p className="text-[10px] sm:text-xs text-gray-400 mb-4 sm:mb-6 font-pixel">
               1 Signature • 0 Wait Time • 100% Efficiency
             </p>
             <button
               onClick={resetGame}
-              className="px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors text-xs font-bold"
+              className="px-5 sm:px-6 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors text-[10px] sm:text-xs font-bold"
             >
               PLAY AGAIN
             </button>
@@ -359,7 +361,7 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
         {/* Message Toast */}
         <div className="flex flex-col items-center">
           {message && (
-            <div className="mt-4 bg-gray-800 px-4 py-2 border-2 border-white text-xs text-yellow-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <div className="mt-3 sm:mt-4 bg-gray-800 px-3 sm:px-4 py-2 border-2 border-white text-[10px] sm:text-xs text-yellow-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               {message}
             </div>
           )}
