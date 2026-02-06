@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { eips } from "@/data/eips";
 
 interface FeatureCardProps {
   id: string;
@@ -80,41 +81,20 @@ function FeatureCard({
 }
 
 export default function FeatureGrid() {
-  const features = [
-    {
-      id: "eip-1559",
-      title: "EIP-1559",
-      subtitle: "Gas Fee Market",
-      description:
-        "A transaction pricing mechanism that includes fixed-per-block network fee that is burned and dynamically expands/contracts block sizes.",
-      image: "/images/eip-1559-gas.png",
-      backgroundImage: "/images/eip-1559-gas.png",
-      gradient: "bg-gradient-to-br from-red-900 to-yellow-700",
-      icon: "🔥",
-    },
-    {
-      id: "eip-7702",
-      title: "EIP-7702",
-      subtitle: "Account Abstraction",
-      description:
-        "Adds a new transaction type that sets the code for an EOA for one transaction, enabling batching and sponsorship.",
-      image: "/images/eip-7702-robot.png",
-      backgroundImage: "/images/eip-7702-robot.png",
-      gradient: "bg-gradient-to-br from-orange-800 to-amber-600",
-      icon: "🤖",
-    },
-    {
-      id: "erc-8004",
-      title: "ERC-8004",
-      subtitle: "Trustless Agents",
-      description:
-        "A standard for discovering, choosing, and interacting with AI agents across organizational boundaries using on-chain registries.",
-      image: "/images/erc-8004-agent.png",
-      backgroundImage: "/images/erc-8004-agent.png",
-      gradient: "bg-gradient-to-br from-blue-900 to-purple-800",
-      icon: "📦",
-    },
-  ];
+  const featureOrder = ["eip-1559", "eip-7702", "erc-8004"];
+  const features = featureOrder
+    .map(id => eips[id])
+    .filter(Boolean)
+    .map(eip => ({
+      id: eip.id,
+      title: eip.title,
+      subtitle: eip.subtitle,
+      description: eip.description,
+      image: eip.image,
+      backgroundImage: eip.image,
+      gradient: eip.gradient,
+      icon: eip.icon,
+    }));
 
   return (
     <section className="container py-12 relative z-10">

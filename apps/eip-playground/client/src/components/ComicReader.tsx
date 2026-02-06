@@ -26,6 +26,7 @@ const ComicReader: React.FC<ComicReaderProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const touchStartX = React.useRef<number | null>(null);
 
   // Optimize preloading logic to preload all images at the start
   useEffect(() => {
@@ -89,6 +90,25 @@ const ComicReader: React.FC<ComicReaderProps> = ({
     setIsFullscreen(!isFullscreen);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const endX = e.changedTouches[0]?.clientX ?? null;
+    if (endX === null) return;
+    const deltaX = endX - touchStartX.current;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX < 0) {
+        nextPage();
+      } else {
+        prevPage();
+      }
+    }
+    touchStartX.current = null;
+  };
+
   const ReaderContent = ({ isFullscreenMode = false }) => (
     <div
       className={`relative flex flex-col items-center justify-center bg-black/90 w-full ${isFullscreenMode ? "h-screen" : ""}`}
@@ -98,6 +118,8 @@ const ComicReader: React.FC<ComicReaderProps> = ({
       {/* Comic Image Container */}
       <div
         className={`relative w-full flex items-center justify-center p-4 md:p-8 overflow-hidden ${isFullscreenMode ? "h-full" : "aspect-video"}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {isLoading ? (
           <div className="flex flex-col items-center gap-4 text-primary animate-pulse">
@@ -138,6 +160,26 @@ const ComicReader: React.FC<ComicReaderProps> = ({
         >
           <ChevronRight size={32} />
         </button>
+
+        {/* Mobile tap zones: left half = prev, right half = next */}
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            prevPage();
+          }}
+          disabled={currentPage === 1}
+          className="absolute inset-y-0 left-0 w-1/2 md:hidden z-10 disabled:opacity-0"
+          aria-label="Previous page"
+        />
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            nextPage();
+          }}
+          disabled={currentPage === pageCount}
+          className="absolute inset-y-0 right-0 w-1/2 md:hidden z-10 disabled:opacity-0"
+          aria-label="Next page"
+        />
 
         {/* Close Fullscreen Button */}
         {isFullscreenMode && (

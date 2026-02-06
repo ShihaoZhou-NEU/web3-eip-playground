@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b-4 border-border bg-background/90 backdrop-blur-sm">
-      <div className="container flex h-16 sm:h-20 items-center justify-between gap-2 sm:gap-4">
+      <div className="container flex h-16 sm:h-20 items-center gap-2 sm:gap-4">
         {/* Logo Area */}
         <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
           <img
@@ -33,7 +33,7 @@ export default function Header() {
         </Link>
 
         {/* Nav Links */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex flex-1 items-center justify-center gap-8">
           {navItems.map(item => (
             <Link
               key={item}
@@ -46,26 +46,27 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(prev => !prev)}
-          className="md:hidden inline-flex items-center justify-center w-10 h-10 border-2 border-border bg-black/40 text-primary hover:bg-black/60 transition-colors"
-          aria-label="Toggle navigation"
-          aria-expanded={isOpen}
-        >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        {/* Right-side Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(prev => !prev)}
+            className="lg:hidden inline-flex items-center justify-center w-10 h-10 border-2 border-border bg-black/40 text-primary hover:bg-black/60 transition-colors"
+            aria-label="Toggle navigation"
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
 
-        {/* Status Bar / Wallet Connect */}
-        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Status Bar / Wallet Connect */}
           {/* Desktop / large screens: default button with text */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <ConnectButton />
           </div>
 
           {/* Mobile / small screens: icon-only */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <ConnectButton.Custom>
               {({ account, chain, openAccountModal, openConnectModal, mounted }) => {
                 const ready = mounted;
@@ -98,7 +99,7 @@ export default function Header() {
 
       {/* Mobile Nav Panel */}
       {isOpen && (
-        <div className="md:hidden border-t-4 border-border bg-background/95 backdrop-blur-sm">
+        <div className="lg:hidden border-t-4 border-border bg-background/95 backdrop-blur-sm">
           <div className="container py-4 flex flex-col gap-3">
             {navItems.map(item => (
               <Link

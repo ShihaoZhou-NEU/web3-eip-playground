@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AITutor, { TutorPose, TutorMessage } from "@/components/AITutor";
-import { getTutorGreeting } from "@/lib/tutorScripts";
+import { getTutorGreeting, getEip7702TutorMessage } from "@/data/tutorScripts";
 
 type BatchingGameProps = {
+  // Forward tutor messages to the page-level tutor.
   onTutorSpeak?: (message: string, pose?: TutorPose) => void;
 };
 
@@ -29,6 +30,21 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
   const [chatHistory, setChatHistory] = useState<TutorMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
 
+  const internalTutorSpeak = (text: string, pose: TutorPose = "standing") => {
+    setTutorPose(pose);
+    setTutorMessage(text);
+    setChatHistory(prev => [
+      ...prev,
+      {
+        id: `tutor-${Date.now()}-${Math.random()}`,
+        role: "tutor",
+        content: text,
+        timestamp: Date.now(),
+      },
+    ]);
+  };
+  const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
+
   // Card images mapping
   const cardImages = [
     "/images/tarot/card_01.png",
@@ -44,6 +60,7 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
   ];
 
   useEffect(() => {
+    // Countdown logic for EOA mode.
     let timer: NodeJS.Timeout;
     if (isPlaying && timeLeft > 0) {
       timer = setInterval(() => {
@@ -52,10 +69,11 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
     } else if (timeLeft === 0 && isPlaying) {
       setIsPlaying(false);
       setMessage("TIME UP! EOA IS TOO SLOW!");
+      tutorSpeak(getEip7702TutorMessage("eoa_timeout"), "thinking");
       setTimeout(() => resetGame(), 4000);
     }
     return () => clearInterval(timer);
-  }, [isPlaying, timeLeft]);
+  }, [isPlaying, timeLeft, tutorSpeak]);
 
   const resetGame = () => {
     setCards(Array.from({ length: 10 }, (_, i) => i));
@@ -69,16 +87,20 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
   };
 
   const startEOA = () => {
+    // EOA mode: one action per transaction.
     setMode("eoa");
     setIsPlaying(true);
     setMessage("CLICK ALL 10 CARDS!");
+    tutorSpeak(getEip7702TutorMessage("eoa_start"), "teaching");
   };
 
   const start7702 = () => {
+    // 7702 mode: batch all actions into one signature.
     setMode("7702");
     setIsPlaying(false); // No timer needed for instant batch
     setRevealedCount(0);
     setMessage("ONE CLICK TO RULE THEM ALL");
+    tutorSpeak(getEip7702TutorMessage("batch_start"), "teaching");
   };
 
   const handleCardClick = (index: number) => {
@@ -97,6 +119,7 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
       if (revealedCount + 1 === 10) {
         setIsPlaying(false);
         setMessage("PHEW! BARELY MADE IT!");
+        tutorSpeak(getEip7702TutorMessage("eoa_success"), "praising");
       }
     }, 1000); // 1s delay per tx
   };
@@ -108,23 +131,9 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
       setRevealedCount(10);
       setMode("success");
       setMessage("BATCHED & EXECUTED INSTANTLY!");
+      tutorSpeak(getEip7702TutorMessage("batch_success"), "praising");
     }, 1500);
   };
-
-  const internalTutorSpeak = (text: string, pose: TutorPose = "standing") => {
-    setTutorPose(pose);
-    setTutorMessage(text);
-    setChatHistory(prev => [
-      ...prev,
-      {
-        id: `tutor-${Date.now()}-${Math.random()}`,
-        role: "tutor",
-        content: text,
-        timestamp: Date.now(),
-      },
-    ]);
-  };
-  const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
 
   useEffect(() => {
     if (onTutorSpeak) return;

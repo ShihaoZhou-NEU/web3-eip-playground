@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import AITutor, { TutorPose } from "@/components/AITutor";
-import { getTutorGreeting } from "@/lib/tutorScripts";
+import { getTutorGreeting, getEip1559TutorMessage } from "@/data/tutorScripts";
 
 // Constants
 const TARGET_GAS = 15000000; // Target block size
@@ -27,6 +27,7 @@ interface ChatMessage {
 }
 
 type BurnerGameProps = {
+  // Forward tutor messages to the page-level tutor.
   onTutorSpeak?: (message: string, pose?: TutorPose) => void;
 };
 
@@ -72,7 +73,7 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
   };
   const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
 
-  // Initial greeting
+  // Initial greeting (only when running standalone, not embedded).
   useEffect(() => {
     if (onTutorSpeak) return;
     if (!hasGreeted) {
@@ -146,12 +147,18 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
         if (Math.abs(feeChange) > 10) {
           if (feeChange > 0) {
             tutorSpeak(
-              `Base fee increased from ${prevBaseFee} to ${next} Gwei! This happens when blocks are more than 50% full. The network is getting congested.`,
+              getEip1559TutorMessage("base_fee_rise", {
+                prevFee: prevBaseFee,
+                nextFee: next,
+              }),
               "teaching"
             );
           } else {
             tutorSpeak(
-              `Base fee decreased from ${prevBaseFee} to ${next} Gwei! This happens when blocks are less than 50% full. The network has spare capacity.`,
+              getEip1559TutorMessage("base_fee_drop", {
+                prevFee: prevBaseFee,
+                nextFee: next,
+              }),
               "praising"
             );
           }
@@ -172,19 +179,19 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
     };
   }, [isPlaying, demandLevel, blockNumber]);
 
-  // Monitor transaction inclusion status
+  // Monitor transaction inclusion status and explain inclusion/refund logic.
   useEffect(() => {
     const totalCost = baseFee + priorityFee;
     const isIncluded = maxFee >= totalCost;
 
     if (prevIncludedRef.current && !isIncluded) {
       tutorSpeak(
-        `⚠️ Your transaction was rejected! Your max fee (${maxFee} Gwei) is lower than the required cost (${totalCost} Gwei). Try increasing your max fee cap.`,
+        getEip1559TutorMessage("tx_rejected", { maxFee, totalCost }),
         "thinking"
       );
     } else if (!prevIncludedRef.current && isIncluded) {
       tutorSpeak(
-        `✅ Great! Your transaction is now included. You set a max fee of ${maxFee} Gwei, but you'll only pay ${totalCost} Gwei. The difference is automatically refunded!`,
+        getEip1559TutorMessage("tx_included", { maxFee, totalCost }),
         "praising"
       );
     }
@@ -192,19 +199,19 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
     prevIncludedRef.current = isIncluded;
   }, [baseFee, priorityFee, maxFee]);
 
-  // Monitor demand level changes
+  // Monitor demand level changes to explain base fee dynamics.
   const prevDemandRef = useRef(demandLevel);
   useEffect(() => {
     const demandChange = demandLevel - prevDemandRef.current;
     if (Math.abs(demandChange) >= 20) {
       if (demandLevel > 50) {
         tutorSpeak(
-          `You've increased network congestion to ${demandLevel}%! Watch how the base fee starts climbing. This is EIP-1559's automatic price discovery in action.`,
+          getEip1559TutorMessage("demand_high", { demandLevel }),
           "working"
         );
       } else {
         tutorSpeak(
-          `You've reduced network congestion to ${demandLevel}%. The base fee will gradually decrease, making transactions cheaper for everyone.`,
+          getEip1559TutorMessage("demand_low", { demandLevel }),
           "praising"
         );
       }

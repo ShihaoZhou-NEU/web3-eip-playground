@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { RefreshCw, ArrowRight, Coins, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { getEip1559TutorMessage } from "@/data/tutorScripts";
 
 interface Transaction {
   id: string;
@@ -12,7 +13,12 @@ interface Transaction {
 
 const BLOCK_CAPACITY = 5;
 
-const GasWarGame: React.FC = () => {
+type GasWarGameProps = {
+  // Forward tutor messages to the page-level tutor.
+  onTutorSpeak?: (message: string) => void;
+};
+
+const GasWarGame: React.FC<GasWarGameProps> = ({ onTutorSpeak }) => {
   const [mempool, setMempool] = useState<Transaction[]>([]);
   const [userBid, setUserBid] = useState<number>(50);
   const [lastBlock, setLastBlock] = useState<Transaction[] | null>(null);
@@ -37,6 +43,7 @@ const GasWarGame: React.FC = () => {
     setLastBlock(null);
     setAnalysis(null);
     setSimulationStatus("MEMPOOL UPDATED. PLACE YOUR BID!");
+    onTutorSpeak?.(getEip1559TutorMessage("mempool_ready"));
   };
 
   useEffect(() => {
@@ -44,6 +51,7 @@ const GasWarGame: React.FC = () => {
   }, []);
 
   const runSimulation = () => {
+    // First-price auction: top bids fill the block.
     const userTx: Transaction = {
       id: "user-tx",
       gasPrice: userBid,
@@ -79,9 +87,20 @@ const GasWarGame: React.FC = () => {
         lowestIncluded: lowestIncludedPrice,
         overpaid: userBid - lowestIncludedPrice,
       });
+      onTutorSpeak?.(
+        getEip1559TutorMessage("simulation_success", { userBid })
+      );
+      if (userBid - lowestIncludedPrice > 0) {
+        onTutorSpeak?.(
+          getEip1559TutorMessage("overpaid", {
+            overpaid: userBid - lowestIncludedPrice,
+          })
+        );
+      }
     } else {
       setSimulationStatus("FAILED. BID TOO LOW.");
       setAnalysis(null);
+      onTutorSpeak?.(getEip1559TutorMessage("simulation_fail"));
     }
   };
 

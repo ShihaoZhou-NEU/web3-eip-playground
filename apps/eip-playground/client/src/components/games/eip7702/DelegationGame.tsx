@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { getEip7702TutorMessage } from "@/data/tutorScripts";
 
 // Comic panels data
 const PANELS = [
@@ -33,7 +34,12 @@ const PANELS = [
   },
 ];
 
-const DelegationGame: React.FC = () => {
+type DelegationGameProps = {
+  // Forward tutor messages to the page-level tutor.
+  onTutorSpeak?: (message: string) => void;
+};
+
+const DelegationGame: React.FC<DelegationGameProps> = ({ onTutorSpeak }) => {
   const [currentPanel, setCurrentPanel] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
@@ -77,6 +83,12 @@ const DelegationGame: React.FC = () => {
   };
 
   const panel = PANELS[currentPanel];
+
+  useEffect(() => {
+    // Speak when the panel changes so the tutor narrates the story.
+    const key = `panel_${panel.id}` as const;
+    onTutorSpeak?.(getEip7702TutorMessage(key));
+  }, [panel.id, onTutorSpeak]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden mt-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">

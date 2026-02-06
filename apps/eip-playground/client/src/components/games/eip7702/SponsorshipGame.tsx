@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { getEip7702TutorMessage } from "@/data/tutorScripts";
 
-export const SponsorshipGame: React.FC = () => {
+type SponsorshipGameProps = {
+  // Forward tutor messages to the page-level tutor.
+  onTutorSpeak?: (message: string) => void;
+};
+
+export const SponsorshipGame: React.FC<SponsorshipGameProps> = ({
+  onTutorSpeak,
+}) => {
   const [gasBalance, setGasBalance] = useState(0);
   const [hasApple, setHasApple] = useState(false);
   const [showPaymaster, setShowPaymaster] = useState(false);
@@ -19,9 +27,11 @@ export const SponsorshipGame: React.FC = () => {
   const tryClaim = () => {
     if (gasBalance === 0) {
       setMessage("ERROR: INSUFFICIENT GAS! CANNOT CLAIM.");
+      onTutorSpeak?.(getEip7702TutorMessage("sponsor_blocked"));
       setTimeout(() => {
         setShowPaymaster(true);
         setMessage("WAIT! A SPONSOR APPEARED!");
+        onTutorSpeak?.(getEip7702TutorMessage("sponsor_appears"));
       }, 1500);
     }
   };
@@ -29,10 +39,12 @@ export const SponsorshipGame: React.FC = () => {
   const handleSponsorSign = () => {
     setProcessing(true);
     setMessage("SIGNING SPONSORSHIP REQUEST...");
+    onTutorSpeak?.(getEip7702TutorMessage("sponsor_signing"));
     setTimeout(() => {
       setProcessing(false);
       setHasApple(true);
       setMessage("SUCCESS! GAS PAID BY SPONSOR!");
+      onTutorSpeak?.(getEip7702TutorMessage("sponsor_success"));
     }, 2000);
   };
 

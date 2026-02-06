@@ -162,15 +162,15 @@
   }
 
   .markdown-content ol {
-    @apply list-decimal pl-6;
+    @apply list-decimal list-outside pl-8;
   }
 
   .markdown-content ul {
-    @apply list-disc pl-6;
+    @apply list-disc list-outside pl-8;
   }
 
   .markdown-content li {
-    @apply mb-2;
+    @apply mb-2 leading-relaxed;
   }
 }
 

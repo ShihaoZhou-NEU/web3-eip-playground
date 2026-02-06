@@ -16,7 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import AITutor, { TutorPose, TutorMessage } from "@/components/AITutor";
-import { getTutorGreeting, getErc8004TutorMessage } from "@/lib/tutorScripts";
+import { getTutorGreeting, getErc8004TutorMessage } from "@/data/tutorScripts";
 import ConsoleDialog from "@/components/ConsoleDialog";
 import { Trophy } from "lucide-react";
 import { startQuiz, submitAnswer } from "@/lib/quizApi";
@@ -53,6 +53,7 @@ export default function AgentAcademyGame({
   const [isVerified, setIsVerified] = useState(false);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
   const [isMinting, setIsMinting] = useState(false);
+  const [isIdentityLocked, setIsIdentityLocked] = useState(false);
 
   // Tutor states
   const [tutorPose, setTutorPose] = useState<TutorPose>("standing");
@@ -125,6 +126,8 @@ export default function AgentAcademyGame({
 
   // Stage 1: Identity
   const mintIdentity = () => {
+    if (isIdentityLocked) return;
+    setIsIdentityLocked(true);
     setIsMinting(true);
     showMessage("Minting your agent identity...");
 
@@ -288,6 +291,7 @@ export default function AgentAcademyGame({
     setQuizDone(false);
     setQuizPassed(null);
     setQuizMessages([]);
+    setIsIdentityLocked(false);
     tutorSpeak(getErc8004TutorMessage("reset"), "standing");
   };
 
@@ -481,13 +485,18 @@ export default function AgentAcademyGame({
                     <Button
                       size="lg"
                       onClick={mintIdentity}
-                      disabled={isMinting}
+                      disabled={isMinting || isIdentityLocked}
                       className="relative text-xl px-12 py-8 bg-green-600 hover:bg-green-500 border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all font-pixel disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isMinting ? (
                         <>
                           <Loader2 className="mr-3 w-6 h-6 animate-spin" />{" "}
                           MINTING...
+                        </>
+                      ) : isIdentityLocked ? (
+                        <>
+                          <CheckCircle className="mr-3 w-6 h-6" /> IDENTITY
+                          MINTED
                         </>
                       ) : (
                         <>

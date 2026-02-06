@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ComicReader from "@/components/ComicReader";
 import { eips } from "@/data/eips";
+import { ChevronLeft } from "lucide-react";
 
 const ComicsPage = () => {
+  const [, navigate] = useLocation();
   // Only show entries that have an associated comic folder with at least one page.
   const comicEips = useMemo(() => {
     return Object.values(eips).filter(
@@ -16,16 +19,38 @@ const ComicsPage = () => {
   const [selectedEipId, setSelectedEipId] = useState<string | null>(
     comicEips[0]?.id ?? null
   );
+  const selectedEipIdRef = useRef<string | null>(selectedEipId);
+
+  useEffect(() => {
+    selectedEipIdRef.current = selectedEipId;
+  }, [selectedEipId]);
 
   const pickRandomComic = useCallback(() => {
+    if (!comicEips.length) return;
+    if (comicEips.length === 1) {
+      setSelectedEipId(comicEips[0].id);
+      return;
+    }
+    let randomEip = comicEips[Math.floor(Math.random() * comicEips.length)];
+    while (randomEip.id === selectedEipIdRef.current) {
+      randomEip = comicEips[Math.floor(Math.random() * comicEips.length)];
+    }
+    setSelectedEipId(randomEip.id);
+  }, [comicEips]);
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    navigate("/");
+  };
+
+  useEffect(() => {
     if (!comicEips.length) return;
     const randomEip = comicEips[Math.floor(Math.random() * comicEips.length)];
     setSelectedEipId(randomEip.id);
   }, [comicEips]);
-
-  useEffect(() => {
-    pickRandomComic();
-  }, [pickRandomComic]);
 
   const selectedEip = selectedEipId ? eips[selectedEipId] : undefined;
 
@@ -33,6 +58,22 @@ const ComicsPage = () => {
     <div className="min-h-screen flex flex-col relative bg-[radial-gradient(circle_at_top,_rgba(255,215,0,0.05),_transparent_60%)] text-white">
       <div className="fixed inset-0 bg-[url('/images/pixel-stars.png')] bg-cover opacity-60 pointer-events-none" />
       <Header />
+
+      <button
+        onClick={handleBack}
+        className="fixed top-24 sm:top-28 left-3 sm:left-6 z-50 p-2 sm:p-3 bg-black/80 hover:bg-black text-white border-4 border-white/40 hover:border-white transition-all shadow-lg flex items-center justify-center group"
+        aria-label="Go back"
+        style={{ imageRendering: "pixelated" }}
+      >
+        <ChevronLeft
+          size={24}
+          className="sm:hidden group-hover:-translate-x-1 transition-transform"
+        />
+        <ChevronLeft
+          size={32}
+          className="hidden sm:block group-hover:-translate-x-1 transition-transform"
+        />
+      </button>
 
       <main className="flex-1 pt-24 pb-16 relative z-10">
         <div className="max-w-6xl mx-auto flex flex-col gap-10 px-4">
