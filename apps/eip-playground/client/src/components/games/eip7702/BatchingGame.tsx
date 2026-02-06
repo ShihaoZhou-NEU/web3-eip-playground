@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AITutor, { TutorPose, TutorMessage } from "@/components/AITutor";
+import { getTutorGreeting } from "@/lib/tutorScripts";
 
-export const BatchingGame: React.FC = () => {
+type BatchingGameProps = {
+  onTutorSpeak?: (message: string, pose?: TutorPose) => void;
+};
+
+export const BatchingGame: React.FC<BatchingGameProps> = ({
+  onTutorSpeak,
+}) => {
   const [mode, setMode] = useState<"intro" | "eoa" | "7702" | "success">(
     "intro"
   );
@@ -104,15 +111,43 @@ export const BatchingGame: React.FC = () => {
     }, 1500);
   };
 
+  const internalTutorSpeak = (text: string, pose: TutorPose = "standing") => {
+    setTutorPose(pose);
+    setTutorMessage(text);
+    setChatHistory(prev => [
+      ...prev,
+      {
+        id: `tutor-${Date.now()}-${Math.random()}`,
+        role: "tutor",
+        content: text,
+        timestamp: Date.now(),
+      },
+    ]);
+  };
+  const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
+
+  useEffect(() => {
+    if (onTutorSpeak) return;
+    if (!hasGreeted) {
+      setHasGreeted(true);
+      tutorSpeak(
+        getTutorGreeting({ eipId: "eip-7702", gameId: "batching" }),
+        "standing"
+      );
+    }
+  }, [hasGreeted, onTutorSpeak, tutorSpeak]);
+
   return (
     <div className="w-full max-w-4xl mx-auto p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">
       {/* AI Tutor */}
-      <AITutor
-        pose={tutorPose}
-        message={tutorMessage}
-        onMessageComplete={() => {}}
-        chatHistory={chatHistory}
-      />
+      {!onTutorSpeak && (
+        <AITutor
+          pose={tutorPose}
+          message={tutorMessage}
+          onMessageComplete={() => {}}
+          chatHistory={chatHistory}
+        />
+      )}
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>

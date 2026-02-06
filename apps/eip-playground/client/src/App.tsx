@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -88,6 +87,7 @@ function App() {
               fontStack: "system",
               overlayBlur: "small",
             })}
+            modalSize="compact"
           >
             <ThemeProvider defaultTheme="dark">
               <TooltipProvider>

@@ -44,6 +44,11 @@ export default function AITutor({
   const [isChatOpen, setIsChatOpen] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<string>("");
+  const onMessageCompleteRef = useRef(onMessageComplete);
+
+  useEffect(() => {
+    onMessageCompleteRef.current = onMessageComplete;
+  }, [onMessageComplete]);
 
   // Word-by-word typewriter effect
   useEffect(() => {
@@ -75,12 +80,12 @@ export default function AITutor({
       } else {
         setIsTyping(false);
         clearInterval(interval);
-        onMessageComplete?.();
+        onMessageCompleteRef.current?.();
       }
     }, 100); // Speed: 100ms per word
 
     return () => clearInterval(interval);
-  }, [message, onMessageComplete]);
+  }, [message]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

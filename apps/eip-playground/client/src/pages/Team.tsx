@@ -44,7 +44,7 @@ export default function Team() {
         subtitle="Meet the Creators Behind EIP Playground"
       />
 
-      <div className="container max-w-7xl mx-auto py-16 px-4">
+      <div className="container max-w-7xl mx-auto py-10 sm:py-14 md:py-16 px-4">
         {/* Header */}
         <div className="text-center mb-12">
           {/* <div className="flex items-center justify-center gap-4 mb-4">
@@ -53,21 +53,23 @@ export default function Team() {
               TEAM
             </h1>
           </div> */}
-          <p className="text-2xl text-muted-foreground font-mono">About Us</p>
+          <p className="text-lg sm:text-2xl text-muted-foreground font-mono">
+            About Us
+          </p>
         </div>
 
         {/* Project Introduction */}
-        <Card className="mb-16 p-8 md:p-12 border-4 border-primary bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur relative overflow-hidden">
+        <Card className="mb-12 md:mb-16 p-5 sm:p-8 md:p-12 border-4 border-primary bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur relative overflow-hidden">
           {/* 装饰用的背景文字 - 增加游戏感 */}
-          <div className="absolute -right-8 -bottom-8 text-primary/5 font-pixel text-9xl rotate-12 pointer-events-none select-none">
+          <div className="absolute -right-8 -bottom-8 text-primary/5 font-pixel text-6xl sm:text-8xl md:text-9xl rotate-12 pointer-events-none select-none">
             CODE
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-pixel text-primary mb-6 pixel-text-shadow">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-pixel text-primary mb-4 sm:mb-6 pixel-text-shadow">
             PROJECT INTRODUCTION
           </h2>
 
-          <div className="space-y-4 text-lg leading-relaxed relative z-10">
+          <div className="space-y-4 text-sm sm:text-base md:text-lg leading-relaxed relative z-10">
             <p className="text-foreground">
               <strong className="text-primary">EIP Playground</strong> is an
               innovative Web3 arena where we turn daunting Ethereum Improvement
@@ -82,7 +84,7 @@ export default function Team() {
             </p>
 
             {/* 栅格展示部分保持不变... */}
-            <div className="grid md:grid-cols-3 gap-6 mt-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8">
               {/* ... 之前的三个 Card 内容 ... */}
             </div>
 
@@ -94,12 +96,12 @@ export default function Team() {
             </p>
 
             {/* --- 新增的 GitHub 链接区域 --- */}
-            <div className="mt-10 pt-6 border-t-2 border-primary/20 flex flex-col sm:flex-row items-center gap-6">
+            <div className="mt-10 pt-6 border-t-2 border-primary/20 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
               <a
                 href="https://github.com/ShihaoZhou-NEU/web3-eip-playground"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-pixel rounded-none border-b-4 border-r-4 border-black/40 hover:border-b-2 hover:border-r-2 hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                className="group relative inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-pixel rounded-none border-b-4 border-r-4 border-black/40 hover:border-b-2 hover:border-r-2 hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm sm:text-base"
               >
                 <Github className="w-6 h-6" />
                 VIEW SOURCE CODE
@@ -117,14 +119,14 @@ export default function Team() {
         </Card>
 
         {/* News Section */}
-        <Card className="mt-16 mb-8 p-8 text-center border-2 border-accent/30 bg-accent/5">
-          <h2 className="text-2xl font-pixel text-accent mb-2">
+        <Card className="mt-12 md:mt-16 mb-8 p-5 sm:p-8 text-center border-2 border-accent/30 bg-accent/5">
+          <h2 className="text-xl sm:text-2xl font-pixel text-accent mb-2">
             ACHIEVEMENT UNLOCKED! 🏆
           </h2>
-          <h3 className="text-xl font-pixel text-primary mb-6">
+          <h3 className="text-lg sm:text-xl font-pixel text-primary mb-4 sm:mb-6">
             Runner-Up SPARK-AI Hackathon
           </h3>
-          <h3 className="text-xl font-pixel text-primary mb-6">
+          <h3 className="text-lg sm:text-xl font-pixel text-primary mb-4 sm:mb-6">
             @ LXDAO X ETHPanda
           </h3>
 
@@ -132,10 +134,10 @@ export default function Team() {
             <img
               src="/team/panda_emoji_v2_36_spark_ai.png"
               alt="spark-ai runner-up"
-              className="w-32 h-32 md:w-120 md:h-120 object-cover rounded-2xl"
+              className="w-28 h-28 sm:w-32 sm:h-32 md:w-44 md:h-44 object-cover rounded-2xl"
             />
 
-            <p className="max-w-2xl text-muted-foreground leading-relaxed">
+            <p className="max-w-2xl text-sm sm:text-base text-muted-foreground leading-relaxed">
               We are beyond excited to announce that{" "}
               <strong>EIP Playground</strong> has been awarded the{" "}
               <strong>Runner-Up</strong> prize in the{" "}
@@ -148,7 +150,7 @@ export default function Team() {
 
         {/* Team Members Section */}
         <div className="mb-8">
-          <h2 className="text-3xl md:text-4xl font-pixel text-primary mb-8 text-center pixel-text-shadow">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-pixel text-primary mb-6 sm:mb-8 text-center pixel-text-shadow">
             MEET THE SQUAD
           </h2>
         </div>
@@ -160,7 +162,7 @@ export default function Team() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {members.map(member => (
               <Card
                 key={member.id}
@@ -186,16 +188,16 @@ export default function Team() {
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-2xl font-pixel text-foreground mb-2 group-hover:text-primary transition-colors">
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-xl sm:text-2xl font-pixel text-foreground mb-2 group-hover:text-primary transition-colors">
                     {member.name}
                   </h3>
 
-                  <div className="text-accent font-mono text-sm mb-4">
+                  <div className="text-accent font-mono text-xs sm:text-sm mb-4">
                     {member.role}
                   </div>
 
-                  <p className="text-muted-foreground text-sm mb-4">
+                  <p className="text-muted-foreground text-xs sm:text-sm mb-4">
                     {member.bio}
                   </p>
 

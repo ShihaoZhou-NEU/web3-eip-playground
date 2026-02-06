@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import AITutor, { TutorPose } from "@/components/AITutor";
+import { getTutorGreeting } from "@/lib/tutorScripts";
 
 // Constants
 const TARGET_GAS = 15000000; // Target block size
@@ -25,7 +26,11 @@ interface ChatMessage {
   timestamp: number;
 }
 
-const BurnerGame: React.FC = () => {
+type BurnerGameProps = {
+  onTutorSpeak?: (message: string, pose?: TutorPose) => void;
+};
+
+const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
   const [baseFee, setBaseFee] = useState<number>(100);
   const [blockHistory, setBlockHistory] = useState<
     { block: number; baseFee: number; usage: number }[]
@@ -49,7 +54,10 @@ const BurnerGame: React.FC = () => {
   const prevIncludedRef = useRef<boolean>(true);
 
   // Tutor speak function
-  const tutorSpeak = (message: string, pose: TutorPose = "teaching") => {
+  const internalTutorSpeak = (
+    message: string,
+    pose: TutorPose = "teaching"
+  ) => {
     setTutorMessage(message);
     setTutorPose(pose);
     setChatHistory(prev => [
@@ -62,17 +70,19 @@ const BurnerGame: React.FC = () => {
       },
     ]);
   };
+  const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
 
   // Initial greeting
   useEffect(() => {
+    if (onTutorSpeak) return;
     if (!hasGreeted) {
       setHasGreeted(true);
       tutorSpeak(
-        "Hello! I'm Dr. Panda, your EIP-1559 guide. I'll help you understand how the base fee mechanism works. Try adjusting the network congestion slider and watch what happens!",
+        getTutorGreeting({ eipId: "eip-1559", gameId: "burner" }),
         "standing"
       );
     }
-  }, [hasGreeted]);
+  }, [hasGreeted, onTutorSpeak, tutorSpeak]);
 
   const calculateNextBaseFee = (currentBaseFee: number, gasUsed: number) => {
     // EIP-1559 Formula
@@ -455,11 +465,13 @@ const BurnerGame: React.FC = () => {
       </div>
 
       {/* AI Tutor */}
-      <AITutor
-        message={tutorMessage}
-        pose={tutorPose}
-        chatHistory={chatHistory}
-      />
+      {!onTutorSpeak && (
+        <AITutor
+          message={tutorMessage}
+          pose={tutorPose}
+          chatHistory={chatHistory}
+        />
+      )}
     </div>
   );
 };

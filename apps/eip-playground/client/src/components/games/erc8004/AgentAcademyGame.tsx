@@ -16,6 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import AITutor, { TutorPose, TutorMessage } from "@/components/AITutor";
+import { getTutorGreeting, getErc8004TutorMessage } from "@/lib/tutorScripts";
 import ConsoleDialog from "@/components/ConsoleDialog";
 import { Trophy } from "lucide-react";
 import { startQuiz, submitAnswer } from "@/lib/quizApi";
@@ -33,7 +34,13 @@ interface TaskLog {
   timestamp: string;
 }
 
-export default function AgentAcademyGame() {
+type AgentAcademyGameProps = {
+  onTutorSpeak?: (message: string, pose?: TutorPose) => void;
+};
+
+export default function AgentAcademyGame({
+  onTutorSpeak,
+}: AgentAcademyGameProps) {
   const [stage, setStage] = useState<Stage>("IDENTITY");
   const [agentId, setAgentId] = useState<string | null>(null);
   const [reputation, setReputation] = useState(0);
@@ -86,7 +93,10 @@ export default function AgentAcademyGame() {
   };
 
   // Helper to make tutor speak
-  const tutorSpeak = (message: string, pose: TutorPose = "standing") => {
+  const internalTutorSpeak = (
+    message: string,
+    pose: TutorPose = "standing"
+  ) => {
     setTutorPose(pose);
     setTutorMessage(message);
 
@@ -99,17 +109,19 @@ export default function AgentAcademyGame() {
     };
     setChatHistory(prev => [...prev, newMessage]);
   };
+  const tutorSpeak = onTutorSpeak ?? internalTutorSpeak;
 
   // Initial greeting - only once on mount
   useEffect(() => {
+    if (onTutorSpeak) return;
     if (!hasGreeted) {
       tutorSpeak(
-        "Hello! I'm Dr. Panda, your AI tutor. I'll guide you through the ERC-8004 Agent Academy. Let's create your first agent identity!",
+        getTutorGreeting({ eipId: "erc-8004", gameId: "academy" }),
         "standing"
       );
       setHasGreeted(true);
     }
-  }, [hasGreeted]);
+  }, [hasGreeted, onTutorSpeak, tutorSpeak]);
 
   // Stage 1: Identity
   const mintIdentity = () => {
@@ -124,7 +136,7 @@ export default function AgentAcademyGame() {
       showMessage(`Identity Minted: ${newId}`);
 
       tutorSpeak(
-        `Welcome! I see you've minted a new agent identity: ${newId}. This is your unique on-chain identifier. Let's start building your reputation!`,
+        getErc8004TutorMessage("identity_minted", { newId }),
         "praising"
       );
 
@@ -140,7 +152,7 @@ export default function AgentAcademyGame() {
     if (difficulty === "HARD" && !isVerified) {
       showMessage("Access Denied: Hard tasks require Verified status!");
       tutorSpeak(
-        "Hold on! Hard tasks require validation first. You need to prove your reliability through the validation process.",
+        getErc8004TutorMessage("hard_task_blocked"),
         "teaching"
       );
       return;
@@ -150,10 +162,7 @@ export default function AgentAcademyGame() {
     setCurrentTask(type);
     showMessage("Executing task...");
 
-    tutorSpeak(
-      "I'm monitoring your task execution. Let's see how you perform!",
-      "working"
-    );
+    tutorSpeak(getErc8004TutorMessage("task_monitoring"), "working");
 
     // Animation duration
     setTimeout(() => {
@@ -189,13 +198,19 @@ export default function AgentAcademyGame() {
       if (isPositive) {
         showMessage(`Task Complete! +${reward} Rep - Great work!`);
         tutorSpeak(
-          `Excellent work! Your task was well-received and you got positive feedback. You earned ${reward} reputation points. Your total is now ${newRep}.`,
+          getErc8004TutorMessage("task_success", {
+            reward,
+            totalRep: newRep,
+          }),
           "praising"
         );
       } else {
         showMessage(`Task had issues. ${reward} Rep - Keep trying!`);
         tutorSpeak(
-          `Oh no! The task didn't go as planned and received some negative feedback. You lost ${Math.abs(reward)} reputation points. Don't worry, you can recover! Your total is now ${newRep}.`,
+          getErc8004TutorMessage("task_failure", {
+            reward,
+            totalRep: newRep,
+          }),
           "teaching"
         );
       }
@@ -208,7 +223,7 @@ export default function AgentAcademyGame() {
         setTimeout(() => {
           showMessage("Reputation Maxed! Validation Layer Unlocked.");
           tutorSpeak(
-            "Congratulations! You've reached 50 reputation. You're now eligible for validation. Click the button to proceed!",
+            getErc8004TutorMessage("reputation_unlock"),
             "teaching"
           );
         }, 2000);
@@ -222,7 +237,7 @@ export default function AgentAcademyGame() {
     showMessage("Submitting proof to registry...");
 
     tutorSpeak(
-      "I'm submitting your reputation proof to the validation registry. This is a critical step!",
+      getErc8004TutorMessage("validation_submitting"),
       "working"
     );
 
@@ -230,14 +245,14 @@ export default function AgentAcademyGame() {
       setValidationStep("STAMPING");
       showMessage("Validator checking proof...");
       tutorSpeak(
-        "The validator is reviewing your credentials. This ensures only reliable agents get verified.",
+        getErc8004TutorMessage("validation_reviewing"),
         "thinking"
       );
       setTimeout(() => {
         setValidationStep("VERIFIED");
         showMessage("Proof Verified!");
         tutorSpeak(
-          "Fantastic! You're now a verified agent. High-value tasks are now unlocked for you!",
+          getErc8004TutorMessage("validation_verified"),
           "praising"
         );
         setTimeout(() => {
@@ -250,7 +265,7 @@ export default function AgentAcademyGame() {
           setTimeout(() => {
             setShowChallenge(true);
             tutorSpeak(
-              "Excellent work! Now that you're verified, you can take the final challenge to test your knowledge of ERC-8004. Pass it to earn an NFT reward!",
+              getErc8004TutorMessage("challenge_unlocked"),
               "teaching"
             );
           }, 500);
@@ -273,7 +288,7 @@ export default function AgentAcademyGame() {
     setQuizDone(false);
     setQuizPassed(null);
     setQuizMessages([]);
-    tutorSpeak("Let's start fresh! Ready to create a new agent?", "standing");
+    tutorSpeak(getErc8004TutorMessage("reset"), "standing");
   };
 
   // Quiz handlers
@@ -345,7 +360,7 @@ export default function AgentAcademyGame() {
     if (!isConnected || !address) {
       showMessage("Please connect your wallet first!");
       tutorSpeak(
-        "You need to connect your wallet to claim your NFT reward. Click the Connect Wallet button in the header!",
+        getErc8004TutorMessage("wallet_required"),
         "teaching"
       );
       if (openConnectModal) {
@@ -358,7 +373,7 @@ export default function AgentAcademyGame() {
     setIsClaimingNFT(true);
     showMessage("Minting your NFT badge...");
     tutorSpeak(
-      "Excellent! Let me mint your ERC-8004 achievement badge on the blockchain...",
+      getErc8004TutorMessage("mint_start"),
       "praising"
     );
 
@@ -375,7 +390,7 @@ export default function AgentAcademyGame() {
 
       showMessage(`NFT minted successfully! Token ID: ${result.tokenId}`, 5000);
       tutorSpeak(
-        `Congratulations! Your ERC-8004 badge has been minted! Token ID: ${result.tokenId}.`,
+        getErc8004TutorMessage("mint_success", { tokenId: result.tokenId }),
         "praising"
       );
 
@@ -391,7 +406,7 @@ export default function AgentAcademyGame() {
         error instanceof Error ? error.message : "Unknown error occurred";
       showMessage(`Failed to claim NFT: ${errorMessage}`, 5000);
       tutorSpeak(
-        `Oops! Something went wrong while minting your badge: ${errorMessage}. Please try again later.`,
+        getErc8004TutorMessage("mint_error", { errorMessage }),
         "thinking"
       );
       console.error("NFT Claim Error:", error);
@@ -404,12 +419,14 @@ export default function AgentAcademyGame() {
     <div>
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* AI Tutor */}
-        <AITutor
-          pose={tutorPose}
-          message={tutorMessage}
-          onMessageComplete={() => {}}
-          chatHistory={chatHistory}
-        />
+        {!onTutorSpeak && (
+          <AITutor
+            pose={tutorPose}
+            message={tutorMessage}
+            onMessageComplete={() => {}}
+            chatHistory={chatHistory}
+          />
+        )}
         {/* Left Column: Game Area (8 cols) */}
         <div className="lg:col-span-8 space-y-8">
           {/* Progress Header */}

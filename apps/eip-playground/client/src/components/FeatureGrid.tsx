@@ -24,7 +24,7 @@ function FeatureCard({
   return (
     <Link
       href={`/eip/${id}`}
-      className="block group h-[320px] perspective-1000 cursor-pointer"
+      className="block group h-[260px] sm:h-[300px] lg:h-[320px] perspective-1000 cursor-pointer"
     >
       <div
         className="relative w-full h-full transition-transform duration-500 transform-style-3d group-hover:rotate-y-180"
@@ -118,7 +118,7 @@ export default function FeatureGrid() {
 
   return (
     <section className="container py-12 relative z-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {features.map((feature, index) => (
           <FeatureCard key={index} {...feature} />
         ))}
