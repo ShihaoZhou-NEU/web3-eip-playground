@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { getEip7702TutorMessage } from "@/data/tutorScripts";
+import { trackEvent } from "@/lib/analytics";
 
 // Comic panels data
 const PANELS = [
@@ -40,9 +41,12 @@ type DelegationGameProps = {
 };
 
 const DelegationGame: React.FC<DelegationGameProps> = ({ onTutorSpeak }) => {
+  const gameContext = { eip_id: "eip-7702", game_id: "delegation" };
   const [currentPanel, setCurrentPanel] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
+  const hasStartedRef = useRef(false);
+  const hasCompletedRef = useRef(false);
 
   // Preload all images
   useEffect(() => {
@@ -65,6 +69,10 @@ const DelegationGame: React.FC<DelegationGameProps> = ({ onTutorSpeak }) => {
 
   const nextPanel = () => {
     if (currentPanel < PANELS.length - 1) {
+      if (!hasStartedRef.current) {
+        hasStartedRef.current = true;
+        trackEvent("game_start", gameContext);
+      }
       setDirection("forward");
       setCurrentPanel(currentPanel + 1);
     }
@@ -80,6 +88,8 @@ const DelegationGame: React.FC<DelegationGameProps> = ({ onTutorSpeak }) => {
   const reset = () => {
     setDirection("backward");
     setCurrentPanel(0);
+    hasStartedRef.current = false;
+    hasCompletedRef.current = false;
   };
 
   const panel = PANELS[currentPanel];
@@ -89,6 +99,13 @@ const DelegationGame: React.FC<DelegationGameProps> = ({ onTutorSpeak }) => {
     const key = `panel_${panel.id}` as const;
     onTutorSpeak?.(getEip7702TutorMessage(key));
   }, [panel.id, onTutorSpeak]);
+
+  useEffect(() => {
+    if (currentPanel !== PANELS.length - 1) return;
+    if (hasCompletedRef.current) return;
+    hasCompletedRef.current = true;
+    trackEvent("game_complete", { ...gameContext, success: true });
+  }, [currentPanel]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 bg-gray-900 border-4 border-white font-pixel text-white relative overflow-hidden mt-6 sm:mt-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)]">

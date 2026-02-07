@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AITutor, { TutorPose, TutorMessage } from "@/components/AITutor";
 import { getTutorGreeting, getEip7702TutorMessage } from "@/data/tutorScripts";
+import { trackEvent } from "@/lib/analytics";
 
 type BatchingGameProps = {
   // Forward tutor messages to the page-level tutor.
@@ -11,6 +12,7 @@ type BatchingGameProps = {
 export const BatchingGame: React.FC<BatchingGameProps> = ({
   onTutorSpeak,
 }) => {
+  const gameContext = { eip_id: "eip-7702", game_id: "batching" };
   const [mode, setMode] = useState<"intro" | "eoa" | "7702" | "success">(
     "intro"
   );
@@ -70,6 +72,12 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
       setIsPlaying(false);
       setMessage("TIME UP! EOA IS TOO SLOW!");
       tutorSpeak(getEip7702TutorMessage("eoa_timeout"), "thinking");
+      trackEvent("game_complete", {
+        ...gameContext,
+        success: false,
+        mode: "eoa",
+        reason: "timeout",
+      });
       setTimeout(() => resetGame(), 4000);
     }
     return () => clearInterval(timer);
@@ -92,6 +100,7 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
     setIsPlaying(true);
     setMessage("CLICK ALL 10 CARDS!");
     tutorSpeak(getEip7702TutorMessage("eoa_start"), "teaching");
+    trackEvent("game_start", { ...gameContext, mode: "eoa" });
   };
 
   const start7702 = () => {
@@ -101,6 +110,7 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
     setRevealedCount(0);
     setMessage("ONE CLICK TO RULE THEM ALL");
     tutorSpeak(getEip7702TutorMessage("batch_start"), "teaching");
+    trackEvent("game_start", { ...gameContext, mode: "7702" });
   };
 
   const handleCardClick = (index: number) => {
@@ -120,6 +130,12 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
         setIsPlaying(false);
         setMessage("PHEW! BARELY MADE IT!");
         tutorSpeak(getEip7702TutorMessage("eoa_success"), "praising");
+        trackEvent("game_complete", {
+          ...gameContext,
+          success: true,
+          mode: "eoa",
+          time_left: timeLeft,
+        });
       }
     }, 1000); // 1s delay per tx
   };
@@ -132,6 +148,11 @@ export const BatchingGame: React.FC<BatchingGameProps> = ({
       setMode("success");
       setMessage("BATCHED & EXECUTED INSTANTLY!");
       tutorSpeak(getEip7702TutorMessage("batch_success"), "praising");
+      trackEvent("game_complete", {
+        ...gameContext,
+        success: true,
+        mode: "7702",
+      });
     }, 1500);
   };
 

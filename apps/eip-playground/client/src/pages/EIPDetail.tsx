@@ -18,6 +18,7 @@ import {
   getTutorPageGreeting,
 } from "@/data/tutorScripts";
 import { useState, useEffect, useCallback, useRef, type ComponentType } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 export default function EIPDetail() {
   const [match, params] = useRoute("/eip/:id");
@@ -127,6 +128,11 @@ export default function EIPDetail() {
     if (!eip) return;
     window.scrollTo(0, 0);
   }, [eip?.id]);
+
+  useEffect(() => {
+    if (!eip) return;
+    trackEvent("eip_view", { eip_id: eip.id, eip_title: eip.title });
+  }, [eip?.id, eip?.title]);
 
   useEffect(() => {
     // Trigger game greetings when each game section is scrolled into view.

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import AITutor, { TutorPose } from "@/components/AITutor";
 import { getTutorGreeting, getEip1559TutorMessage } from "@/data/tutorScripts";
+import { trackEvent } from "@/lib/analytics";
 
 // Constants
 const TARGET_GAS = 15000000; // Target block size
@@ -32,6 +33,7 @@ type BurnerGameProps = {
 };
 
 const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
+  const gameContext = { eip_id: "eip-1559", game_id: "burner" };
   const [baseFee, setBaseFee] = useState<number>(100);
   const [blockHistory, setBlockHistory] = useState<
     { block: number; baseFee: number; usage: number }[]
@@ -49,6 +51,8 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
   const [tutorMessage, setTutorMessage] = useState<string>("");
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
+  const hasTrackedStartRef = useRef(false);
+  const hasTrackedCompleteRef = useRef(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevBaseFeeRef = useRef<number>(100);
@@ -84,6 +88,24 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
       );
     }
   }, [hasGreeted, onTutorSpeak, tutorSpeak]);
+
+  useEffect(() => {
+    if (hasTrackedStartRef.current) return;
+    hasTrackedStartRef.current = true;
+    trackEvent("game_start", { ...gameContext, reason: "auto_start" });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hasTrackedCompleteRef.current) return;
+      hasTrackedCompleteRef.current = true;
+      trackEvent("game_complete", {
+        ...gameContext,
+        reason: "exit",
+        block_number: blockNumber,
+      });
+    };
+  }, [blockNumber]);
 
   const calculateNextBaseFee = (currentBaseFee: number, gasUsed: number) => {
     // EIP-1559 Formula
@@ -246,7 +268,21 @@ const BurnerGame: React.FC<BurnerGameProps> = ({ onTutorSpeak }) => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsPlaying(!isPlaying)}
+              onClick={() => {
+                if (isPlaying) {
+                  if (!hasTrackedCompleteRef.current) {
+                    hasTrackedCompleteRef.current = true;
+                    trackEvent("game_complete", {
+                      ...gameContext,
+                      reason: "pause",
+                      block_number: blockNumber,
+                    });
+                  }
+                } else {
+                  trackEvent("game_start", { ...gameContext, reason: "resume" });
+                }
+                setIsPlaying(!isPlaying);
+              }}
               className="font-pixel text-[10px] sm:text-xs h-8 border-2"
             >
               {isPlaying ? (
