@@ -20,23 +20,19 @@ export default function Hero() {
   ];
 
   return (
-    <section
-      className="relative w-full pt-20 pb-12 md:pt-24 md:pb-24 lg:pt-28 lg:pb-32 overflow-hidden"
-    >
+    <section className="relative w-full pt-20 pb-12 md:pt-24 md:pb-24 lg:pt-28 lg:pb-32 overflow-hidden">
       <div className="container grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left: Slogan & CTA */}
         <div className="flex flex-col gap-8 z-10">
           <div className="space-y-4 max-w-2xl lg:max-w-3xl">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-tight text-shadow-pixel">
-              LEARN 
-              {/* <span className="text-primary">ERC</span>& */}
+              LEARN
+              <br />
               <span className="text-accent">EIP</span>
               <br />
-              THE FUN WAY!
+              THE <span className="text-primary">FUN</span> WAY!
             </h1>
-            <p
-              className="font-mono text-base sm:text-lg md:text-xl text-gray-300 bg-black/50 p-4 border-l-4 border-primary"
-            >
+            <p className="font-mono text-base sm:text-lg md:text-xl text-gray-300 bg-black/50 p-4 border-l-4 border-primary">
               Your Web3 odyssey starts here!~ Level up your skills through play
               and visual storytelling.
             </p>
