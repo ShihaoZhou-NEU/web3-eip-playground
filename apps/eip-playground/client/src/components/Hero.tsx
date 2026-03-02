@@ -28,7 +28,7 @@ export default function Hero() {
         <div className="flex flex-col gap-8 z-10">
           <div className="space-y-4 max-w-2xl lg:max-w-3xl">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-tight text-shadow-pixel">
-              LEARN <span className="text-primary">ERC</span>&
+              {/* LEARN <span className="text-primary">ERC</span>& */}
               <span className="text-accent">EIP</span>
               <br />
               THE FUN WAY!
