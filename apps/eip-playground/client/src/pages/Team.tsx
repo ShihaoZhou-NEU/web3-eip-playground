@@ -98,7 +98,7 @@ export default function Team() {
             {/* --- 新增的 GitHub 链接区域 --- */}
             <div className="mt-10 pt-6 border-t-2 border-primary/20 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
               <a
-                href="https://github.com/ShihaoZhou-NEU/web3-eip-playground"
+                href="https://github.com/David-0x221Eight/web3-eip-playground"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-pixel rounded-none border-b-4 border-r-4 border-black/40 hover:border-b-2 hover:border-r-2 hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm sm:text-base"
